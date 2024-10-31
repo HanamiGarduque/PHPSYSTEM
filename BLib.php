@@ -11,12 +11,16 @@ $welcomeMessage = 'BLib:';
 
         <link rel="stylesheet" href="HomePage.css">
     </head>
+
     <!-- Navigation Bar -->
     <nav>
         <ul>
             <li><a href="BLib.php">Home</a></li>
-            <li><a href="search.php">Search Books</a></li>
-            <li><a href="about.php">About Us</a></li>
+            <li><a href="search.php">Search Catalog</a></li>
+            <li><a href="account.php">My Account</a></li>
+            <li><a href="history.php">Borrow History</a></li>
+            <li><a href="reserve.php">Reserve a Book</a></li>
             <li><a href="contact.php">Contact Us</a></li>
         </ul>
     </nav>
+    

@@ -1,6 +1,19 @@
 <?php
-     require_once 'database.php';
-     require_once 'index.php';
+session_start();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+
+    </head>
+<body>
+
+<?php   
+     require_once './Database/database.php';
+     require_once './Database/crud.php';
 
      if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -19,12 +32,21 @@
       $user->address = htmlspecialchars(trim($_POST['address']));
       $user->password = htmlspecialchars(trim(password_hash($_POST['password'], PASSWORD_BCRYPT))); // Hash the password
   
-      // Attempt to create the user
-      if ($user->create()) { // add animation
-          echo "User created successfully!";
-      } else {
-          echo "Error creating user.";
-      }
-  
+      if ($user->checkDuplicateAcc()) {
+        $_SESSION['status'] = 'error';
+        $_SESSION['message'] = 'duplicate';
+    } else {
+        if ($user->create()) {
+            $_SESSION['status'] = 'success';
+        } else {
+            $_SESSION['status'] = 'error';
+        }
     }
-?>
+    // // Redirect to registration.php
+    header("Location: registration.php");
+    exit();
+    }
+?> 
+
+</body>
+</html>

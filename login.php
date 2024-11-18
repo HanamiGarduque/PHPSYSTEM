@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,57 +18,46 @@
 </form>
 
 <p>Don't have an account? <a href="registration.php">Register Now</a></p>
-
 <?php
-// Database connection parameters
-$servername = "localhost"; // Change if your database server is different
-$username = "your_db_username"; // Your database username
-$password = "your_db_password"; // Your database password
-$dbname = "your_db_name"; // Your database name
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
+    require_once './Database/database.php';
+    require_once './Database/crud.php';
 // Check if form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $inputUsername = $_POST['username'];
-    $inputPassword = $_POST['password'];
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $inputUsername = $_POST['username'];
+        $inputPassword = $_POST['password'];        
 
-    // Prepare and bind
-    $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
-    $stmt->bind_param("s", $inputUsername);
-    $stmt->execute();
-    $stmt->store_result();
+        //initialize database connection
+        $database = new Database();
+        $db = $database->getConnect();
 
-    // Check if user exists
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($hashedPassword);
-        $stmt->fetch();
+        $user = new Users($db);
 
-        // Verify the password
-        if (password_verify($inputPassword, $hashedPassword)) {
-            // Redirect to homepage.php on successful login
-            header("Location: homepage.php");
-            exit();
+        $query = "SELECT password FROM users WHERE username = :username LIMIT 1";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':username', $inputUsername);
+        $stmt->execute();
+        // Check if user exists
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $hashedPassword = $row['password'];
+
+            // Verify the password
+            if (password_verify($inputPassword, $hashedPassword)) {
+                // Redirect to homepage.php on successful login
+                header("Location: Home.php");
+                exit();
+            } else {
+                echo 'Incorrect password.';
+            }
         } else {
-            echo 'Incorrect password.';
+            echo 'Incorrect username.';
         }
-    } else {
-        echo 'Incorrect username.';
+
+        // Close statement
+        $stmt->closeCursor();
     }
-
-    // Close statement
-    $stmt->close();
-}
-
-// Close connection
-$conn->close();
 ?>
+
 
 </body>
 </html>

@@ -7,23 +7,22 @@ $dbname = "book_catalog";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Initialize variables
+
 $filter = isset($_GET['filter']) ? $_GET['filter'] : "all";
 $searchTerm = isset($_GET['query']) ? $_GET['query'] : "";
 $results = [];
 
-// Build SQL query with dynamic filters
 $sql = "SELECT * FROM books WHERE 1";
 
 $params = [];
 $types = "";
 
-// Search query filter
+
 if (!empty($searchTerm)) {
     $sql .= " AND (Book_Title LIKE ? OR Book_Author LIKE ? OR Book_ISBN LIKE ? OR Book_Genre LIKE ?)";
     $likeSearchTerm = '%' . $searchTerm . '%';
@@ -31,7 +30,7 @@ if (!empty($searchTerm)) {
     $types .= str_repeat("s", 4);
 }
 
-// Genre filter
+
 if ($filter !== "all") {
     $sql .= " AND Book_Genre = ?";
     $params[] = $filter;
@@ -47,7 +46,7 @@ if (!empty($types)) {
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Fetch results into an array
+
 while ($row = $result->fetch_assoc()) {
     $results[] = $row;
 }
@@ -193,8 +192,8 @@ $conn->close();
     <script>
         $(document).ready(function() {
             $('#booksTable').DataTable({
-                paging: false, // Remove pagination
-                searching: false // Disable the search bar on the right
+                paging: false, 
+                searching: false 
             });
         });
     </script>

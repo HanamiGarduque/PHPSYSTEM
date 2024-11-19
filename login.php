@@ -21,12 +21,12 @@
 <?php
     require_once './Database/database.php';
     require_once './Database/crud.php';
-// Check if form is submitted
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $inputUsername = $_POST['username'];
         $inputPassword = $_POST['password'];        
 
-        //initialize database connection
+        
         $database = new Database();
         $db = $database->getConnect();
 
@@ -36,14 +36,14 @@
         $stmt = $db->prepare($query);
         $stmt->bindParam(':username', $inputUsername);
         $stmt->execute();
-        // Check if user exists
+       
         if ($stmt->rowCount() > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $hashedPassword = $row['password'];
 
-            // Verify the password
+           
             if (password_verify($inputPassword, $hashedPassword)) {
-                // Redirect to homepage.php on successful login
+                
                 header("Location: Home.php");
                 exit();
             } else {

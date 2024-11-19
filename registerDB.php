@@ -46,7 +46,7 @@ session_start();
     header("Location: registration.php");
     exit();
     }
-?> 
+?>  
 
 </body>
 </html> 

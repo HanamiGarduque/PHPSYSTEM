@@ -9,15 +9,31 @@ class Users {
     public $last_name;
     public $email;
     public $address;
+    public $phone_number;
     public $roles;
+    public $status;
     public $password;
     
-
-    
-
     public function __construct($db) {
         $this->conn = $db;
     }
+    public function checkAccStatus($username) {
+        $query = "SELECT status FROM " . $this->tbl_name . " WHERE username = :username";
+        $stmt = $this->conn->prepare($query);
+        
+        // Bind the user ID to the query
+        $stmt->bindParam('username', $username);
+
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row && $row['status'] == 'Suspended') {
+            return true;  //account inactive
+        } else {
+            return false; //account active
+        }
+    }
+    
     public function checkDuplicateAcc() {
         $query = "SELECT * FROM " . $this->tbl_name . " WHERE username = :username OR email = :email";
         $stmt = $this->conn->prepare($query);
@@ -27,25 +43,27 @@ class Users {
         
         return $stmt->rowCount() > 0;
     }
-    //insert data to Database
     public function create() {
 
         if ($this->checkDuplicateAcc()) {
             echo "Username or Email already exists.";
             return false;
         }
-        $query = "INSERT INTO " . $this->tbl_name . " (username, first_name, last_name, email, address, roles, password) 
-                VALUES (:username, :first_name, :last_name, :email, :address, :roles, :password)";
+        $query = "INSERT INTO " . $this->tbl_name . " (username, first_name, last_name, email, address, phone_number, roles, status, password) 
+                VALUES (:username, :first_name, :last_name, :email, :address, :phone_number, :roles, :status, :password)";
         
         $stmt = $this->conn->prepare($query);
 
         $defaultRole = 'User';
+        $defaultStatus = 'Active';
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':first_name', $this->first_name);
         $stmt->bindParam(':last_name', $this->last_name);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':address', $this->address);
+        $stmt->bindParam(':phone_number', $this->phone_number);
         $stmt->bindParam(':roles', $defaultRole);
+        $stmt->bindParam(':status', $defaultStatus);
         $stmt->bindParam(':password', $this->password);
 
         if ($stmt->execute()) {
@@ -73,7 +91,7 @@ class Users {
     
     public function update() {
         $query = "UPDATE " . $this->tbl_name . " 
-                  SET username = :username, first_name = :first_name, last_name = :last_name, email = :email, address = :address, roles = :roles
+                  SET username = :username, first_name = :first_name, last_name = :last_name, email = :email, address = :address, phone_number = :phone_number, roles = :roles, status = :status
                   WHERE id = :id";
     
         $stmt = $this->conn->prepare($query);
@@ -84,7 +102,9 @@ class Users {
         $stmt->bindParam(':last_name', $this->last_name);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':address', $this->address);
+        $stmt->bindParam(':phone_number', $this->phone_number);
         $stmt->bindParam(':roles', $this->roles);
+        $stmt->bindParam(':status', $this->status);
     
         if ($stmt->execute()) {
             return true;

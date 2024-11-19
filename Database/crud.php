@@ -9,7 +9,11 @@ class Users {
     public $last_name;
     public $email;
     public $address;
+    public $roles;
     public $password;
+    
+
+    
 
     public function __construct($db) {
         $this->conn = $db;
@@ -30,17 +34,18 @@ class Users {
             echo "Username or Email already exists.";
             return false;
         }
-        $query = "INSERT INTO " . $this->tbl_name . " (username, first_name, last_name, email, address, password) 
-                VALUES (:username, :first_name, :last_name, :email, :address, :password)";
+        $query = "INSERT INTO " . $this->tbl_name . " (username, first_name, last_name, email, address, roles, password) 
+                VALUES (:username, :first_name, :last_name, :email, :address, :roles, :password)";
         
         $stmt = $this->conn->prepare($query);
 
-        // Bind parameters
+        $defaultRole = 'User';
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':first_name', $this->first_name);
         $stmt->bindParam(':last_name', $this->last_name);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':address', $this->address);
+        $stmt->bindParam(':roles', $defaultRole);
         $stmt->bindParam(':password', $this->password);
 
         if ($stmt->execute()) {
@@ -48,8 +53,7 @@ class Users {
         }
 
         return false;
-    }   
-    //Read data in database
+    } 
     
     public function read(){
         $query = "SELECT * FROM " .$this->tbl_name;
@@ -58,9 +62,92 @@ class Users {
 
         return $stmt;
     }
+    public function update() {
+        $query = "UPDATE " . $this->tbl_name . " 
+                  SET username = :username, first_name = :first_name, last_name = :last_name, email = :email, address = :address, roles = :roles
+                  WHERE id = :id";
+    
+        $stmt = $this->conn->prepare($query);
+        
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':username', $this->username);
+        $stmt->bindParam(':first_name', $this->first_name);
+        $stmt->bindParam(':last_name', $this->last_name);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':address', $this->address);
+        $stmt->bindParam(':roles', $this->roles);
+    
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function updatePassword() {
+        $query = "UPDATE " . $this->tbl_name . " 
+                  SET password = :password
+                  WHERE id = :id";
+    
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':email', $this->password);
+    
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+    
 
    
 }
+class Books {
+    private $conn;
+    private $tbl_name = "books";
+
+    public $id;
+    public $title;
+    public $author;
+    public $isbn;
+    public $published_year;
+    public $genre;
+    public $publisher;
+
+    public function __construct($db) {
+        $this->conn = $db;
+    }
+
+    public function addBooks() {
+        $query = "INSERT INTO " . $this->tbl_name . " (title, author, isbn, published_year, genre, publisher)
+                  VALUES (:title, :author, :isbn, :published_year, :genre, :publisher)";
+    
+        $stmt = $this->conn->prepare($query);
+    
+        // Bind parameters
+        $stmt->bindParam(':title', $this->title);
+        $stmt->bindParam(':author', $this->author);
+        $stmt->bindParam(':isbn', $this->isbn);
+        $stmt->bindParam(':published_year', $this->published_year);
+        $stmt->bindParam(':genre', $this->genre);
+        $stmt->bindParam(':publisher', $this->publisher);
+    
+        // Execute the query
+        if ($stmt->execute()) {
+            return true;
+        }
+    
+        return false;
+    }
+    public function read() {
+        $query = "SELECT * FROM books";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        return $stmt;
+    } 
+
+}
+
 class Reservations {
     private $conn;      
     private $tbl_name = "reservation";
@@ -74,7 +161,6 @@ class Reservations {
     public $reservation_date;
     public $notes;
 
-    // Constructor to initialize the database connection
     public function __construct($db) {
         $this->conn = $db;
     }

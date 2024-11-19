@@ -62,6 +62,15 @@ class Users {
 
         return $stmt;
     }
+    public function readID() {
+        $query = "SELECT * FROM users WHERE id = :id LIMIT 0,1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+    
+        return $stmt;
+    }
+    
     public function update() {
         $query = "UPDATE " . $this->tbl_name . " 
                   SET username = :username, first_name = :first_name, last_name = :last_name, email = :email, address = :address, roles = :roles

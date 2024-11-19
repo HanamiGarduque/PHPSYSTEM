@@ -20,6 +20,15 @@
     </script>
 </head>
 <body>
+    <nav>
+    <ul>
+        <li><a href="userManagement.php">User Management</a></li>
+        <li><a href="bookManagement.php">Book Management</a></li>
+        <li><a href="reservationManagement.php">Reservation Management</a></li>
+        <li><a href="loanManagement.php">Loan Management</a></li>
+        <li><a href="adminAccount.php">Loan Management</a></li>
+    </ul>
+    </nav>
 <h2> Users List </h2>
     <table id="userTable" class="display">
         <thead>
@@ -30,6 +39,7 @@
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Address</th>
+                <th>Role</th>
                 <th>Actions</th> <!-- Optional actions for Delete/Edit -->
             </tr>
         </thead>
@@ -57,11 +67,12 @@
                     echo "<td>" . (isset($row['last_name']) ? htmlspecialchars($row['last_name']) : '') . "</td>";
                     echo "<td>" . (isset($row['email']) ? htmlspecialchars($row['email']) : '') . "</td>";
                     echo "<td>" . (isset($row['address']) ? htmlspecialchars($row['address']) : '') . "</td>";
-                    echo "<td>Delete/Edit</td>";  // Optional actions for Delete/Edit
+                    echo "<td>" . (isset($row['roles']) ? htmlspecialchars($row['roles']) : '') . "</td>";
+                    echo "<td><a href='updateUser.php?id=" . htmlspecialchars($row['id']) . "'>Edit</a></td>";
                     echo "</tr>";
                 }
-                
             }
+            
             ?>
    
         </tbody>

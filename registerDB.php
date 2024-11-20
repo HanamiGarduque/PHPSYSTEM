@@ -1,59 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
+<?php
+// Include the Database class
+include_once 'Database.php';
 
-    <!-- SweetAlert2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body>
+// Create an instance of the Database class
+$database = new Database();
+$conn = $database->getConnect();
 
-<?php   
-     require_once 'database.php';
-     require_once 'crud.php';
+// Check if the query parameter is set and not empty
+if (isset($_GET['query']) && !empty(trim($_GET['query']))) {
+    $query = "%" . trim($_GET['query']) . "%"; // Prepare query with wildcards
 
-     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // SQL to search books by title, author, ISBN, or genre
+    $sql = "
+        SELECT title, author, isbn, genre
+        FROM books
+        WHERE 
+            title LIKE :query OR
+            author LIKE :query OR
+            isbn LIKE :query OR
+            genre LIKE :query
+        LIMIT 50;
+    ";
 
-      // Initialize database connection
-      $database = new Database();
-      $db = $database->getConnect();
-  
-      // Initialize the Users object
-      $user = new Users($db);
-  
-      // Sanitize and assign form data to the user object
-      $user->username = htmlspecialchars(trim($_POST['username']));
-      $user->first_name = htmlspecialchars(trim($_POST['first_name']));
-      $user->last_name = htmlspecialchars(trim($_POST['last_name']));
-      $user->email = htmlspecialchars(trim($_POST['email']));
-      $user->address = htmlspecialchars(trim($_POST['address']));
-      $user->password = htmlspecialchars(trim(password_hash($_POST['password'], PASSWORD_BCRYPT))); // Hash the password
-  
-      // Attempt to create the user
-      if ($user->create()) { 
-          // SweetAlert for successful user creation
-          echo "<script>
-                  Swal.fire({
-                    title: 'Success!',
-                    text: 'User created successfully!',
-                    icon: 'success',
-                    confirmButtonText: 'Okay'
-                  });
-                </script>";
-      } else {
-          echo "<script>
-                  Swal.fire({
-                    title: 'Error!',
-                    text: 'There was an error creating the user.',
-                    icon: 'error',
-                    confirmButtonText: 'Try Again'
-                  });
-                </script>";
-      }
+    try {
+        // Prepare and execute the SQL statement
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':query', $query, PDO::PARAM_STR);
+        $stmt->execute();
+
+        // Check if any results are found
+        if ($stmt->rowCount() > 0) {
+            $results = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $results[] = [
+                    'title' => htmlspecialchars($row['title']),
+                    'author' => htmlspecialchars($row['author']),
+                    'isbn' => htmlspecialchars($row['isbn']),
+                    'genre' => htmlspecialchars($row['genre']),
+                ];
+            }
+            // Return JSON response
+            echo json_encode(['data' => $results]);
+        } else {
+            // Return empty data set for DataTables
+            echo json_encode(['data' => []]);
+        }
+    } catch (PDOException $e) {
+        // Handle SQL errors gracefully
+        error_log($e->getMessage());
+        echo json_encode(['error' => 'An error occurred. Please try again later.']);
     }
-?>
+} else {
+    // Return error if query is not provided
+    echo json_encode(['error' => 'Please enter a search query.']);
+}
 
-</body>
-</html>
+// Close the connection (optional with PDO)
+$conn = null;
+?>

@@ -54,6 +54,33 @@ class Book {
         return false;
     }
 
-
+    public function update() {
+        $query = "UPDATE " .$this->tbl_name . " SET 
+                    Book_Title = :title, 
+                    Book_Author = :author, 
+                    Book_ISBN = :isbn, 
+                    Published_Year = :published_year, 
+                    Book_Genre = :genre, 
+                    Book_Publisher = :publisher, 
+                    Available_Copies = :available_copies 
+                  WHERE Book_ID = :id";
+                  
+        $stmt = $this->conn->prepare($query);
+    
+        $stmt->bindParam(':title', $this->Book_Title);
+        $stmt->bindParam(':author', $this->Book_Author);
+        $stmt->bindParam(':isbn', $this->Book_ISBN);
+        $stmt->bindParam(':published_year', $this->Published_Year);
+        $stmt->bindParam(':genre', $this->Book_Genre);
+        $stmt->bindParam(':publisher', $this->Book_Publisher);
+        $stmt->bindParam(':available_copies', $this->Available_Copies);
+        $stmt->bindParam(':id', $this->Book_ID);
+    
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+    
 }
 ?>

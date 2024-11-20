@@ -27,15 +27,14 @@
 </head>
 
 <body>
-<h1>ADMIN DAHSHBOARDD</h1>
+<h1>ADMIN DASHBOARD</h1>
     <div class="Container">
-
-
+        
         <div class="side_dashboard">
                 <nav>
                     <ul>
                         <li>
-                            <a href="">Books Management</a>
+                            <a href="">Book Management</a>
                         </li>
                         <li>
                             <a href="">User Management</a>
@@ -46,15 +45,13 @@
 
         <div class="second_container">
 
-
             <div class="main_content">
-
-
 
                 <h2>List of Books</h2>
                 <a  href="add_book.php">
                         <button onclick="location.href='./add_book.php'" class="add_btn">Add New Book</button>
                 </a>
+
                 <table id="bookTable" class="display">
                     <thead>
                         <tr>
@@ -70,6 +67,7 @@
                         </tr>
                     </thead>
                     <tbody>
+
                         <?php
                         require_once 'dbConnection.php';
                         require_once 'crudOperation.php';
@@ -93,11 +91,12 @@
                                 echo "<td>" . (isset($row['Book_Publisher']) ? htmlspecialchars($row['Book_Publisher']) : '') . "</td>";
                                 echo "<td>" . (isset($row['Available_Copies']) ? htmlspecialchars($row['Available_Copies']) : '') . "</td>";
                                 echo "<td>
-                                   <form action='delete_book.php' method='POST' style='display:inline;'>
+                                        <form action='delete_book.php' method='POST' style='display:inline;'>
                                             <input type='hidden' name='id' value='" . htmlspecialchars($row['Book_ID']) . "' />
                                             <button type='button' class='delete-btn'>Delete</button>
                                         </form>
-                                    </td>";
+                                            <button class='edit-btn' data-id='" .htmlspecialchars($row['Book_ID']) ."' data-title='" .htmlspecialchars($row['Book_Title']) ."'>Edit</button>
+                                      </td>";
                                 echo "</tr>";
                             }
                         }
@@ -129,19 +128,34 @@
                         });
                     });
                 </script>
+
+                <script>
+                    $(document).on('click', '.edit-btn', function (e) {
+                        e.preventDefault();
+
+                        const bookId = $(this).data('id');
+                        const bookTitle = $(this).data('title');
+
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: `Do you really want to edit the book "${bookTitle}"?`,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, edit it!',
+                            cancelButtonText: 'Cancel',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = `edit_book.php?id=${bookId}`;
+                            }
+                        });
+                    });
+                </script>
+
             </div>
         </div>
-
     </div>
-
-
-
-
-
-
-
- 
-   
 
 </body>
 </html>

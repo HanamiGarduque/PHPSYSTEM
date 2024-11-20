@@ -13,6 +13,38 @@ if ($conn->connect_error) {
 }
 
 
+function reserveBook($bookId, $conn) {
+
+    $checkQuery = "SELECT * FROM reservations WHERE book_id = ? AND status = 'Reserved'";
+    $stmt = $conn->prepare($checkQuery);
+    $stmt->bind_param("i", $bookId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        return "This book is already reserved.";
+    }
+
+    
+    $insertQuery = "INSERT INTO reservations (book_id, status, reserved_at) VALUES (?, 'Reserved', NOW())";
+    $stmt = $conn->prepare($insertQuery);
+    $stmt->bind_param("i", $bookId);
+
+    if ($stmt->execute()) {
+        return "Book reserved successfully!";
+    } else {
+        return "Failed to reserve the book. Please try again.";
+    }
+}
+
+
+$reservationMessage = "";
+if (isset($_POST['reserve'])) {
+    $bookId = intval($_POST['book_id']);
+    $reservationMessage = reserveBook($bookId, $conn);
+}
+
+
 $filter = isset($_GET['filter']) ? $_GET['filter'] : "all";
 $searchTerm = isset($_GET['query']) ? $_GET['query'] : "";
 $results = [];
@@ -21,7 +53,6 @@ $sql = "SELECT * FROM books WHERE 1";
 
 $params = [];
 $types = "";
-
 
 if (!empty($searchTerm)) {
     $sql .= " AND (Book_Title LIKE ? OR Book_Author LIKE ? OR Book_ISBN LIKE ? OR Book_Genre LIKE ?)";
@@ -45,7 +76,6 @@ if (!empty($types)) {
 
 $stmt->execute();
 $result = $stmt->get_result();
-
 
 while ($row = $result->fetch_assoc()) {
     $results[] = $row;
@@ -158,6 +188,10 @@ $conn->close();
         </form>
     </div>
 
+    <?php if ($reservationMessage): ?>
+        <p style="text-align: center; color: green;"><?php echo $reservationMessage; ?></p>
+    <?php endif; ?>
+
     <?php if (!empty($results)): ?>
         <table id="booksTable">
             <thead>
@@ -169,6 +203,7 @@ $conn->close();
                     <th>Year</th>
                     <th>Publisher</th>
                     <th>Available Copies</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -181,6 +216,12 @@ $conn->close();
                         <td><?php echo htmlspecialchars($book['Published_Year']); ?></td>
                         <td><?php echo htmlspecialchars($book['Book_Publisher']); ?></td>
                         <td><?php echo htmlspecialchars($book['Available_Copies']); ?></td>
+                        <td>
+                            <form method="POST">
+                                <input type="hidden" name="book_id" value="<?php echo $book['Book_ID']; ?>" />
+                                <button type="submit" name="reserve">Reserve</button>
+                            </form>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -199,3 +240,4 @@ $conn->close();
     </script>
 </body>
 </html>
+

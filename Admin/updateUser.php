@@ -92,9 +92,9 @@
                 $last_name = isset($_POST['last_name']) ? $_POST['last_name'] : '';
                 $email = isset($_POST['email']) ? $_POST['email'] : '';
                 $address = isset($_POST['address']) ? $_POST['address'] : '';
-                $phone_number = isset($_POST['phone_number']) ? $_POST['phone_number'] : ''; // Correctly set phone_number
+                $phone_number = isset($_POST['phone_number']) ? $_POST['phone_number'] : ''; 
                 $roles = isset($_POST['roles']) ? $_POST['roles'] : '';
-                $status = isset($_POST['status']) ? $_POST['status'] : ''; // Correct status assignment
+                $status = isset($_POST['status']) ? $_POST['status'] : '';
             
                 $user->id = $id;
                 $user->username = $username;
@@ -102,9 +102,9 @@
                 $user->last_name = $last_name;
                 $user->email = $email;
                 $user->address = $address;
-                $user->phone_number = $phone_number; // Assign phone_number correctly
+                $user->phone_number = $phone_number;
                 $user->roles = $roles;
-                $user->status = $status; // Assign status correctly
+                $user->status = $status;
             
                 if ($user->update()) {
                     echo "<script>

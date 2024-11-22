@@ -7,14 +7,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $db = $database->getConnect();
 
     $book = new Book($db);
-    $book->Book_ID = htmlspecialchars(trim($_POST['id']));
-    $book->Book_Title = htmlspecialchars(trim($_POST['title']));
-    $book->Book_Author = htmlspecialchars(trim($_POST['author']));
-    $book->Book_ISBN = htmlspecialchars(trim($_POST['isbn']));
-    $book->Published_Year = htmlspecialchars(trim($_POST['published_year']));
-    $book->Book_Genre = htmlspecialchars(trim($_POST['genre']));
-    $book->Book_Publisher = htmlspecialchars(trim($_POST['publisher']));
-    $book->Available_Copies = htmlspecialchars(trim($_POST['available_copies']));
+    $book->book_id = htmlspecialchars(trim($_POST['bookId']));
+    $book->book_title = htmlspecialchars(trim($_POST['bookTitle']));
+    $book->book_author = htmlspecialchars(trim($_POST['bookAuthor']));
+    $book->book_isbn = htmlspecialchars(trim($_POST['bookIsbn']));
+    $book->published_year = htmlspecialchars(trim($_POST['publishedYear']));
+    $book->book_genre = htmlspecialchars(trim($_POST['bookGenre']));
+    $book->book_publisher = htmlspecialchars(trim($_POST['bookPublisher']));
+    $book->available_copies = htmlspecialchars(trim($_POST['availableCopies']));
 
     if ($book->update()) {
         echo "
@@ -75,21 +75,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $db = $database->getConnect();
 
         $book = new Book($db);
-        $book->Book_ID = htmlspecialchars(trim($_GET['id']));
+        $book->book_id = htmlspecialchars(trim($_GET['id']));
 
-        $stmt = $db->prepare("SELECT * FROM books WHERE Book_ID = :id");
-        $stmt->bindParam(':id', $book->Book_ID);
+        $stmt = $db->prepare("SELECT * FROM books WHERE book_id = :bookId");
+        $stmt->bindParam(':bookId', $book->book_id);
         $stmt->execute();
         $bookDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($bookDetails) {
-            $title = htmlspecialchars($bookDetails['Book_Title']);
-            $author = htmlspecialchars($bookDetails['Book_Author']);
-            $isbn = htmlspecialchars($bookDetails['Book_ISBN']);
-            $published_year = htmlspecialchars($bookDetails['Published_Year']);
-            $genre = htmlspecialchars($bookDetails['Book_Genre']);
-            $publisher = htmlspecialchars($bookDetails['Book_Publisher']);
-            $available_copies = htmlspecialchars($bookDetails['Available_Copies']);
+            $bookTitle = htmlspecialchars($bookDetails['book_title']);
+            $bookAuthor = htmlspecialchars($bookDetails['book_author']);
+            $bookIsbn = htmlspecialchars($bookDetails['book_isbn']);
+            $publishedYear = htmlspecialchars($bookDetails['published_year']);
+            $bookGenre = htmlspecialchars($bookDetails['book_genre']);
+            $bookPublisher = htmlspecialchars($bookDetails['book_publisher']);
+            $availableCopies = htmlspecialchars($bookDetails['available_copies']);
         } else {
             echo "<script>
             alert('Book not found!');
@@ -118,27 +118,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <h2>Edit Book</h2>
     <form action="edit_book.php" method="POST">
-        <input type="hidden" name="id" value="<?php echo $book->Book_ID; ?>">
+        <input type="hidden" name="bookId" value="<?php echo $book->book_id; ?>">
         <label for="title">Title:</label>
-        <input type="text" name="title" id="title" value="<?php echo $title; ?>" required><br>
+        <input type="text" name="bookTitle" id="title" value="<?php echo $bookTitle; ?>" required><br>
         <br>
         <label for="author">Author:</label>
-        <input type="text" name="author" id="author" value="<?php echo $author; ?>" required><br>
+        <input type="text" name="bookAuthor" id="author" value="<?php echo $bookAuthor; ?>" required><br>
         <br>
         <label for="isbn">ISBN:</label>
-        <input type="text" name="isbn" id="isbn" value="<?php echo $isbn; ?>" required><br>
+        <input type="text" name="bookIsbn" id="isbn" value="<?php echo $bookIsbn; ?>" required><br>
         <br>
         <label for="published_year">Published Year:</label>
-        <input type="number" name="published_year" id="published_year" value="<?php echo $published_year; ?>" required><br>
+        <input type="number" name="publishedYear" id="published_year" value="<?php echo $publishedYear; ?>" required><br>
         <br>
         <label for="genre">Genre:</label>
-        <input type="text" name="genre" id="genre" value="<?php echo $genre; ?>" required><br>
+        <input type="text" name="bookGenre" id="genre" value="<?php echo $bookGenre; ?>" required><br>
         <br>
         <label for="publisher">Publisher:</label>
-        <input type="text" name="publisher" id="publisher" value="<?php echo $publisher; ?>" required><br>
+        <input type="text" name="bookPublisher" id="publisher" value="<?php echo $bookPublisher; ?>" required><br>
         <br>
         <label for="available_copies">Available Copies:</label>
-        <input type="number" name="available_copies" id="available_copies" value="<?php echo $available_copies; ?>" required><br>
+        <input type="number" name="availableCopies" id="available_copies" value="<?php echo $availableCopies; ?>" required><br>
         <br>
         <button type="submit">Update Book</button>
     </form>

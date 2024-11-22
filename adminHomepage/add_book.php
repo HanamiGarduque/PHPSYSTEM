@@ -7,13 +7,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $db = $database->getConnect();
 
     $book = new Book($db);
-    $book->Book_Title = htmlspecialchars(trim($_POST['title']));
-    $book->Book_Author = htmlspecialchars(trim($_POST['author']));
-    $book->Book_ISBN = htmlspecialchars(trim($_POST['isbn']));
-    $book->Published_Year = htmlspecialchars(trim($_POST['published_year']));
-    $book->Book_Genre = htmlspecialchars(trim($_POST['genre']));
-    $book->Book_Publisher = htmlspecialchars(trim($_POST['publisher']));
-    $book->Available_Copies = htmlspecialchars(trim($_POST['available_copies']));
+    $book->book_title = htmlspecialchars(trim($_POST['bookTitle']));
+    $book->book_author = htmlspecialchars(trim($_POST['bookAuthor']));
+    $book->book_isbn = htmlspecialchars(trim($_POST['bookIsbn']));
+    $book->published_year = htmlspecialchars(trim($_POST['publishedYear']));
+    $book->book_genre = htmlspecialchars(trim($_POST['bookGenre']));
+    $book->book_publisher = htmlspecialchars(trim($_POST['bookPublisher']));
+    $book->available_copies = htmlspecialchars(trim($_POST['availableCopies']));
 
     if ($book->create()) {
         echo "
@@ -48,19 +48,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <h2>Add Book</h2>
 <form method="POST" action="add_book.php">
-    Title: <input type="text" name="title" required>
+    Title: <input type="text" name="bookTitle" required>
     <br><br>
-    Author: <input type="text" name="author" required>
+    Author: <input type="text" name="bookAuthor" required>
     <br><br>
-    ISBN: <input type="text" name="isbn" required>
+    ISBN: <input type="text" name="bookIsbn" required>
     <br><br>
-    Published Year: <input type="number" name="published_year" required>
+    Published Year: <input type="number" name="publishedYear" required>
     <br><br>
-    Genre: <input type="text" name="genre" required>
+    Genre: <input type="text" name="bookGenre" required>
     <br><br>
-    Publisher: <input type="text" name="publisher" required>
+    Publisher: <input type="text" name="bookPublisher" required>
     <br><br>
-    Available Copies: <input type="number" name="available_copies" required>
+    Available Copies: <input type="number" name="availableCopies" required>
     <br><br>
     <input type="submit" value="Add Book">
 </form>

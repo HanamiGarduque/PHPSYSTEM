@@ -34,10 +34,13 @@
                 <nav>
                     <ul>
                         <li>
-                            <a href="">Book Management</a>
+                            <a href="index.php">Book Management</a>
                         </li>
                         <li>
-                            <a href="">User Management</a>
+                            <a href="user_management.php">User Management</a>
+                        </li>
+                        <li>
+                            <a href="loan_management.php">Loan Management</a>
                         </li>
                     </ul>
                 </nav>
@@ -82,20 +85,20 @@
                         if ($num > 0) {
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 echo "<tr>";
-                                echo "<td>" . (isset($row['Book_ID']) ? htmlspecialchars($row['Book_ID']) : '') . "</td>";
-                                echo "<td>" . (isset($row['Book_Title']) ? htmlspecialchars($row['Book_Title']) : '') . "</td>";
-                                echo "<td>" . (isset($row['Book_Author']) ? htmlspecialchars($row['Book_Author']) : '') . "</td>";
-                                echo "<td>" . (isset($row['Book_ISBN']) ? htmlspecialchars($row['Book_ISBN']) : '') . "</td>";
-                                echo "<td>" . (isset($row['Published_Year']) ? htmlspecialchars($row['Published_Year']) : '') . "</td>";
-                                echo "<td>" . (isset($row['Book_Genre']) ? htmlspecialchars($row['Book_Genre']) : '') . "</td>";
-                                echo "<td>" . (isset($row['Book_Publisher']) ? htmlspecialchars($row['Book_Publisher']) : '') . "</td>";
-                                echo "<td>" . (isset($row['Available_Copies']) ? htmlspecialchars($row['Available_Copies']) : '') . "</td>";
+                                echo "<td>" . (isset($row['book_id']) ? htmlspecialchars($row['book_id']) : '') . "</td>";
+                                echo "<td>" . (isset($row['book_title']) ? htmlspecialchars($row['book_title']) : '') . "</td>";
+                                echo "<td>" . (isset($row['book_author']) ? htmlspecialchars($row['book_author']) : '') . "</td>";
+                                echo "<td>" . (isset($row['book_isbn']) ? htmlspecialchars($row['book_isbn']) : '') . "</td>";
+                                echo "<td>" . (isset($row['published_year']) ? htmlspecialchars($row['published_year']) : '') . "</td>";
+                                echo "<td>" . (isset($row['book_genre']) ? htmlspecialchars($row['book_genre']) : '') . "</td>";
+                                echo "<td>" . (isset($row['book_publisher']) ? htmlspecialchars($row['book_publisher']) : '') . "</td>";
+                                echo "<td>" . (isset($row['available_copies']) ? htmlspecialchars($row['available_copies']) : '') . "</td>";
                                 echo "<td>
                                         <form action='delete_book.php' method='POST' style='display:inline;'>
-                                            <input type='hidden' name='id' value='" . htmlspecialchars($row['Book_ID']) . "' />
+                                            <input type='hidden' name='bookId' value='" . htmlspecialchars($row['book_id']) . "' />
                                             <button type='button' class='delete-btn'>Delete</button>
                                         </form>
-                                            <button class='edit-btn' data-id='" .htmlspecialchars($row['Book_ID']) ."' data-title='" .htmlspecialchars($row['Book_Title']) ."'>Edit</button>
+                                            <button class='edit-btn' data-id='" .htmlspecialchars($row['book_id']) ."' data-title='" .htmlspecialchars($row['book_title']) ."'>Edit</button>
                                       </td>";
                                 echo "</tr>";
                             }

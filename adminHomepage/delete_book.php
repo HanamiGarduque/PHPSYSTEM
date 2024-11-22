@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $db = $database->getConnect();
 
     $book = new Book($db);
-    $book->Book_ID = htmlspecialchars(trim($_POST['id']));
+    $book->book_id = htmlspecialchars(trim($_POST['bookId']));
 
     if ($book->delete()) {
         echo "

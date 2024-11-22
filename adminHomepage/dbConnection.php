@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = "localhost";
-    private $db_name = "books_db";
+    private $db_name = "blib_librarysystem";
     private $username = "root";
     private $password = "";
     public $conn;

@@ -76,67 +76,10 @@ $conn = null;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Book Catalog</title>
+    <link rel="stylesheet" href="search_catalog.css"> <!-- Link to external CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-        }
-
-        nav ul li {
-            margin-left: 15px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-        }
-
-        .search-container {
-            margin: 50px auto;
-            text-align: center;
-        }
-
-        .search-container input[type="text"], 
-        .search-container select, 
-        .search-container button {
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        table {
-            margin: 20px auto;
-            width: 80%;
-            border-collapse: collapse;
-        }
-
-        table thead th, table tbody td {
-            padding: 10px;
-            border: 1px solid #dddddd;
-            text-align: left;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -206,7 +149,8 @@ $conn = null;
                         <td>
                             <form method="POST">
                                 <input type="hidden" name="book_id" value="<?php echo $book['Book_ID']; ?>" />
-                                <button type="submit" name="reserve">Reserve</button>
+                                <a href="reservationForm.php">
+                                <button type="submit" name="reserve">Borrow</button>
                             </form>
                         </td>
                     </tr>

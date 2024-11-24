@@ -45,8 +45,8 @@ class Users {
         return $stmt;
     }
 
-   
 }
+
 class Reservations {
     private $conn;      
     private $tbl_name = "reservation";
@@ -67,7 +67,7 @@ class Reservations {
 
     // Function to create a new reservation
     public function create() {
-        $query = "INSERT INTO" . $this->tbl_name . "(name, email, phone_number, pickup_date, expected_return_date, reservation_date, notes)
+        $query = "INSERT INTO " . $this->tbl_name . " (name, email, phone_number, pickup_date, expected_return_date, reservation_date, notes)
                   VALUES (:name, :email, :phone_number, :pickup_date, :expected_return_date, :reservation_date, :notes)";
 
         $stmt = $this->conn->prepare($query);

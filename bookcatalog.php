@@ -12,6 +12,38 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Reserve function
+function reserveBook($bookId, $conn) {
+    // Check if the book is already reserved
+    $checkQuery = "SELECT * FROM reservations WHERE book_id = ? AND status = 'Reserved'";
+    $stmt = $conn->prepare($checkQuery);
+    $stmt->bind_param("i", $bookId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        return "This book is already reserved.";
+    }
+
+    // Insert reservation record (removed user_id)
+    $insertQuery = "INSERT INTO reservations (book_id, status, reserved_at) VALUES (?, 'Reserved', NOW())";
+    $stmt = $conn->prepare($insertQuery);
+    $stmt->bind_param("i", $bookId);
+
+    if ($stmt->execute()) {
+        return "Book reserved successfully!";
+    } else {
+        return "Failed to reserve the book. Please try again.";
+    }
+}
+
+// Check for reserve action
+$reservationMessage = "";
+if (isset($_POST['reserve'])) {
+    $bookId = intval($_POST['book_id']);
+    $reservationMessage = reserveBook($bookId, $conn);
+}
+
 // Initialize variables
 $filter = isset($_GET['filter']) ? $_GET['filter'] : "all";
 $searchTerm = isset($_GET['query']) ? $_GET['query'] : "";
@@ -159,6 +191,10 @@ $conn->close();
         </form>
     </div>
 
+    <?php if ($reservationMessage): ?>
+        <p style="text-align: center; color: green;"><?php echo $reservationMessage; ?></p>
+    <?php endif; ?>
+
     <?php if (!empty($results)): ?>
         <table id="booksTable">
             <thead>
@@ -170,6 +206,7 @@ $conn->close();
                     <th>Year</th>
                     <th>Publisher</th>
                     <th>Available Copies</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -182,6 +219,12 @@ $conn->close();
                         <td><?php echo htmlspecialchars($book['Published_Year']); ?></td>
                         <td><?php echo htmlspecialchars($book['Book_Publisher']); ?></td>
                         <td><?php echo htmlspecialchars($book['Available_Copies']); ?></td>
+                        <td>
+                            <form method="POST">
+                                <input type="hidden" name="book_id" value="<?php echo $book['Book_ID']; ?>" />
+                                <button type="submit" name="reserve">Reserve</button>
+                            </form>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -200,3 +243,4 @@ $conn->close();
     </script>
 </body>
 </html>
+

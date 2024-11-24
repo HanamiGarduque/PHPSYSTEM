@@ -12,23 +12,31 @@
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     
+    <link rel="stylesheet" href="../../Admin/Book Management/index.css">
+
     <script>
         $(document).ready(function() {
-            // Initialize DataTables
             $('#userTable').DataTable();
         });
     </script>
+
 </head>
 <body>
-    <nav>
-    <ul>
-        <li><a href="userManagement.php">User Management</a></li>
-        <li><a href="bookManagement.php">Book Management</a></li>
-        <li><a href="reservationManagement.php">Reservation Management</a></li>
-        <li><a href="loanManagement.php">Loan Management</a></li>
-        <li><a href="adminAccount.php">Loan Management</a></li>
-    </ul>
-    </nav>
+<h1>ADMIN DASHBOARD</h1>
+    <div class="Container">
+        
+        <div class="side_dashboard">
+                <nav>
+                    <ul>
+                        <li><a href="../../Admin/Book Management/index.php">Book Management</a></li>
+                        <li><a href="../../Admin/User Management/userManagement.php">User Management</a></li>
+                        <li><a href="../../Admin/Borrow Management/borrowManagement.php">Borrow Management</a></li>
+                        <li><a href="../../Admin/Fines Management/finesManagement.php">Fines Management</a></li>
+                        <li><a href="../../Admin/Admin Account/adminAccount.php">Admin Account</a></li>
+                    </ul>
+                </nav>
+        </div>
+
 <h2> Users List </h2>
     <table id="userTable" class="display">
         <thead>
@@ -42,7 +50,7 @@
                 <th>Phone Number</th>
                 <th>Role</th>
                 <th>Status</th>
-                <th>Actions</th> <!-- Optional actions for Delete/Edit -->
+                <th>Actions</th>
             </tr>
         </thead>
 
@@ -52,8 +60,6 @@
             require_once '../../Database/database.php';
             require_once '../../Database/crud.php';
             
-            
-
             $database = new Database();
             $db = $database->getConnect();
 

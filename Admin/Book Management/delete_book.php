@@ -1,6 +1,6 @@
 <?php
-require_once 'database.php';
-require_once 'crudOperation.php';
+require_once '../../Database/database.php';
+require_once '../../Admin/Book Management/crudOperation.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database = new Database();

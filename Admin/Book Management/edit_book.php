@@ -1,6 +1,6 @@
 <?php
-require_once 'database.php';
-require_once 'crudOperation.php';
+require_once '../../Database/database.php';
+require_once '../../Admin/Book Management/crudOperation.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database = new Database();
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = 'index.php';
+                window.location.href = '../../Admin/Book Management/index.php';
             }
         });
         </script>
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = 'index.php';
+                window.location.href = '../../Admin/Book Management/index.php';
             }
         });
         </script>
@@ -83,13 +83,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $bookDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($bookDetails) {
-            $bookTitle = htmlspecialchars($bookDetails['book_title']);
-            $bookAuthor = htmlspecialchars($bookDetails['book_author']);
-            $bookIsbn = htmlspecialchars($bookDetails['book_isbn']);
-            $publishedYear = htmlspecialchars($bookDetails['published_year']);
-            $bookGenre = htmlspecialchars($bookDetails['book_genre']);
-            $bookPublisher = htmlspecialchars($bookDetails['book_publisher']);
-            $availableCopies = htmlspecialchars($bookDetails['available_copies']);
+            $bookTitle = htmlspecialchars($bookDetails['Book_Title']);
+            $bookAuthor = htmlspecialchars($bookDetails['Book_Author']);
+            $bookIsbn = htmlspecialchars($bookDetails['Book_ISBN']);
+            $publishedYear = htmlspecialchars($bookDetails['Published_Year']);
+            $bookGenre = htmlspecialchars($bookDetails['Book_Genre']);
+            $bookPublisher = htmlspecialchars($bookDetails['Book_Publisher']);
+            $availableCopies = htmlspecialchars($bookDetails['Available_Copies']);
         } else {
             echo "<script>
             alert('Book not found!');

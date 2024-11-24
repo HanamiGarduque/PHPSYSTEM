@@ -17,7 +17,8 @@ class Books{
     }
 
     public function create() {
-        $query = "INSERT INTO " .$this->tbl_name ." (book_title, book_author, book_isbn, published_year, book_genre, book_publisher, available_copies) VALUES (:bookTitle, :bookAuthor, :bookIsbn, :publishedYear, :bookGenre, :bookPublisher, :availableCopies)";
+        $query = "INSERT INTO " .$this->tbl_name ." (book_title, book_author, book_isbn, published_year, book_genre, book_publisher, available_copies) 
+        VALUES (:bookTitle, :bookAuthor, :bookIsbn, :publishedYear, :bookGenre, :bookPublisher, :availableCopies)";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':bookTitle', $this->book_title);

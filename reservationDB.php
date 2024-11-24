@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $reservation = new Reservations($db);
     $book = new Books($db);
     $Book_ID = isset($_POST['book_id']) ? $_POST['book_id'] : die('ERROR: Book ID not found.');
-    $book->Book_ID = $Book_ID;  // Set the Book_ID propert
+    $book->Book_ID = $Book_ID; // assign book_ID
 
 
     // Sanitize and assign form data to the reservation object

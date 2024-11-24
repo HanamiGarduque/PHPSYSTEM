@@ -194,22 +194,26 @@ class Books {
     }
 
     public function updateBookCopies() {
-        $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies - 1 
-                  WHERE Book_I(D = ? ";
+        $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies - 1 WHERE Book_ID = :Book_ID";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-
-        return $stmt;
-
-
+    
+        // Bind the Book_ID to the query
+        $stmt->bindParam(':Book_ID', $this->Book_ID);
+    
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
     }
+    
+    
 }
 class Reservations {
     private $conn;      
     private $tbl_name = "reservation";
 
 
-    public $bookId; // foreign key
+    public $book_id; // foreign key
     public $reservation_id;
     public $name;
     public $email;
@@ -227,15 +231,15 @@ class Reservations {
 
     // Function to create a new reservation
     public function create() {
-        $query = "INSERT INTO " . $this->tbl_name . "(book_id, reservation_id, name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, status, notes)
-          VALUES (:book_id, :reservation_id, :name, :email, :phone_number, :reservation_date, :pickup_date, :duration, :expected_return_date, :status, :notes)";
+        $query = "INSERT INTO " . $this->tbl_name . " (book_id, name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, status, notes)
+          VALUES (:book_id, :name, :email, :phone_number, :reservation_date, :pickup_date, :duration, :expected_return_date, :status, :notes)";
 
         $stmt = $this->conn->prepare($query);
-
+        
         // Bind parameters
         $defaultStatus = 'Pending Approval';
-        $stmt->bindParam(':book_id', $this->bookId);
-        $stmt->bindParam(':reservation_id', $this->reservation_id);
+        
+        $stmt->bindParam(':book_id', $this->book_id);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':phone_number', $this->phone_number);
@@ -245,7 +249,6 @@ class Reservations {
         $stmt->bindParam(':expected_return_date', $this->expected_return_date);
         $stmt->bindParam(':status', $defaultStatus); //set 
         $stmt->bindParam(':notes', $this->notes);
-
 
         // Execute the query
         if ($stmt->execute()) {
@@ -263,17 +266,14 @@ class Reservations {
 
         return $stmt;
     }
-    public function setStatus($status) { //pending, active, cancelled, overdue
-
-       
-
-        $query = "UPDATE " . $this->status. " FROM " .$this->tbl_name. " WHERE Book_ID = :Book_ID LIMIT 0,1";
+    public function setStatus($status) { //pending, active, cancelled, overdue ADMIN
+        $query = "UPDATE " . $this->tbl_name . " SET status = :status WHERE reservation_id = :reservation_id LIMIT 1";
         $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':status', $status);
         $stmt->bindParam(':reservation_id', $this->reservation_id);
         $stmt->execute();
-    
-        return $stmt;        
-    }
+    }         
+   
     
 
     

@@ -210,7 +210,7 @@ class Reservations {
 
 
     public $bookId; // foreign key
-    public $id;
+    public $reservation_id;
     public $name;
     public $email;
     public $phone_number;
@@ -227,20 +227,25 @@ class Reservations {
 
     // Function to create a new reservation
     public function create() {
-        $query = "INSERT INTO " . $this->tbl_name . "(name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, notes)
-                  VALUES (:name, :email, :phone_number, :reservation_date, :pickup_date, duration, :expected_return_date, :notes)";
+        $query = "INSERT INTO " . $this->tbl_name . "(book_id, reservation_id, name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, status, notes)
+          VALUES (:book_id, :reservation_id, :name, :email, :phone_number, :reservation_date, :pickup_date, :duration, :expected_return_date, :status, :notes)";
 
         $stmt = $this->conn->prepare($query);
 
         // Bind parameters
+        $defaultStatus = 'Pending Approval';
+        $stmt->bindParam(':book_id', $this->bookId);
+        $stmt->bindParam(':reservation_id', $this->reservation_id);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':phone_number', $this->phone_number);
         $stmt->bindParam(':reservation_date', $this->reservation_date);
         $stmt->bindParam(':pickup_date', $this->pickup_date);
         $stmt->bindParam(':duration', $this->duration);
-        $stmt->bindParam(':expected_return_date', $this->expected_return_date);  
+        $stmt->bindParam(':expected_return_date', $this->expected_return_date);
+        $stmt->bindParam(':status', $defaultStatus); //set 
         $stmt->bindParam(':notes', $this->notes);
+
 
         // Execute the query
         if ($stmt->execute()) {
@@ -258,29 +263,16 @@ class Reservations {
 
         return $stmt;
     }
-    // not sure
-    public function reserveBook($bookId, $conn) {
+    public function setStatus($status) { //pending, active, cancelled, overdue
 
-        $query = "SELECT * FROM reservations WHERE book_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $bookId);
+       
+
+        $query = "UPDATE " . $this->status. " FROM " .$this->tbl_name. " WHERE Book_ID = :Book_ID LIMIT 0,1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':reservation_id', $this->reservation_id);
         $stmt->execute();
-        $result = $stmt->get_result();
     
-        if ($result->num_rows > 0) {
-            return "This book is already reserved.";
-        }
-    
-        
-        $query = "INSERT INTO reservations (book_id, status, reserved_at) VALUES (?, 'Reserved', NOW())";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $bookId);
-    
-        if ($stmt->execute()) {
-            return "Book reserved successfully!";
-        } else {
-            return "Failed to reserve the book. Please try again.";
-        }
+        return $stmt;        
     }
     
 

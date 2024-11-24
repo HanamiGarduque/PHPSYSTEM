@@ -19,12 +19,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $reservation->phone_number = htmlspecialchars(trim($_POST['phone_number']));
     $reservation->reservation_date = htmlspecialchars(trim($_POST['reservation_date']));
     $reservation->pickup_date = htmlspecialchars(trim($_POST['pickup_date']));
+    $reservation->duration = htmlspecialchars(trim($_POST['duration']));
     $reservation->expected_return_date = htmlspecialchars(trim($_POST['expected_return_date']));    
+    $reservation->status = htmlspecialchars(trim($_POST['status']));
     $reservation->notes = htmlspecialchars(trim($_POST['notes']));
 
     // Attempt to create the reservation
     if ($reservation->create()) {
-        $books->updateBookCopies();
+        $books->updateBookCopies(); 
         $_SESSION['status'] = 'success';
 
     } else {

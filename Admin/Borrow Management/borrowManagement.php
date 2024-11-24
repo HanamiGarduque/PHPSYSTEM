@@ -67,13 +67,14 @@ $db = $database->getConnect();
                             <th>Notes</th>
                             <th>Status</th>
                             <th>Book ID</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         <?php
                         // Fetch borrow history from the database
-                        $query = "SELECT reservation_id, name, email, phone_number, reservation_date, pickup_date, 
+                        $query = "SELECT reservation_id, name, email, phone_number, reservation_date, expected_return_date, pickup_date, 
                                   duration, notes, status, Book_ID 
                                   FROM reservation";
                         $stmt = $db->prepare($query);
@@ -81,9 +82,9 @@ $db = $database->getConnect();
 
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             // Calculate the expected return date
-                            $pickup_date = new DateTime($row['pickup_date']);
-                            $expected_return_date = clone $pickup_date;
-                            $expected_return_date->modify('+' . $row['duration'] . ' days');
+                            // $pickup_date = new DateTime($row['pickup_date']);
+                            // $expected_return_date = clone $pickup_date;
+                            // $expected_return_date->modify('+' . $row['duration'] . ' days');
 
                             echo "<tr>";
                             echo "<td>" . htmlspecialchars($row['reservation_id']) . "</td>";
@@ -93,11 +94,12 @@ $db = $database->getConnect();
                             echo "<td>" . htmlspecialchars($row['reservation_date']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['pickup_date']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['duration']) . "</td>";
-                            echo "<td>" . htmlspecialchars($expected_return_date->format('Y-m-d')) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['expected_return_date']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['notes']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['Book_ID']) . "</td>";
                             echo "</tr>";
+
                         }
                         ?>
 

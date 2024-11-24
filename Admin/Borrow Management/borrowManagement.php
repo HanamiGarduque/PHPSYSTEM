@@ -1,7 +1,6 @@
 <?php
 require_once '../../Database/database.php';
 
-// Establish a database connection
 $database = new Database();
 $db = $database->getConnect();
 ?>
@@ -26,8 +25,7 @@ $db = $database->getConnect();
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="borrowManagement.css">
+    <link rel="stylesheet" href="../../Admin/Borrow Management/borrowManagement.css">
 
     <script>
         $(document).ready(function () {

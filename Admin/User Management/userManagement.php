@@ -12,82 +12,80 @@
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     
-    <link rel="stylesheet" href="../../Admin/Book Management/index.css">
+    <link rel="stylesheet" href="../../Admin/User Management/userManagement.css">
 
     <script>
         $(document).ready(function() {
             $('#userTable').DataTable();
         });
     </script>
-
 </head>
 <body>
-<h1>ADMIN DASHBOARD</h1>
+    <h1>ADMIN DASHBOARD</h1>
     <div class="Container">
-        
         <div class="side_dashboard">
-                <nav>
-                    <ul>
-                        <li><a href="../../Admin/Book Management/index.php">Book Management</a></li>
-                        <li><a href="../../Admin/User Management/userManagement.php">User Management</a></li>
-                        <li><a href="../../Admin/Borrow Management/borrowManagement.php">Borrow Management</a></li>
-                        <li><a href="../../Admin/Fines Management/finesManagement.php">Fines Management</a></li>
-                        <li><a href="../../Admin/Admin Account/adminAccount.php">Admin Account</a></li>
-                    </ul>
-                </nav>
+            <nav>
+                <ul>
+                    <li><a href="../../Admin/Book Management/index.php">Book Management</a></li>
+                    <li><a href="../../Admin/User Management/userManagement.php">User Management</a></li>
+                    <li><a href="../../Admin/Borrow Management/borrowManagement.php">Borrow Management</a></li>
+                    <li><a href="../../Admin/Fines Management/finesManagement.php">Fines Management</a></li>
+                    <li><a href="../../Admin/Admin Account/adminAccount.php">Admin Account</a></li>
+                </ul>
+            </nav>
         </div>
 
-<h2> Users List </h2>
-    <table id="userTable" class="display">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Phone Number</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+        <div class="main_content">
+            <h2>Users List</h2>
+            <div>
+                <table id="userTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Phone Number</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        require_once '../../Database/database.php';
+                        require_once '../../Database/crud.php';
 
-        <tbody>
+                        $database = new Database();
+                        $db = $database->getConnect();
 
-            <?php
-            require_once '../../Database/database.php';
-            require_once '../../Database/crud.php';
-            
-            $database = new Database();
-            $db = $database->getConnect();
+                        $user = new Users($db);
+                        $stmt = $user->read();
+                        $num = $stmt->rowCount();
 
-            $user = new Users($db);
-            $stmt = $user->read();
-            $num = $stmt->rowCount();
-
-            if($num > 0) {
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-                    echo "<tr>";
-                    echo "<td>" . (isset($row['id']) ? htmlspecialchars($row['id']) : '') . "</td>";
-                    echo "<td>" . (isset($row['username']) ? htmlspecialchars($row['username']) : '') . "</td>";
-                    echo "<td>" . (isset($row['first_name']) ? htmlspecialchars($row['first_name']) : '') . "</td>";
-                    echo "<td>" . (isset($row['last_name']) ? htmlspecialchars($row['last_name']) : '') . "</td>";
-                    echo "<td>" . (isset($row['email']) ? htmlspecialchars($row['email']) : '') . "</td>";
-                    echo "<td>" . (isset($row['address']) ? htmlspecialchars($row['address']) : '') . "</td>";
-                    echo "<td>" . (isset($row['phone_number']) ? htmlspecialchars($row['phone_number']) : '') . "</td>";
-                    echo "<td>" . (isset($row['roles']) ? htmlspecialchars($row['roles']) : '') . "</td>";                    
-                    echo "<td>" . (isset($row['status']) ? htmlspecialchars($row['status']) : '') . "</td>";
-                    echo "<td><a href='updateUser.php?id=" . htmlspecialchars($row['id']) . "'>Edit</a></td>";
-                    echo "</tr>";
-                }
-            }
-            
-            ?>
-   
-        </tbody>
-    </table>
-
+                        if($num > 0) {
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                                echo "<tr>";
+                                echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['username']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['first_name']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['last_name']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['address']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['phone_number']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['roles']) . "</td>";                    
+                                echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+                                echo "<td><a href='updateUser.php?id=" . htmlspecialchars($row['id']) . "'>Edit</a></td>";
+                                echo "</tr>";
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

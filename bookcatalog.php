@@ -1,36 +1,28 @@
 <?php
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "book_catalog";
+// Include the database connection class
+require_once "database.php";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Initialize database connection
+$db = new Database();
+$conn = $db->getConnect();
 
 // Reserve function
 function reserveBook($bookId, $conn) {
     // Check if the book is already reserved
     $checkQuery = "SELECT * FROM reservations WHERE book_id = ? AND status = 'Reserved'";
     $stmt = $conn->prepare($checkQuery);
-    $stmt->bind_param("i", $bookId);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt->execute([$bookId]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result->num_rows > 0) {
+    if ($result) {
         return "This book is already reserved.";
     }
 
-    // Insert reservation record (removed user_id)
+    // Insert reservation record
     $insertQuery = "INSERT INTO reservations (book_id, status, reserved_at) VALUES (?, 'Reserved', NOW())";
     $stmt = $conn->prepare($insertQuery);
-    $stmt->bind_param("i", $bookId);
 
-    if ($stmt->execute()) {
+    if ($stmt->execute([$bookId])) {
         return "Book reserved successfully!";
     } else {
         return "Failed to reserve the book. Please try again.";
@@ -49,43 +41,33 @@ $filter = isset($_GET['filter']) ? $_GET['filter'] : "all";
 $searchTerm = isset($_GET['query']) ? $_GET['query'] : "";
 $results = [];
 
-// Build SQL query with dynamic filters
-$sql = "SELECT * FROM books WHERE 1";
+// Build SQL query with dynamic filters and LEFT JOIN
+$sql = "SELECT books.*, description.Description 
+        FROM books 
+        LEFT JOIN description ON books.Book_ID = description.Book_ID 
+        WHERE 1";
 
 $params = [];
-$types = "";
 
-// Search query filter
+// Add search filter
 if (!empty($searchTerm)) {
     $sql .= " AND (Book_Title LIKE ? OR Book_Author LIKE ? OR Book_ISBN LIKE ? OR Book_Genre LIKE ?)";
     $likeSearchTerm = '%' . $searchTerm . '%';
-    $params = array_fill(0, 4, $likeSearchTerm);
-    $types .= str_repeat("s", 4);
+    $params = array_merge($params, array_fill(0, 4, $likeSearchTerm));
 }
 
-// Genre filter
+// Add genre filter
 if ($filter !== "all") {
     $sql .= " AND Book_Genre = ?";
     $params[] = $filter;
-    $types .= "s";
 }
 
 $stmt = $conn->prepare($sql);
+$stmt->execute($params);
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if (!empty($types)) {
-    $stmt->bind_param($types, ...$params);
-}
-
-$stmt->execute();
-$result = $stmt->get_result();
-
-// Fetch results into an array
-while ($row = $result->fetch_assoc()) {
-    $results[] = $row;
-}
-
-$stmt->close();
-$conn->close();
+// Close database connection
+$conn = null;
 ?>
 
 <!DOCTYPE html>
@@ -95,64 +77,7 @@ $conn->close();
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-        }
-
-        nav ul li {
-            margin-left: 15px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-        }
-
-        .search-container {
-            margin: 50px auto;
-            text-align: center;
-        }
-
-        .search-container input[type="text"], 
-        .search-container select, 
-        .search-container button {
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        table {
-            margin: 20px auto;
-            width: 80%;
-            border-collapse: collapse;
-        }
-
-        table thead th, table tbody td {
-            padding: 10px;
-            border: 1px solid #dddddd;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" href="book_catalog.css">
 </head>
 <body>
     <header>
@@ -169,7 +94,7 @@ $conn->close();
     </header>
 
     <div class="search-container">
-        <h1>Book Catalog</h1>
+        <h1>Search Catalog</h1>
         <form method="GET">
             <input 
                 type="text" 
@@ -205,7 +130,7 @@ $conn->close();
                     <th>Genre</th>
                     <th>Year</th>
                     <th>Publisher</th>
-                    <th>Available Copies</th>
+                    <th>Description</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -218,11 +143,11 @@ $conn->close();
                         <td><?php echo htmlspecialchars($book['Book_Genre']); ?></td>
                         <td><?php echo htmlspecialchars($book['Published_Year']); ?></td>
                         <td><?php echo htmlspecialchars($book['Book_Publisher']); ?></td>
-                        <td><?php echo htmlspecialchars($book['Available_Copies']); ?></td>
+                        <td><?php echo htmlspecialchars($book['Description'] ?? 'No description available'); ?></td>
                         <td>
                             <form method="POST">
                                 <input type="hidden" name="book_id" value="<?php echo $book['Book_ID']; ?>" />
-                                <button type="submit" name="reserve">Reserve</button>
+                                <a href="reservationForm.php?book_id=<?php echo $book['Book_ID']; ?>" class="btn-borrow">Borrow</a>
                             </form>
                         </td>
                     </tr>
@@ -243,4 +168,3 @@ $conn->close();
     </script>
 </body>
 </html>
-

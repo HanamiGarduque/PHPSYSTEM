@@ -22,22 +22,21 @@
     require_once './Database/database.php';
     require_once './Database/crud.php';
 
-    // Check if form is submitted
+    
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $inputUsername = $_POST['username'];
         $inputPassword = $_POST['password'];        
 
-        // Initialize database connection
+        
         $database = new Database();
         $db = $database->getConnect();
 
         $user = new Users($db);
 
-        // Check if the account is inactive before proceeding with password check
         if ($user->checkAccStatus($inputUsername)) {
             echo 'Your account is suspended. Please contact the admin.';
         } else {
-            // Proceed to check the password
+            
             $query = "SELECT password FROM users WHERE username = :username LIMIT 1";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':username', $inputUsername);
@@ -50,6 +49,8 @@
 
                 // Verify password
                 if (password_verify($inputPassword, $hashedPassword)) {
+                    $_SESSION['first_name'] = $row['first_name'];
+                    $_SESSION['last_name'] = $row['last_name'];
                     // Redirect to homepage.php on successful login
                     header("Location: Home.php");
                     exit();

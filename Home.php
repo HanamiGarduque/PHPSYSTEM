@@ -16,16 +16,14 @@ $welcomeMessage = 'BLib:';
     <nav>
         <ul>
 
-            <li><a href="home.php">Home</a></li><!--Nami -->
-            <li><a href="search.php">Search Catalog</a></li> <!--Ace -->
-            <li><a href="account.php">My Account</a></li> <!--Ace -->
-            <li><a href="history.php">Borrow History</a></li> <!--Mike -->
-            <li><a href="contact.php">Contact Us</a></li> <!--Mike-->
-            <li><a href=register.php">Contact Us</a></li> <!--Mike-->
+            <li><a href="Home.php">Home</a></li>
+            <li><a href="book.php">Book Catalog</a></li> 
+            <li><a href="account.php">My Account</a></li> 
+            <li><a href="history.php">Borrow History</a></li> 
+            <li><a href="contact.php">Contact Us</a></li> 
+            <li><a href="reservationForm.php">Reservation Form</a></li> 
         </ul>
     </nav>
     
-    <?php
-
-    ?>
+    
     

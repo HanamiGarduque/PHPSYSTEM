@@ -1,60 +1,94 @@
 <?php
-// Include the Database class
-include_once 'Database.php';
+session_start();
 
-// Create an instance of the Database class
+require_once './Database/database.php';
+require_once './Database/crud.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+// Initialize database connection
 $database = new Database();
-$conn = $database->getConnect();
+$db = $database->getConnect();
+// Initialize the Users object
+$user = new Users($db);
 
-// Check if the query parameter is set and not empty
-if (isset($_GET['query']) && !empty(trim($_GET['query']))) {
-    $query = "%" . trim($_GET['query']) . "%"; // Prepare query with wildcards
 
-    // SQL to search books by title, author, ISBN, or genre
-    $sql = "
-        SELECT title, author, isbn, genre
-        FROM books
-        WHERE 
-            title LIKE :query OR
-            author LIKE :query OR
-            isbn LIKE :query OR
-            genre LIKE :query
-        LIMIT 50;
-    ";
+//sanitize form data
+$username = htmlspecialchars(trim($_POST['username']));
+$first_name = htmlspecialchars(trim($_POST['first_name']));
+$last_name = htmlspecialchars(trim($_POST['last_name']));
+$email = htmlspecialchars(trim($_POST['email']));
+$address = htmlspecialchars(trim($_POST['address']));
+$phone_number = htmlspecialchars(trim($_POST['phone_number']));
+$password = htmlspecialchars(trim($_POST['password']));
+$confirm_password = htmlspecialchars(trim($_POST['confirm_password']));
+    
 
-    try {
-        // Prepare and execute the SQL statement
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':query', $query, PDO::PARAM_STR);
-        $stmt->execute();
 
-        // Check if any results are found
-        if ($stmt->rowCount() > 0) {
-            $results = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $results[] = [
-                    'title' => htmlspecialchars($row['title']),
-                    'author' => htmlspecialchars($row['author']),
-                    'isbn' => htmlspecialchars($row['isbn']),
-                    'genre' => htmlspecialchars($row['genre']),
-                ];
-            }
-            // Return JSON response
-            echo json_encode(['data' => $results]);
-        } else {
-            // Return empty data set for DataTables
-            echo json_encode(['data' => []]);
-        }
-    } catch (PDOException $e) {
-        // Handle SQL errors gracefully
-        error_log($e->getMessage());
-        echo json_encode(['error' => 'An error occurred. Please try again later.']);
-    }
-} else {
-    // Return error if query is not provided
-    echo json_encode(['error' => 'Please enter a search query.']);
+// Check if the password and confirm password match
+if ($password !== $confirm_password) {
+    $_SESSION['status'] = 'error';
+    $_SESSION['message'] = 'Passwords do not match. Please try again.';
+    header("Location: registration.php");
+    exit();
+}
+    
+//checks if there are empty fields
+if (empty($username) || empty($first_name) || empty($last_name) || empty($email) || empty($address) || empty($phone_number) || empty($password)) {
+    $_SESSION['status'] = 'error';
+    $_SESSION['message'] = 'All fields are required.';
+    header("Location: registration.php");
+    exit();
+}
+//checks if email format is correct
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $_SESSION['status'] = 'error';
+    $_SESSION['message'] = 'Invalid email format.';
+    header("Location: registration.php");
+    exit();
+}
+//checks password input
+if (!preg_match("/^(?=.*[A-Za-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/", $password)) {
+    $_SESSION['status'] = 'error';
+    $_SESSION['message'] = 'Password must be at least 8 characters long, contain at least one uppercase letter and one number.';
+    header("Location: registration.php");
+    exit();
+}
+//checks if the phone number entered contains 11 digits
+if (!preg_match("/^\d{11}$/", $phone_number)) {
+    $_SESSION['status'] = 'error';
+    $_SESSION['message'] = 'Phone number must be 11 digits.';
+    header("Location: registration.php");
+    exit();
 }
 
-// Close the connection (optional with PDO)
-$conn = null;
-?>
+// Hash the password
+$hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+$user->password = $hashed_password;
+$user->username = $username;
+$user->first_name = $first_name;
+$user->last_name = $last_name;
+$user->email = $email;
+$user->address = $address;
+$user->phone_number = $phone_number;
+
+
+if ($user->checkDuplicateAcc()) {
+    $_SESSION['status'] = 'error';
+    $_SESSION['message'] = 'duplicate';
+} else {
+    if ($user->create()) {
+        $_SESSION['status'] = 'success';
+        unset($_SESSION['form_data']);
+    } else {
+        $_SESSION['status'] = 'error';
+    }
+}
+
+
+header("Location: registration.php");
+exit();
+}
+?>  
+

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,10 +17,12 @@
 </form>
 
 <p>Don't have an account? <a href="registration.php">Register Now</a></p>
+
 <?php
     require_once './Database/database.php';
     require_once './Database/crud.php';
 
+    
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $inputUsername = $_POST['username'];
         $inputPassword = $_POST['password'];        
@@ -32,32 +33,37 @@
 
         $user = new Users($db);
 
-        $query = "SELECT password FROM users WHERE username = :username LIMIT 1";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':username', $inputUsername);
-        $stmt->execute();
-       
-        if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $hashedPassword = $row['password'];
-
-           
-            if (password_verify($inputPassword, $hashedPassword)) {
-                
-                header("Location: Home.php");
-                exit();
-            } else {
-                echo 'Incorrect password.';
-            }
+        if ($user->checkAccStatus($inputUsername)) {
+            echo 'Your account is suspended. Please contact the admin.';
         } else {
-            echo 'Incorrect username.';
+            
+            $query = "SELECT password FROM users WHERE username = :username LIMIT 1";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':username', $inputUsername);
+            $stmt->execute();
+            
+            // Check if user exists
+            if ($stmt->rowCount() > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $hashedPassword = $row['password'];
+
+                // Verify password
+                if (password_verify($inputPassword, $hashedPassword)) {
+                    $_SESSION['first_name'] = $row['first_name'];
+                    $_SESSION['last_name'] = $row['last_name'];
+                    // Redirect to homepage.php on successful login
+                    header("Location: Home.php");
+                    exit();
+                } else {
+                    echo 'Incorrect password.';
+                }
+            } else {
+                echo 'Incorrect username.';
+            }
         }
 
-        // Close statement
-        $stmt->closeCursor();
     }
 ?>
-
 
 </body>
 </html>

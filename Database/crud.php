@@ -9,7 +9,7 @@ class Users {
     public $last_name;
     public $email;
     public $address;
-    public $phone_number;
+    public $phone_number;  
     public $roles;
     public $status;
     public $password;

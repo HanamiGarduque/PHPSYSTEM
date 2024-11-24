@@ -49,6 +49,7 @@ class Users {
             echo "Username or Email already exists.";
             return false;
         }
+    
         $query = "INSERT INTO " . $this->tbl_name . " (username, first_name, last_name, email, address, phone_number, roles, status, password) 
                 VALUES (:username, :first_name, :last_name, :email, :address, :phone_number, :roles, :status, :password)";
         
@@ -127,67 +128,97 @@ class Users {
         return false;
     }
     
-
    
 }
 class Books {
     private $conn;
     private $tbl_name = "books";
 
-    public $id;
-    public $title;
-    public $author;
-    public $isbn;
-    public $published_year;
-    public $genre;
-    public $publisher;
+    public $Book_ID;
+    public $Book_Title;
+    public $Book_Author;
+    public $Book_ISBN;
+    public $Published_Year;
+    public $Book_Genre;
+    public $Book_Publisher;
+    public $Available_Copies;
 
     public function __construct($db) {
         $this->conn = $db;
     }
 
-    public function addBooks() {
-        $query = "INSERT INTO " . $this->tbl_name . " (title, author, isbn, published_year, genre, publisher)
-                  VALUES (:title, :author, :isbn, :published_year, :genre, :publisher)";
-    
+    public function create() {
+        $query = "INSERT INTO " .$this->tbl_name ." (Book_Title, Book_Author, Book_ISBN, Published_Year, Book_Genre, Book_Publisher, Available_Copies) VALUES (:title, :author, :isbn, :published_year, :genre, :publisher, :available_copies)";
         $stmt = $this->conn->prepare($query);
-    
-        // Bind parameters
-        $stmt->bindParam(':title', $this->title);
-        $stmt->bindParam(':author', $this->author);
-        $stmt->bindParam(':isbn', $this->isbn);
-        $stmt->bindParam(':published_year', $this->published_year);
-        $stmt->bindParam(':genre', $this->genre);
-        $stmt->bindParam(':publisher', $this->publisher);
-    
-        // Execute the query
+
+        $stmt->bindParam(':title', $this->Book_Title);
+        $stmt->bindParam(':author', $this->Book_Author);
+        $stmt->bindParam(':isbn', $this->Book_ISBN);
+        $stmt->bindParam(':published_year', $this->Published_Year);
+        $stmt->bindParam(':genre', $this->Book_Genre);
+        $stmt->bindParam(':publisher', $this->Book_Publisher);
+        $stmt->bindParam(':available_copies', $this->Available_Copies);
+
         if ($stmt->execute()) {
             return true;
         }
-    
         return false;
     }
-    public function read() {
-        $query = "SELECT * FROM books";
+
+    public function read(){
+        $query = "SELECT * FROM " .$this->tbl_name;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
         return $stmt;
-    } 
+    }
+    public function readID() {
+        $query = "SELECT * FROM Books WHERE Book_ID = :Book_ID LIMIT 0,1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':Book_ID', $this->Book_ID);
+        $stmt->execute();
+    
+        return $stmt;
+    }
 
+    public function delete() {
+        $query = "DELETE FROM " .$this->tbl_name ." WHERE Book_ID = :id";
+        $stmt = $this->conn->prepare($query);
+    
+        $stmt->bindParam(':id', $this->Book_ID);
+    
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateBookCopies() {
+        $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies - 1 
+                  WHERE Book_I(D = ? ";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        return $stmt;
+
+
+    }
 }
-
 class Reservations {
     private $conn;      
     private $tbl_name = "reservation";
 
+
+    public $bookId; // foreign key
     public $id;
-    public $username;
+    public $name;
     public $email;
     public $phone_number;
-    public $pickup_date;
-    public $expected_return_date;
     public $reservation_date;
+    public $pickup_date;
+    public $duration;
+    public $expected_return_date;
+    public $status; // pending, active, cancelled
     public $notes;
 
     public function __construct($db) {
@@ -196,18 +227,19 @@ class Reservations {
 
     // Function to create a new reservation
     public function create() {
-        $query = "INSERT INTO" . $this->tbl_name . "(username, email, phone_number, pickup_date, expected_return_date, reservation_date, notes)
-                  VALUES (:name, :email, :phone_number, :pickup_date, :expected_return_date, :reservation_date, :notes)";
+        $query = "INSERT INTO " . $this->tbl_name . "(name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, notes)
+                  VALUES (:name, :email, :phone_number, :reservation_date, :pickup_date, duration, :expected_return_date, :notes)";
 
         $stmt = $this->conn->prepare($query);
 
         // Bind parameters
-        $stmt->bindParam(':username', $this->username);
+        $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':phone_number', $this->phone_number);
-        $stmt->bindParam(':pickup_date', $this->pickup_date);
-        $stmt->bindParam(':expected_return_date', $this->expected_return_date);
         $stmt->bindParam(':reservation_date', $this->reservation_date);
+        $stmt->bindParam(':pickup_date', $this->pickup_date);
+        $stmt->bindParam(':duration', $this->duration);
+        $stmt->bindParam(':expected_return_date', $this->expected_return_date);  
         $stmt->bindParam(':notes', $this->notes);
 
         // Execute the query
@@ -226,6 +258,33 @@ class Reservations {
 
         return $stmt;
     }
+    // not sure
+    public function reserveBook($bookId, $conn) {
+
+        $query = "SELECT * FROM reservations WHERE book_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $bookId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result->num_rows > 0) {
+            return "This book is already reserved.";
+        }
+    
+        
+        $query = "INSERT INTO reservations (book_id, status, reserved_at) VALUES (?, 'Reserved', NOW())";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $bookId);
+    
+        if ($stmt->execute()) {
+            return "Book reserved successfully!";
+        } else {
+            return "Failed to reserve the book. Please try again.";
+        }
+    }
+    
+
+    
 }
     
 

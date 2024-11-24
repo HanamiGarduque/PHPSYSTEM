@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update User Information</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="../CSS/updateUser.css"> 
+    <link rel="stylesheet" href="../../CSS/updateUser.css"> 
 </head>
 <body>
 
@@ -27,8 +27,9 @@
   
     <div class="container">
         <?php
-            require_once '.../Database/database.php';
-            require_once '.../Database/crud.php';
+            require_once '../../Database/database.php';
+            require_once '../../Database/crud.php';
+            
     
             $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: User ID not found.');
     

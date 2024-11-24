@@ -54,7 +54,7 @@ if (!preg_match("/^(?=.*[A-Za-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/", $password
     header("Location: registration.php");
     exit();
 }
-
+//checks if the phone number entered contains 11 digits
 if (!preg_match("/^\d{11}$/", $phone_number)) {
     $_SESSION['status'] = 'error';
     $_SESSION['message'] = 'Phone number must be 11 digits.';
@@ -85,6 +85,7 @@ if ($user->checkDuplicateAcc()) {
         $_SESSION['status'] = 'error';
     }
 }
+
 
 header("Location: registration.php");
 exit();

@@ -38,7 +38,7 @@ session_start();
     <p>Already have an account? <a href="login.php">Sign in.</a></p>
 
 <?php
-    // Check for session variables and trigger SweetAlert based on status
+    //check session variables 
     if (isset($_SESSION['status']) && $_SESSION['status'] == 'success') {
         echo "<script>
                 Swal.fire({
@@ -50,7 +50,7 @@ session_start();
                     backdrop: true
                 });
               </script>";
-        // Clear session data after success
+        // clear session data after success
         session_unset();
         session_destroy();
     } elseif (isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
@@ -70,7 +70,7 @@ session_start();
               </script>";
 
         
-        // Clear session data after showing error
+        
         session_unset();
         session_destroy();
     }

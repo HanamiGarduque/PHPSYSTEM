@@ -1,12 +1,12 @@
 <?php
-require_once 'dbConnection.php';
+require_once 'database.php';
 require_once 'crudOperation.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database = new Database();
     $db = $database->getConnect();
 
-    $book = new Book($db);
+    $book = new Books($db);
     $book->book_title = htmlspecialchars(trim($_POST['bookTitle']));
     $book->book_author = htmlspecialchars(trim($_POST['bookAuthor']));
     $book->book_isbn = htmlspecialchars(trim($_POST['bookIsbn']));

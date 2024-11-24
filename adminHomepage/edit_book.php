@@ -1,12 +1,12 @@
 <?php
-require_once 'dbConnection.php';
+require_once 'database.php';
 require_once 'crudOperation.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database = new Database();
     $db = $database->getConnect();
 
-    $book = new Book($db);
+    $book = new Books($db);
     $book->book_id = htmlspecialchars(trim($_POST['bookId']));
     $book->book_title = htmlspecialchars(trim($_POST['bookTitle']));
     $book->book_author = htmlspecialchars(trim($_POST['bookAuthor']));
@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $database = new Database();
         $db = $database->getConnect();
 
-        $book = new Book($db);
+        $book = new Books($db);
         $book->book_id = htmlspecialchars(trim($_GET['id']));
 
         $stmt = $db->prepare("SELECT * FROM books WHERE book_id = :bookId");

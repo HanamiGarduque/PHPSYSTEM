@@ -1,5 +1,5 @@
 <?php
-class Book {
+class Books{
     private $conn;
     private $tbl_name = "books";
 
@@ -81,6 +81,8 @@ class Book {
         }
         return false;
     }
+
+    
     
 }
 ?>

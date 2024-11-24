@@ -72,13 +72,13 @@
                     <tbody>
 
                         <?php
-                        require_once 'dbConnection.php';
+                        require_once 'database.php';
                         require_once 'crudOperation.php';
 
                         $database = new Database();
                         $db = $database->getConnect();
 
-                        $book = new Book($db);
+                        $book = new Books($db);
                         $stmt = $book->read();
                         $num = $stmt->rowCount();
 

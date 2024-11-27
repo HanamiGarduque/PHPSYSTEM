@@ -52,7 +52,7 @@
                     $_SESSION['first_name'] = $row['first_name'];
                     $_SESSION['last_name'] = $row['last_name'];
                     // Redirect to homepage.php on successful login
-                    header("Location: Home.php");
+                    header("Location: homepage.php");
                     exit();
                 } else {
                     echo 'Incorrect password.';

@@ -13,10 +13,10 @@
     <header class="header">
         <div class="logo"></div>
         <nav class="nav">
-            <a href="#">Home</a>
-            <a href="#">Browse Books</a>
-            <a href="#">Services</a>
-            <a href="#">About Us</a>
+            <a href="homepage.php">Home</a>
+            <a href="search_catalog.php">Browse Books</a>
+            <a href="Services">Services</a>
+            <a href="featured-sections">About Us</a>
         </nav>
     </header>
 
@@ -27,8 +27,8 @@
         <a href=""></a>
         <a href=""></a>
         <a href=""></a>            
-    <section class="">
-
+    </div>
+<section id="Services">
     <div class="container">
     <div class="row">
         <div class="col">
@@ -87,7 +87,7 @@
         </div>
     </div>
 </div>
-
+</section>
 
     <section class="featured-section">
         <div class="featured-header">

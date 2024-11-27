@@ -1,0 +1,98 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px; /* Add some space from the top */
+}
+
+nav {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+    background-color: #f4f4f4;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #727D3D;
+    font-weight: lighter;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+    color: #F7E135;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    width: 90%;
+}
+
+.container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 700px; /* Increased width for a wider form */
+    max-width: 100%; /* Ensures it doesn't overflow on smaller screens */
+    text-align: left;
+}
+
+h2 {
+    color: #333;
+}
+
+form {
+    margin-top: 20px;
+}
+
+input[type="text"], input[type="email"], input[type="phone_number"], select {
+    width: calc(100% - 20px); /* Adjusted width */
+    padding: 12px; /* Reduced padding for balanced field size */
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+input[type="submit"] {
+    background-color: #727D3D;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+input[type="submit"]:hover {
+    background-color: #F7E135;
+}
+
+.back-btn {
+    margin-top: 15px;
+    display: inline-block;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}

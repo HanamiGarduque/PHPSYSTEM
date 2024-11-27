@@ -14,9 +14,9 @@
         <div class="logo"></div>
         <nav class="nav">
             <a href="homepage.php">Home</a>
-            <a href="search_catalog.php">Browse Books</a>
-            <a href="Services">Services</a>
-            <a href="featured-sections">About Us</a>
+            <a href="search_catalog.php">Search</a>
+            <a href="#Services">Borrow History</a>
+            <a href="#">My Account</a>
         </nav>
     </header>
 

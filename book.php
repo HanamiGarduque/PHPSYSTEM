@@ -1,3 +1,6 @@
+<?php
+session_start()
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,9 +75,43 @@
                     echo "</tr>";
                 }
             }
-            
+            // Check if the notification session is set
+            if (isset($_SESSION['notification'])) {
+                $notification = $_SESSION['notification'];
+                echo "<script>
+            Swal.fire({
+                title: '{$notification['title']}',
+                        text: '{$notification['message']}',
+                        icon: '{$notification['type']}',
+                confirmButtonText: 'Okay',
+                background: '#fff',
+                backdrop: true,
+            }).then(() => {
+                window.location.href = 'book.php'; // Redirect to the book page or any other page
+            });
+          </script>";
+    exit();
+    } else {
+        $_SESSION['status'] = 'error';
+        $_SESSION['message'] = 'Failed to create the reservation. Please try again.';
+        echo "<script>
+                Swal.fire({
+                    title: '{$notification['title']}',
+                            text: '{$notification['message']}',
+                            icon: '{$notification['type']}',
+                    confirmButtonText: 'Okay',
+                    background: '#fff',
+                    backdrop: true,
+                }).then(() => {
+                    window.location.href = 'reservationForm.php'; // Redirect to the reservation form page
+                });
+            </script>";
+        exit();
+    }
+               
             ?>
-   
+            
+            
         </tbody>
     </table>
 

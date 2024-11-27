@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-require_once './Database/database.php';
-require_once './Database/crud.php';
+require_once '../Database/database.php';
+require_once '../Database/crud.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 

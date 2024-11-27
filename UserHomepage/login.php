@@ -19,8 +19,8 @@
 <p>Don't have an account? <a href="registration.php">Register Now</a></p>
 
 <?php
-    require_once './Database/database.php';
-    require_once './Database/crud.php';
+    require_once '../Database/database.php';
+    require_once '../Database/crud.php';
 
     
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {

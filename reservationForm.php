@@ -141,41 +141,24 @@
         
             <input type="submit" value="Submit">
         </form>
-        <?php
-        // Check for the session variables and trigger SweetAlert based on the status
-        if (isset($_SESSION['status']) && $_SESSION['status'] == 'success') {
-            echo "<script>
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'User created successfully!',
-                        icon: 'success',
-                        confirmButtonText: 'Okay',
-                        background: '#fff',
-                        backdrop: true
-                    });
-                </script>";
-        } elseif (isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
-            $message = (isset($_SESSION['message']) && $_SESSION['message'] == 'duplicate') 
-                    ? 'Username or Email already exists!' 
-                    : 'There was an error creating the user. Please try again.';
-            
-            echo "<script>
-                    Swal.fire({
-                        title: 'Error!',
-                        text: '$message',
-                        icon: 'error',
-                        confirmButtonText: 'Try Again',
-                        background: '#fff',
-                        backdrop: true
-                    });
-                </script>";
-        }
+    <?php
+    //check session variables 
+        require_once './notifications.php';  // Ensure the notifications are availableyyyyy
+            if (isset($_SESSION['notification'])) {
+                
+                $notification = $_SESSION['notification'];
+                echo "<div class='notification {$notification['type']}'>";
+                echo "<h3>{$notification['title']}</h3>";
+                echo "<p>{$notification['message']}</p>";
+                echo "<small>Received on: {$notification['timestamp']}</small>";
+                echo "</div><br>";
 
-        // Clear the session variables after use
-        session_unset();
-        session_destroy();
+                // Clear the notification after displaying it
+                unset($_SESSION['notification']);
+        }
     ?>
 
-    </body>
 
-    </html>
+</body>
+
+</html>

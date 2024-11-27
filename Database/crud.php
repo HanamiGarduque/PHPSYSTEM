@@ -278,7 +278,125 @@ class Reservations {
 
     
 }
-    
+    class Notifications {
+        private $conn;      
+        private $tbl_name = "notifications";
 
+
+        public $notification_id;
+        public $user_id; //foreign key
+        public $message;
+
+
+        public function __construct($db) {
+            $this->conn = $db;
+        }
+        public function create() {
+            $query = "INSERT INTO " . $this->tbl_name. "(user_id, message)
+            VALUES (:user_id :message)";
+            $stmt = $this->conn->prepare($query);
+            
+            $stmt->bindParam('user_id', $this->user_id);
+            $stmt->bindParam('message', $this->message);
+
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
+        }
+        public function createNotification($title, $message, $type) {
+
+            echo "<div class='notification $type'>";
+            echo "<h3>$title</h3>";
+            echo "<p>$message</p>";
+            echo "<small>Received on: " . date('Y-m-d H:i:s') . "</small>";
+            echo "</div><br>";
+        }
+        public function createMessage($title, $userName, $bookTitle, $libraryName) {
+            if ($title === 'Pending Book Borrowing Request') {
+                return "Subject: Pending Approval for Your Book Borrowing Request
+            Dear $userName,
+        
+            Thank you for submitting your request to borrow the book titled '$bookTitle'.
+        
+            We are currently reviewing your request, and it is pending approval. You will receive a confirmation once your reservation is approved or if additional information is needed.
+        
+            In the meantime, you can check the status of your reservation by logging into your account.
+        
+            Thank you for your patience!
+        
+            Best regards,
+            $libraryName Team";
+            }
+            
+        }
+        
+        
+        // Notification for pending booking
+        public function pendingBooking($userName, $bookTitle) {
+            $this->createNotification(
+                'Pending Book Borrowing Request',
+                "Dear $userName, thank you for submitting your request to borrow the book '$bookTitle'. Your booking is currently **pending approval**. You will be notified once the request is reviewed.",
+                'info'
+            );
+        }
+        
+        
+        
+        // Notification for cancelled booking
+        public function cancelledBooking($userName, $bookTitle) {
+            $this->createNotification(
+                'Cancelled Book Borrowing Request',
+                "$userName, your booking for the book '$bookTitle' has been cancelled.",
+                'warning'
+            );
+        }
+        
+        // Notification for approved booking
+        public function approvedBooking($userName, $bookTitle) {
+            $this->createNotification(
+                'Approved Booking',
+                "$userName, your booking for the book '$bookTitle' has been approved!",
+                'success'
+            );
+        }
+        
+        // Notification for successful signup
+        public function successfulSignup($userName) {
+            $this->createNotification(
+                'Signup Successful',
+                "Welcome, $userName! Your account has been successfully created.",
+                'success'
+            );
+        }
+        
+        // Notification for overdue booking
+        public function overdueBooking($userName, $bookTitle) {
+            $this->createNotification(
+                'Overdue Booking',
+                "$userName, the book '$bookTitle' is overdue. Please return it as soon as possible.",
+                'error'
+            );
+        }
+        
+        // Notification for returned books
+        public function returnedBooks($userName, $bookTitle) {
+            $this->createNotification(
+                'Books Returned',
+                "$userName, you have successfully returned the book '$bookTitle'.",
+                'success'
+            );
+        }
+        
+        // Notification for featured books (for example, a promotional notification)
+        public function featuredBooks($bookTitle) {
+            $this->createNotification(
+                'Featured Book',
+                "Check out our featured book of the week: '$bookTitle'.",
+                'info'
+            );
+        }
+        
+    }
                                 
 ?>

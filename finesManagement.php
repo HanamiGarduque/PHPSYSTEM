@@ -94,5 +94,4 @@ $db = $database->getConnect();
     </div>
 
 </body>
-
 </html>

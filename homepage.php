@@ -95,19 +95,19 @@
         </div>
         <div class="books-grid">
             <div class="book">
-                <img src="./img/GATSBY.jpg" alt="Book Cover">
+                <img src="./Images/GATSBY.jpg" alt="Book Cover">
                 <h4>The Great Gatsby</h4>
             </div>
             <div class="book">
-                <img src="./img/1984.jpg" alt="Book Cover">
+                <img src="./Images/1984.jpg" alt="Book Cover">
                 <h4>1984</h4>
             </div>
             <div class="book">
-                <img src="./img/Mocking bird.jpg" alt="Book Cover">
+                <img src="./Images/Mocking bird.jpg" alt="Book Cover">
                 <h4>To Kill a Mockingbird</h4>
             </div>
             <div class="book">
-                <img src="./img/prejudice.jpg" alt="Book Cover">
+                <img src="./Images/prejudice.jpg" alt="Book Cover">
                 <h4>Pride and Prejudice</h4>
             </div>
         </div>
@@ -115,12 +115,10 @@
 
         <footer>
         <div class="container">
-            <!-- Company Info -->
             <div class="company-info">
                 <p><i class="fas fa-building"></i> © 2024 Company, Inc</p>
             </div>
 
-            <!-- Social Media Icons -->
             <ul class="social-icons">
                 <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
                 <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
@@ -129,7 +127,6 @@
         </div>
     </footer>
 </div>
-
 
 </body>
 </html>

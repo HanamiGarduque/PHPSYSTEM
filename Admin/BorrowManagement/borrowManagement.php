@@ -25,7 +25,7 @@ $db = $database->getConnect();
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="../../Admin/Borrow Management/borrowManagement.css">
+    <link rel="stylesheet" href="../../Admin/BorrowManagement/borrowManagement.css">
 
     <script>
         $(document).ready(function () {
@@ -40,11 +40,11 @@ $db = $database->getConnect();
         <div class="side_dashboard">
             <nav>
                 <ul>
-                    <li><a href="../../Admin/Book Management/index.php">Book Management</a></li>
-                    <li><a href="../../Admin/User Management/userManagement.php">User Management</a></li>
-                    <li><a href="../../Admin/Borrow Management/borrowManagement.php">Borrow Management</a></li>
-                    <li><a href="../../Admin/Fines Management/finesManagement.php">Fines Management</a></li>
-                    <li><a href="../../Admin/Admin Account/adminAccount.php">Admin Account</a></li>
+                    <li><a href="../../Admin/BookManagement/bookManagement.php">Book Management</a></li>
+                    <li><a href="../../Admin/UserManagement/userManagement.php">User Management</a></li>
+                    <li><a href="../../Admin/BorrowManagement/borrowManagement.php">Borrow Management</a></li>
+                    <li><a href="../../Admin/FinesManagement/finesManagement.php">Fines Management</a></li>
+                    <li><a href="../../Admin/AdminAccount/adminAccount.php">Admin Account</a></li>
                 </ul>
             </nav>
         </div>

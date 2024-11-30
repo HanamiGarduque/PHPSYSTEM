@@ -1,13 +1,13 @@
 <?php
 require_once '../../Database/database.php';
-require_once '../../Admin/Book Management/crudOperation.php';
+require_once '../../Database/crud.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database = new Database();
     $db = $database->getConnect();
 
     $book = new Books($db);
-    $book->book_id = htmlspecialchars(trim($_POST['bookId']));
+    $book->Book_ID = htmlspecialchars(trim($_POST['bookId']));
 
     if ($book->delete()) {
         echo "

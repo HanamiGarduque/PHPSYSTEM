@@ -70,7 +70,7 @@
 
                         <?php
                         require_once '../../Database/database.php';
-                        require_once '../../Admin/Book Management/crudOperation.php';
+                        require_once '../../Database/crud.php';
 
                         $database = new Database();
                         $db = $database->getConnect();
@@ -147,7 +147,7 @@
                             cancelButtonText: 'Cancel',
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = `../../Admin/Book Management/edit_book.php?id=${bookId}`;
+                                window.location.href = `../../Admin/BookManagement/edit_book.php?id=${bookId}`;
                             }
                         });
                     });

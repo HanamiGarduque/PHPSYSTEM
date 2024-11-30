@@ -1,20 +1,20 @@
 <?php
 require_once '../../Database/database.php';
-require_once '../../Admin/Book Management/crudOperation.php';
+require_once '../../Database/crud.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database = new Database();
     $db = $database->getConnect();
 
     $book = new Books($db);
-    $book->book_id = htmlspecialchars(trim($_POST['bookId']));
-    $book->book_title = htmlspecialchars(trim($_POST['bookTitle']));
-    $book->book_author = htmlspecialchars(trim($_POST['bookAuthor']));
-    $book->book_isbn = htmlspecialchars(trim($_POST['bookIsbn']));
-    $book->published_year = htmlspecialchars(trim($_POST['publishedYear']));
-    $book->book_genre = htmlspecialchars(trim($_POST['bookGenre']));
-    $book->book_publisher = htmlspecialchars(trim($_POST['bookPublisher']));
-    $book->available_copies = htmlspecialchars(trim($_POST['availableCopies']));
+    $book->Book_ID = htmlspecialchars(trim($_POST['bookId']));
+    $book->Book_Title = htmlspecialchars(trim($_POST['bookTitle']));
+    $book->Book_Author = htmlspecialchars(trim($_POST['bookAuthor']));
+    $book->Book_ISBN = htmlspecialchars(trim($_POST['bookIsbn']));
+    $book->Published_Year = htmlspecialchars(trim($_POST['publishedYear']));
+    $book->Book_Genre = htmlspecialchars(trim($_POST['bookGenre']));
+    $book->Book_Publisher = htmlspecialchars(trim($_POST['bookPublisher']));
+    $book->Available_Copies = htmlspecialchars(trim($_POST['availableCopies']));
 
     if ($book->update()) {
         echo "
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '../../Admin/Book Management/index.php';
+                window.location.href = '../../Admin/Book Management/bookManagement.php';
             }
         });
         </script>
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '../../Admin/Book Management/index.php';
+                window.location.href = '../../Admin/Book Management/bookManagement.php';
             }
         });
         </script>
@@ -75,10 +75,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $db = $database->getConnect();
 
         $book = new Books($db);
-        $book->book_id = htmlspecialchars(trim($_GET['id']));
+        $book->Book_ID = htmlspecialchars(trim($_GET['id']));
 
-        $stmt = $db->prepare("SELECT * FROM books WHERE book_id = :bookId");
-        $stmt->bindParam(':bookId', $book->book_id);
+        $stmt = $db->prepare("SELECT * FROM books WHERE Book_ID = :bookId");
+        $stmt->bindParam(':bookId', $book->Book_ID);
         $stmt->execute();
         $bookDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -93,14 +93,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "<script>
             alert('Book not found!');
-            window.location.href = 'index.php';
+            window.location.href = 'bookManagement.php';
             </script>";
             exit;
         }
     } else {
         echo "<script>
         alert('Invalid request!');
-        window.location.href = 'index.php';
+        window.location.href = 'bookManagement.php';
         </script>";
         exit;
     }
@@ -118,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <h2>Edit Book</h2>
     <form action="edit_book.php" method="POST">
-        <input type="hidden" name="bookId" value="<?php echo $book->book_id; ?>">
+        <input type="hidden" name="bookId" value="<?php echo $book->Book_ID; ?>">
         <label for="title">Title:</label>
         <input type="text" name="bookTitle" id="title" value="<?php echo $bookTitle; ?>" required><br>
         <br>

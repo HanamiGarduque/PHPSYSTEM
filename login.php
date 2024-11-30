@@ -42,12 +42,10 @@
             $stmt->bindParam(':username', $inputUsername);
             $stmt->execute();
             
-            // Check if user exists
             if ($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $hashedPassword = $row['password'];
 
-                // Verify password
                 if (password_verify($inputPassword, $hashedPassword)) {
                     $_SESSION['first_name'] = $row['first_name'];
                     $_SESSION['last_name'] = $row['last_name'];

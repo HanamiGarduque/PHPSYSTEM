@@ -25,7 +25,7 @@ $db = $database->getConnect();
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="../../Admin/Fines Management/finesManagement.css">
+    <link rel="stylesheet" href="../../Admin/FinesManagement/finesManagement.css">
 
     <script>
         $(document).ready(function () {

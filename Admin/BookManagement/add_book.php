@@ -1,19 +1,19 @@
 <?php
 require_once '../../Database/database.php';
-require_once '../../Admin/Book Management/crudOperation.php';
+require_once '../../Database/crud.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database = new Database();
     $db = $database->getConnect();
 
     $book = new Books($db);
-    $book->book_title = htmlspecialchars(trim($_POST['bookTitle']));
-    $book->book_author = htmlspecialchars(trim($_POST['bookAuthor']));
-    $book->book_isbn = htmlspecialchars(trim($_POST['bookIsbn']));
-    $book->published_year = htmlspecialchars(trim($_POST['publishedYear']));
-    $book->book_genre = htmlspecialchars(trim($_POST['bookGenre']));
-    $book->book_publisher = htmlspecialchars(trim($_POST['bookPublisher']));
-    $book->available_copies = htmlspecialchars(trim($_POST['availableCopies']));
+    $book->Book_Title = htmlspecialchars(trim($_POST['bookTitle']));
+    $book->Book_Author = htmlspecialchars(trim($_POST['bookAuthor']));
+    $book->Book_ISBN = htmlspecialchars(trim($_POST['bookIsbn']));
+    $book->Published_Year = htmlspecialchars(trim($_POST['publishedYear']));
+    $book->Book_Genre = htmlspecialchars(trim($_POST['bookGenre']));
+    $book->Book_Publisher = htmlspecialchars(trim($_POST['bookPublisher']));
+    $book->Available_Copies = htmlspecialchars(trim($_POST['availableCopies']));
 
     if ($book->create()) {
         echo "

@@ -1,14 +1,13 @@
 <?php
 session_start();
 
-// Ensure the user is logged in
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");  // Redirect to login if the user is not logged in
+    header("Location: login.php");
     exit;
 }
 
-require_once 'Database/database.php'; // Database connection
-require_once 'Database/crud.php';     // CRUD functionality
+require_once 'Database/database.php';
+require_once 'Database/crud.php';
 
 $database = new Database();
 $db = $database->getConnect();
@@ -74,7 +73,7 @@ if (!$user) {
                     <td><?php echo htmlspecialchars($user['phone_number']); ?></td>
                 </tr>
             </table>
-            <a href="logout.php" class="logout-btn">Log Out</a> <!-- Log Out Button -->
+            <a href="logout.php" class="logout-btn">Log Out</a>
         </div>
     </section>
 </body>

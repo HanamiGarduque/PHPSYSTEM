@@ -42,7 +42,7 @@ $searchTerm = isset($_GET['query']) ? $_GET['query'] : "";
 $results = [];
 
 // Build SQL query with dynamic filters and LEFT JOIN
-$sql = "SELECT books.*, description.Description 
+$sql = "SELECT books.* , description.Description 
         FROM books 
         LEFT JOIN description ON books.Book_ID = description.Book_ID 
         WHERE 1";

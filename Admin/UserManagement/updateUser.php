@@ -9,15 +9,6 @@
 </head>
 <body>
 
-    <nav>
-        <ul>
-            <li><a href="userManagement.php">User Management</a></li>
-            <li><a href="bookManagement.php">Book Management</a></li>
-            <li><a href="reservationManagement.php">Reservation Management</a></li>
-            <li><a href="loanManagement.php">Loan Management</a></li>
-            <li><a href="adminAccount.php">Loan Management</a></li>
-        </ul>
-    </nav>
     <div class = "header">
         <h2>User Information Update</h2>
         <p>Please review and update the user's information as necessary.</p>

@@ -81,14 +81,17 @@ class Users {
 
         return $stmt;
     }
-    public function readID() {
-        $query = "SELECT * FROM users WHERE id = :id LIMIT 0,1";
+
+    public function readID(){
+        $query = "SELECT username, first_name, last_name, email, address, phone_number 
+              FROM " . $this->tbl_name . " 
+              WHERE id = :id LIMIT 0,1";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
         $stmt->execute();
-    
         return $stmt;
     }
+
     
     public function update() {
         $query = "UPDATE " . $this->tbl_name . " 

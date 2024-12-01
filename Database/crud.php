@@ -312,13 +312,13 @@ class Reservations {
         $stmt->bindParam(':reservation_id', $this->reservation_id);
         $stmt->execute();
     }
-    function getUserReservations($conn, $userId) {
+    function getUserReservations($userId) {
         $query = "SELECT 
                     books.Book_Title, books.Book_Author, reservations.status 
                   FROM reservations 
                   INNER JOIN books ON reservations.book_id = books.id 
                   WHERE reservations.user_id = :userId";
-        $stmt = $conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -446,9 +446,9 @@ class Notifications{
             'info'
         );
     }
-    function getUserNotifications($conn, $userId) {
+    function getUserNotifications($userId) {
         $query = "SELECT subject, message FROM notifications WHERE user_id = :userId";
-        $stmt = $conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

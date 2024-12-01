@@ -1,3 +1,11 @@
+<?php 
+session_start();
+
+echo '<pre>';
+                    print_r($_SESSION);
+                    echo '</pre>';
+                    
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +24,8 @@
             <a href="homepage.php">Home</a>
             <a href="search_catalog.php">Search</a>
             <a href="#Services">Borrow History</a>
-            <a href="#">My Account</a>
+            <a href="myacc.php">My Account</a>
+           
         </nav>
     </header>
 

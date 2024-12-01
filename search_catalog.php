@@ -147,7 +147,7 @@ $conn = null;
                         <td><?php echo htmlspecialchars($book['Book_Publisher']); ?></td>
                         <td><?php echo htmlspecialchars($book['Description'] ?? 'No description available'); ?></td>
                         <td>
-                        <a href="reservationForm.php?book_id=<?php echo $book['Book_ID']; ?>" class="button">
+                        <a href="reservationForm.php?Book_IDs=<?php echo $book['Book_ID']; ?>" class="button">
                             <button type="button">Borrow</button>
                         </a>
                         </td>

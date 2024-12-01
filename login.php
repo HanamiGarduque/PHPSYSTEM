@@ -1,3 +1,6 @@
+<?
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +40,7 @@
             echo 'Your account is suspended. Please contact the admin.';
         } else {
             
-            $query = "SELECT password FROM users WHERE username = :username LIMIT 1";
+            $query = "SELECT id, first_name, last_name, password FROM users WHERE username = :username LIMIT 1";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':username', $inputUsername);
             $stmt->execute();
@@ -47,8 +50,10 @@
                 $hashedPassword = $row['password'];
 
                 if (password_verify($inputPassword, $hashedPassword)) {
+                    $_SESSION['id'] = $row['id'];
                     $_SESSION['first_name'] = $row['first_name'];
                     $_SESSION['last_name'] = $row['last_name'];
+                    
                     header("Location: homepage.php");
                     exit();
                 } else {

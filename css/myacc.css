@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #fff;
+}
+
+.header {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    background-image: url("../Images/BLib\ (5).png");
+    background-size: cover;
+    border-radius: 50%;
+}
+
+.nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #333;
+}
+
+#myAccount {
+    padding: 2rem 0;
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+.account-table {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.account-table th,
+.account-table td {
+    padding: 1rem;
+    border: 1px solid #ddd;
+}
+
+.account-table th {
+    background-color: #ffd700;
+    color: #000;
+}
+
+.account-table td {
+    background-color: #f9f9f9;
+}
+
+.logout-btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    margin-top: 1rem;
+    background-color: #ff5c5c;
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #e74c3c;
+}

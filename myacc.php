@@ -1,40 +1,28 @@
 <?php
-
 session_start();
-require_once 'check_session.php';
-require_once './Database/database.php';
-require_once './Database/crud.php';
+
+// Ensure the user is logged in
+if (!isset($_SESSION['id'])) {
+    header("Location: login.php");  // Redirect to login if the user is not logged in
+    exit;
+}
+
+require_once 'Database/database.php'; // Database connection
+require_once 'Database/crud.php';     // CRUD functionality
 
 $database = new Database();
 $db = $database->getConnect();
 
-$user = new Users($db);
-$reservation = new Reservations($db);
-$notification = new Notifications($db);
+$query = "SELECT id, first_name, last_name, username, email, address, phone_number FROM users WHERE id = :id";
+$stmt = $db->prepare($query);
+$stmt->bindParam(':id', $_SESSION['id']);
+$stmt->execute();
 
-if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
-    exit();
-}
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Get logged-in user's ID from the session
-$userId = $_SESSION['id'];
-
-// Fetch user details
-$userDetails = $user->getUserDetails($userId);
-
-// Fetch user's reservations
-$reservations = $reservation->getUserReservations($userId);
-
-// Fetch user's notifications
-$notifications = $notification->getUserNotifications($userId);
-
-// Logout action
-if (isset($_POST['logout'])) {
-    // Destroy the session and redirect to login page
-    session_destroy();
-    header("Location: login.php");
-    exit();
+if (!$user) {
+    echo "Error: User details not found.";
+    exit;
 }
 ?>
 
@@ -43,38 +31,51 @@ if (isset($_POST['logout'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
+    <title>My Account</title>
+    <link rel="stylesheet" href="./CSS/myacc.css">
 </head>
 <body>
+    <header class="header">
+        <div class="logo"></div>
+        <nav class="nav">
+            <a href="homepage.php">Home</a>
+            <a href="search_catalog.php">Search</a>
+            <a href="#Services">Borrow History</a>
+            <a href="myAccount.php">My Account</a>
+        </nav>
+    </header>
 
-    <h1>Welcome, <?php echo htmlspecialchars($userDetails['name']); ?>!</h1>
-
-    <h2>Your Reservations</h2>
-    <ul>
-        <?php if (!empty($reservations)): ?>
-            <?php foreach ($reservations as $reservation): ?>
-                <li><?php echo htmlspecialchars($reservation['reservation_details']); ?> (Expected Return: <?php echo htmlspecialchars($reservation['expected_return_date']); ?>)</li>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <li>No reservations found.</li>
-        <?php endif; ?>
-    </ul>
-
-    <h2>Your Notifications</h2>
-    <ul>
-        <?php if (!empty($notifications)): ?>
-            <?php foreach ($notifications as $notification): ?>
-                <li><?php echo htmlspecialchars($notification['message']); ?> (Date: <?php echo htmlspecialchars($notification['date']); ?>)</li>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <li>No notifications found.</li>
-        <?php endif; ?>
-    </ul>
-
-    <!-- Logout Form -->
-    <form method="POST" action="">
-        <button type="submit" name="logout">Logout</button>
-    </form>
-
+    <section id="myAccount">
+        <div class="container">
+            <h2>My Account Details</h2>
+            <table class="account-table">
+                <tr>
+                    <th>Username:</th>
+                    <td><?php echo htmlspecialchars($user['username']); ?></td>
+                </tr>
+                <tr>
+                    <th>First Name:</th>
+                    <td><?php echo htmlspecialchars($user['first_name']); ?></td>
+                </tr>
+                <tr>
+                    <th>Last Name:</th>
+                    <td><?php echo htmlspecialchars($user['last_name']); ?></td>
+                </tr>
+                <tr>
+                    <th>Email:</th>
+                    <td><?php echo htmlspecialchars($user['email']); ?></td>
+                </tr>
+                <tr>
+                    <th>Address:</th>
+                    <td><?php echo htmlspecialchars($user['address']); ?></td>
+                </tr>
+                <tr>
+                    <th>Phone Number:</th>
+                    <td><?php echo htmlspecialchars($user['phone_number']); ?></td>
+                </tr>
+            </table>
+            <a href="logout.php" class="logout-btn">Log Out</a> <!-- Log Out Button -->
+        </div>
+    </section>
 </body>
 </html>

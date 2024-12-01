@@ -43,6 +43,7 @@ class Users {
         
         return $stmt->rowCount() > 0;
     }
+    
     public function create() {
 
         if ($this->checkDuplicateAcc()) {

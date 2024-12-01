@@ -1,10 +1,6 @@
 <?php 
-session_start();
+require_once 'check_session.php';
 
-echo '<pre>';
-                    print_r($_SESSION);
-                    echo '</pre>';
-                    
 ?>
 <!DOCTYPE html>
 <html lang="en">

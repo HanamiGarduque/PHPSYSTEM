@@ -53,10 +53,11 @@ session_start();
                     $_SESSION['id'] = $row['id'];
                     $_SESSION['first_name'] = $row['first_name'];
                     $_SESSION['last_name'] = $row['last_name'];
-                    
+            
                     header("Location: homepage.php");
-                    exit();
-                } else {
+                    
+                }
+                 else {
                     echo 'Incorrect password.';
                 }
             } else {

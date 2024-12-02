@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -39,8 +39,8 @@
             $user->email = $row['email'];
             $user->address = $row['address'];
             $user->phone_number = $row['phone_number'];
-            $user->roles = $row['roles'];
-            $user->status = $row['status'];
+            // $user->roles = $row['roles'];
+            // $user->status = $row['status'];
         ?>
     
         <h2>Profile Information</h2>

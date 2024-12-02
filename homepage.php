@@ -10,7 +10,8 @@ require_once 'check_session.php';
     <title>Library Homepage</title>
     <link rel="stylesheet" href="./css/homepage.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-        
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     
 </head>
 <body>
@@ -18,8 +19,8 @@ require_once 'check_session.php';
         <div class="logo"></div>
         <nav class="nav">
             <a href="homepage.php">Home</a>
-            <a href="search_catalog.php">Search</a>
-            <a href="#Services">Borrow History</a>
+            <a href="search_catalog.php">Search a Book</a>
+            <a href="notifications.php">Notifications</a>
             <a href="myacc.php">My Account</a>
            
         </nav>
@@ -96,24 +97,45 @@ require_once 'check_session.php';
 
     <section class="featured-section">
         <div class="featured-header">
-            <h2>Featured Books</h2>
+            <h1>Featured Books</h1>
         </div>
         <div class="books-grid">
             <div class="book">
-                <img src="./Images/GATSBY.jpg" alt="Book Cover">
+                <img src="./Images/GATSBY.jpg" alt="The Great Gatsby Cover">
                 <h4>The Great Gatsby</h4>
+                <a href="reservationForm.php?book=gatsby" class="borrow-btn">Borrow Book</a>
             </div>
             <div class="book">
-                <img src="./Images/1984.jpg" alt="Book Cover">
+                <img src="./Images/1984.jpg" alt="1984 Cover">
                 <h4>1984</h4>
+                <a href="reservationForm.php?book=1984" class="borrow-btn">Borrow Book</a>
             </div>
             <div class="book">
-                <img src="./Images/Mocking bird.jpg" alt="Book Cover">
+                <img src="./Images/Mocking bird.jpg" alt="To Kill a Mockingbird Cover">
                 <h4>To Kill a Mockingbird</h4>
+                <a href="reservationForm.php?book=mockingbird" class="borrow-btn">Borrow Book</a>
             </div>
             <div class="book">
-                <img src="./Images/prejudice.jpg" alt="Book Cover">
+                <img src="./Images/prejudice.jpg" alt="Pride and Prejudice Cover">
                 <h4>Pride and Prejudice</h4>
+                <a href="reservationForm.php?book=pride" class="borrow-btn">Borrow Book</a>
+            </div>
+        </div>
+    </section>
+    <section class="most-borrowed">
+        <h2>Most Borrowed Books This Month</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>The Great Gatsby</h4>
+                <p>Borrowed 156 times</p>
+            </div>
+            <div class="stat-card">
+                <h4>1984</h4>
+                <p>Borrowed 142 times</p>
+            </div>
+            <div class="stat-card">
+                <h4>To Kill a Mockingbird</h4>
+                <p>Borrowed 138 times</p>
             </div>
         </div>
     </section>
@@ -121,7 +143,7 @@ require_once 'check_session.php';
         <footer>
         <div class="container">
             <div class="company-info">
-                <p><i class="fas fa-building"></i> © 2024 Company, Inc</p>
+                <p><i class="fas fa-building"></i> © Blib: Library Management System</p>
             </div>
 
             <ul class="social-icons">
@@ -132,6 +154,7 @@ require_once 'check_session.php';
         </div>
     </footer>
 </div>
+
 
 </body>
 </html>

@@ -70,5 +70,8 @@ session_start();
         <br><br>
         <input type="submit" value="Register">
     </form>
+
+    <p>Don't have an account? <a href="login.php">Sign in</a></p>
+
 </body>
 </html>

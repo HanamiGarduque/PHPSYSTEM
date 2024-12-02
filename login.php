@@ -7,21 +7,31 @@ session_start();  // Keep this at the top
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
+    <link rel="stylesheet" href="./css/login.css">
     <!-- SweetAlert CSS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+<div class="container">
+        <div class="left-side"></div>
+        <div class="right-side">
+            <div class="logo"></div>
+            <h1>Welcome Back!</h1>
+            <p>Login to your account to continue</p>
+            <form action="" method="POST">
+                <input type="email" name="email" placeholder="Email Address" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <div class="forgot-password">
+                    <a href="#">Forgot Password?</a>
+                </div>
+                <button type="submit">Sign In</button>
+            </form>
+            <div class="signup">
+                Don't have an account? <a href="registration.php">Sign Up</a>
+            </div>
+        </div>
+    </div>
 
-<h2>Login</h2>
-<form method="POST" action="">
-    Username: <input type="text" name="username" required>
-    <br><br>
-    Password: <input type="password" name="password" required>
-    <br><br>
-    <input type="submit" value="Login">
-</form>
-
-<p>Don't have an account? <a href="registration.php">Register Now</a></p>
 
 <?php
 require_once './Database/database.php';

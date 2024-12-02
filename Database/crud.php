@@ -155,6 +155,7 @@ class Books {
     public $Book_Genre;
     public $Book_Publisher;
     public $Available_Copies;
+    public $Book_Cover;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -177,7 +178,13 @@ class Books {
         }
         return false;
     }
+    public function read10Books(){
+        $query = "SELECT * FROM " .$this->tbl_name. " LIMIT 10";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
 
+        return $stmt;
+    }
     public function read(){
         $query = "SELECT * FROM " .$this->tbl_name;
         $stmt = $this->conn->prepare($query);

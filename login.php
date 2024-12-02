@@ -1,5 +1,5 @@
 <?php
-session_start();  // Keep this at the top
+session_start(); 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,8 +7,7 @@ session_start();  // Keep this at the top
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
-    <link rel="stylesheet" href="./css/login.css">
-    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="./css/login.css">;
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -38,15 +37,15 @@ require_once './Database/database.php';
 require_once './Database/crud.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $inputUsername = trim($_POST['username']);
+    $inputEmail = trim($_POST['email']);
     $inputPassword = trim($_POST['password']);
 
     $database = new Database();
     $db = $database->getConnect();
 
-    $query = "SELECT id, first_name, last_name, password, roles, status FROM users WHERE username = :username LIMIT 1";
+    $query = "SELECT id, first_name, last_name, password, roles, status FROM users WHERE email = :email LIMIT 1";
     $stmt = $db->prepare($query);
-    $stmt->bindParam(':username', $inputUsername);
+    $stmt->bindParam(':email', $inputEmail);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
@@ -69,13 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Verify password
         if (password_verify($inputPassword, $hashedPassword)) {
-            // Store the user data in the session
-            $_SESSION['id'] = $row['id'];  // Store the user ID in the session
+            $_SESSION['id'] = $row['id']; 
             $_SESSION['first_name'] = $row['first_name'];
             $_SESSION['last_name'] = $row['last_name'];
             $_SESSION['role'] = $role;
 
-            // Redirect based on role
             if ($role === 'Admin') {
                 header("Location: Admin/BookManagement/bookManagement.php");
             } else {

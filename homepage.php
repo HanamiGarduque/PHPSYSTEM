@@ -1,6 +1,13 @@
 <?php 
 require_once 'check_session.php';
+require_once './Database/database.php';
+require_once './Database/crud.php';
 
+$database = new Database();
+$db = $database->getConnect();
+$book = new Books($db); // Assuming you have a 'Books' class
+$stmt = $book->read();
+$num = $stmt->rowCount();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,7 +102,7 @@ require_once 'check_session.php';
 </div>
 </section>
 
-    <section class="featured-section">
+    <!-- <section class="featured-section">
         <div class="featured-header">
             <h1>Featured Books</h1>
         </div>
@@ -103,25 +110,55 @@ require_once 'check_session.php';
             <div class="book">
                 <img src="./Images/GATSBY.jpg" alt="The Great Gatsby Cover">
                 <h4>The Great Gatsby</h4>
-                <a href="reservationForm.php?book=gatsby" class="borrow-btn">Borrow Book</a>
+                <a href="reservationForm.php?Book_Id=35" class="borrow-btn">Borrow Book</a>
             </div>
             <div class="book">
                 <img src="./Images/1984.jpg" alt="1984 Cover">
                 <h4>1984</h4>
-                <a href="reservationForm.php?book=1984" class="borrow-btn">Borrow Book</a>
+                <a href="reservationForm.php?Book_ID=33" class="borrow-btn">Borrow Book</a>
             </div>
             <div class="book">
                 <img src="./Images/Mocking bird.jpg" alt="To Kill a Mockingbird Cover">
                 <h4>To Kill a Mockingbird</h4>
-                <a href="reservationForm.php?book=mockingbird" class="borrow-btn">Borrow Book</a>
+                <a href="reservationForm.php?Book_ID=32" class="borrow-btn">Borrow Book</a>
             </div>
             <div class="book">
                 <img src="./Images/prejudice.jpg" alt="Pride and Prejudice Cover">
                 <h4>Pride and Prejudice</h4>
-                <a href="reservationForm.php?book=pride" class="borrow-btn">Borrow Book</a>
+                <a href="reservationForm.php?Book_ID=34" class="borrow-btn">Borrow Book</a>
             </div>
         </div>
-    </section>
+    </section> -->
+    <section class="featured-section">
+    <div class="featured-header">
+        <h1>Featured Books</h1>
+    </div>
+    <div class="books-grid">
+        <?php
+        $stmt = $book->read10Books(); // Fetch all books or use a condition for featured books
+        if($num > 0) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+                echo "
+                <div class='book'>
+                    <img src='Images/{$Book_Cover}' alt='{$Book_Title} Cover'> <!-- assuming the image path is stored in 'cover_image' -->
+                    <h4>{$Book_Title}</h4>
+                    <p>Author: {$Book_Author}<p>
+                    <p>Published Year: {$Published_Year}<p>
+                    <p>ISBN: {$Book_ISBN}<p>
+                    
+                    <p class='borrow-btn-container'>
+                        <a href='reservationForm.php?Book_ID={$Book_ID}' class='borrow-btn'>Borrow Book</a>
+                    </p>
+                </div>";
+            }
+        } else {
+            echo "<p>No books found.</p>";
+        }
+        ?>
+    </div>
+</section>
+
     <section class="most-borrowed">
         <h2>Most Borrowed Books This Month</h2>
         <div class="stats-grid">

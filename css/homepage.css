@@ -104,42 +104,69 @@ body {
 }
 
 .books-grid {
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusts the number of columns dynamically */
+  gap:5rem; /* Space between books */
 }
-
 .book {
-  background-color: #ffe94684;
+  background-color: #ffd83d2b;
   padding: 1rem;
+  height: 25rem;
+  width: 15rem;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; /* Distribute space between elements */
   text-align: center;
-  border: 3px var(--olive-green);
+  transition: transform 0.3s ease-in-out;
 }
 
 .book img {
-  width: 120px;
-  height: 180px;
-  object-fit: cover;
+  width: 100px;
+  height: auto;
   margin-bottom: 1rem;
 }
 
-.borrow-btn {
-  background-color: var(--olive-green);
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 1rem;
+.book h4 {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+  color: #333;
 }
 
-.borrow-btn:hover {
-  opacity: 0.9;
+.book p {
+  text-align: left; /* Align the text to the left */
+  margin: 0.2rem 0; /* Adjust margin between <p> tags */
+  font-size: 0.9rem;
+  width: 100%; /* Ensure it spans the full width */
 }
+.borrow-btn-container {
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+  width: 100%;
+}
+
+.book .borrow-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--olive-green);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  align-self: stretch; /* Make the button take up full width */
+  text-align: center;
+}
+
+.book .borrow-btn:hover {
+  background-color: #d4b000;
+}
+
+.book:hover {
+  transform: scale(1.05);
+}
+
 
 .footer {
   background-color: #333;

@@ -1,5 +1,4 @@
 <?php
-// auth_check.php
 session_start();
 
 function isLoggedIn() {

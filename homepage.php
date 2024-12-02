@@ -8,13 +8,31 @@ $db = $database->getConnect();
 $book = new Books($db); // Assuming you have a 'Books' class
 $stmt = $book->read();
 $num = $stmt->rowCount();
+
+// Check if there is a notification message
+if (isset($_SESSION['notification_message'])) {
+    $message = $_SESSION['notification_message'];
+    unset($_SESSION['notification_message']); // Clear the message after it has been shown
+
+    // Output JavaScript to display SweetAlert
+    echo "
+    <script>
+        Swal.fire({
+            title: 'Notification',
+            text: '$message',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+    </script>";
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Homepage</title>
+    <title>Blib: Homepage</title>
     <link rel="stylesheet" href="./css/homepage.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,7 +47,6 @@ $num = $stmt->rowCount();
             <a href="search_catalog.php">Search a Book</a>
             <a href="notifications.php">Notifications</a>
             <a href="myacc.php">My Account</a>
-           
         </nav>
     </header>
 
@@ -101,34 +118,6 @@ $num = $stmt->rowCount();
     </div>
 </div>
 </section>
-
-    <!-- <section class="featured-section">
-        <div class="featured-header">
-            <h1>Featured Books</h1>
-        </div>
-        <div class="books-grid">
-            <div class="book">
-                <img src="./Images/GATSBY.jpg" alt="The Great Gatsby Cover">
-                <h4>The Great Gatsby</h4>
-                <a href="reservationForm.php?Book_Id=35" class="borrow-btn">Borrow Book</a>
-            </div>
-            <div class="book">
-                <img src="./Images/1984.jpg" alt="1984 Cover">
-                <h4>1984</h4>
-                <a href="reservationForm.php?Book_ID=33" class="borrow-btn">Borrow Book</a>
-            </div>
-            <div class="book">
-                <img src="./Images/Mocking bird.jpg" alt="To Kill a Mockingbird Cover">
-                <h4>To Kill a Mockingbird</h4>
-                <a href="reservationForm.php?Book_ID=32" class="borrow-btn">Borrow Book</a>
-            </div>
-            <div class="book">
-                <img src="./Images/prejudice.jpg" alt="Pride and Prejudice Cover">
-                <h4>Pride and Prejudice</h4>
-                <a href="reservationForm.php?Book_ID=34" class="borrow-btn">Borrow Book</a>
-            </div>
-        </div>
-    </section> -->
     <section class="featured-section">
     <div class="featured-header">
         <h1>Featured Books</h1>
@@ -146,7 +135,7 @@ $num = $stmt->rowCount();
                     <p>Author: {$Book_Author}<p>
                     <p>Published Year: {$Published_Year}<p>
                     <p>ISBN: {$Book_ISBN}<p>
-                    
+
                     <p class='borrow-btn-container'>
                         <a href='reservationForm.php?Book_ID={$Book_ID}' class='borrow-btn'>Borrow Book</a>
                     </p>

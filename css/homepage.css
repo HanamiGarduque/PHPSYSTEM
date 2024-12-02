@@ -34,15 +34,15 @@ body {
   border-radius: 50%;
 }
 
-.nav {
-  display: flex;
-  gap: 4rem;
-}
+  .nav {
+    display: flex;
+    gap: 4rem;
+  }
 
-.nav a {
-  text-decoration: none;
-  color: var(--olive-green);  
-}
+  .nav a {
+    text-decoration: none;
+    color: var(--olive-green);  
+  }
 
 .hero {
   background-image: url("../Images/Untitled\ design\ \(1\).png");

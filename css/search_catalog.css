@@ -1,0 +1,87 @@
+:root {
+    --olive-green: #727D3D;
+    --yellow: #F7E135;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+body {
+    background-color: #fff;
+    background-position: center;
+    background-attachment: fixed;
+    background-image: url("../Images/der\ \(1\).png");
+    background-position: bottom;
+    background-size: 150%;
+    background-repeat: no-repeat;
+}
+
+.header {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.logo {
+    width: 50px;
+    height: 50px;   
+    background-image: url("../Images/BLib\ \(5\).png");
+    background-size: cover;
+    border-radius: 50%;
+}
+
+.nav {
+    display: flex;
+    gap: 4rem;
+}
+
+.nav a {
+    text-decoration: none;
+    color: var(--olive-green);  
+}
+
+.search-container {
+    margin: 50px auto;
+    text-align: center;
+}
+
+.search-container input[type="text"],
+.search-container select {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+table {
+    margin: 20px auto;
+    width: 80%;
+    border-collapse: collapse;
+    padding: 2rem;
+}
+
+table thead th,
+table tbody td {
+    padding: 10px;
+    border: 1px solid var(--olive-green);
+    text-align: left;
+}
+
+.button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--olive-green);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #d4b000;
+}

@@ -1,0 +1,227 @@
+:root {
+    --olive-green: #727D3D;
+    --yellow: #F7E135;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #fff;
+    background-position: center;
+    background-image:  url("../Images/Untitled\ design\ \(3\).png");
+    background-position: bottom;
+    background-size: 100%; /* Ensures the image covers the whole area */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+  }
+
+.header {
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+}
+.nav {
+    display: flex;
+    gap: 4rem;
+  }
+  
+.nav a {
+    text-decoration: none;
+    color: var(--olive-green);  
+}
+.nav :hover {
+    color:var(--yellow);
+}
+  
+
+/* Form container styles */
+form {
+    max-width: 850px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0);
+    padding: 2rem;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.form-header button {
+    position: absolute;
+    top: 0;         /* Positions the button at the top */
+    left: 0;        /* Positions the button at the left */
+    background-color: #F7E135;
+    color: black;
+    border: none;
+    padding: 16px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.form-header {  
+    text-align: center;  /* Centers the text inside the div */
+    margin: 0 auto;      /* Centers the div itself horizontally */
+    padding: 20px;       /* Adds padding for spacing */
+    width: 100%;          /* Adjusts width of the container */
+    max-width: 600px;   
+  margin-bottom: 4rem;
+}
+
+.form-header h1 {
+    font-size: 28px;     /* Adjusts font size for the heading */
+    margin-bottom: 5px; 
+    color: var(--yellow);
+}
+
+.form-header p {
+    font-size: 16px;     /* Adjusts font size for the paragraph */
+    color: #666;         /* Optional: changes text color */
+}
+
+
+
+h2 {
+    width: 100%;
+    text-align: center;
+    color: #FFD700;
+    margin-bottom: 2rem;
+    font-size: 24px;
+    font-weight: 600;
+}
+h3 {
+    color: var(--yellow);
+    margin-bottom: 1rem;
+}
+
+/* Fieldset styles */
+fieldset {
+    border: 1px solid #e0e0e0;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+}
+
+legend {
+    color: #FFD700;
+    font-weight: 500;
+    padding: 0 10px;
+}
+.top-column {
+    width: 100%;
+    padding: 1rem;
+}
+/* Left column */
+.left-column {
+    width: 100%;
+    height: 23rem;
+}
+
+/* Right column */
+.right-column {
+    width: 100%;
+    height: 20rem;
+    background-color: var();
+}
+
+.bottom-column {
+    width: 100%;
+}
+
+/* Book Information fieldset */
+fieldset:first-of-type {
+    height: calc(100% - 1.5rem); /* Adjust for margin-bottom */
+}
+
+/* Input styles */
+input[type="text"],
+input[type="date"],
+input[type="email"],
+select,
+textarea {
+    width: 100%;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #ffffff00;
+    font-size: 14px;
+}
+
+input[readonly] {
+    background-color: #f5f5f500;
+    cursor: not-allowed;
+}
+
+/* Select dropdown styles */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 1em;
+}
+
+/* Checkbox styles */
+input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Submit button styles */
+input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--olive-green);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: background-color 0.2s;
+}
+
+input[type="submit"]:hover {
+    background-color: #d4b000;
+}
+
+/* Notification styles */
+.notification {
+    margin: 1rem auto;
+    padding: 1rem;
+    border-radius: 4px;
+    max-width: 1000px;
+    background-color: #f8f8f8;
+    border-left: 4px solid #FFD700;
+}
+
+.notification h3 {
+    color: #2D3748;
+    margin-bottom: 0.5rem;
+}
+
+.notification small {
+    color: #718096;
+    display: block;
+    margin-top: 0.5rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    form {
+        flex-direction: column;
+    }
+    
+    .left-column,
+    .right-column {
+        width: 100%;
+    }
+    
+    fieldset {
+        padding: 1rem;
+    }
+}

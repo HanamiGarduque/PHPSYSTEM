@@ -354,19 +354,19 @@ class Notifications{
         $this->conn = $db;
     }
 
-    public function create(){
-        $query = "INSERT INTO " . $this->tbl_name . "(user_id, message)
-            VALUES (:user_id :message)";
+    public function saveNotification($message) {
+        $query = "INSERT INTO " . $this->tbl_name . "(user_id, message) VALUES (:user_id, :message)";
         $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam('user_id', $this->user_id);
-        $stmt->bindParam('message', $this->message);
-
+        $stmt->bindParam(':user_id', $_SESSION['id']);
+        $stmt->bindParam(':message', $message);
+    
         if ($stmt->execute()) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
+    
 
     public function createNotification($title, $message, $type){
 
@@ -377,32 +377,14 @@ class Notifications{
         echo "</div><br>";
     }
 
-    public function createMessage($title, $userName, $bookTitle, $libraryName){
-        if ($title === 'Pending Book Borrowing Request') {
-            return "Subject: Pending Approval for Your Book Borrowing Request
-            Dear $userName,
-        
-            Thank you for submitting your request to borrow the book titled '$bookTitle'.
-        
-            We are currently reviewing your request, and it is pending approval. You will receive a confirmation once your reservation is approved or if additional information is needed.
-        
-            In the meantime, you can check the status of your reservation by logging into your account.
-        
-            Thank you for your patience!
-        
-            Best regards,
-            $libraryName Team";
-        }
-    }
 
     // Notification for pending booking
-    public function pendingBooking($userName, $bookTitle){
-        $this->createNotification(
-            'Pending Book Borrowing Request',
-            "Dear $userName, thank you for submitting your request to borrow the book '$bookTitle'. Your booking is currently **pending approval**. You will be notified once the request is reviewed.",
-            'info'
-        );
+    public function pendingBooking($userName, $bookTitle) {
+        $message = "Dear $userName, thank you for submitting your request to borrow the book '$bookTitle'. Your booking is currently **pending approval**. You will be notified once the request is reviewed.";
+        
+        $this->saveNotification($message);
     }
+    
 
     // Notification for cancelled booking
     public function cancelledBooking($userName, $bookTitle){

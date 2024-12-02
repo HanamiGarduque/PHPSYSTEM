@@ -1,11 +1,5 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
-    exit;
-}
-
+require_once 'check_session.php';
 require_once 'Database/database.php';
 require_once 'Database/crud.php';
 

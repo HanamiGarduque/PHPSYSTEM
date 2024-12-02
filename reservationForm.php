@@ -1,164 +1,220 @@
-    <?php
-    session_start();
-    ?>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Blib: Library Management System</title>
-        
-    </head>
-    <body>   
-        <nav>
-            <ul>
-                <li><a href="Home.php">Home</a></li>
-                <li><a href="bookCatalog.php">Book Catalog</a></li> 
-                <li><a href="account.php">My Account</a></li> 
-                <li><a href="history.php">Borrow History</a></li> 
-                <li><a href="contact.php">Contact Us</a></li> 
-                <li><a href="reservationForm.php">Reservation Form</a></li> 
-            </ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blib: Reservation Form</title>
+    <link rel="stylesheet" href="./css/reservation.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>   
+    <header class="header">
+        <div class="logo"></div>
+        <nav class="nav">
+            <a href="homepage.php" style="color: #F7E135;">Home</a>
+            <a href="search_catalog.php">Search a Book</a>
+            <a href="notifications.php">Notifications</a>
+            <a href="myacc.php">My Account</a>
         </nav>
-        <?php
-                require_once './Database/database.php';
-                require_once './Database/crud.php';
-        
-                $id = isset($_GET['Book_ID']) ? $_GET['Book_ID'] : die('ERROR: User ID not found.');
-        
-                $database = new Database();
-                $db = $database->getConnect();
-        
-                $book = new Books($db);
-                $book->Book_ID = $id;
-
-                $reservation = new Reservations($db);
-        
-                $stmt = $book->readID();
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if (!$row) {
-                    die('ERROR: No data found for the given Book ID.');
-                }
-                $book->Book_ID = $row['Book_ID'];
-                $book->Book_Title = $row['Book_Title'];
-                $book->Book_Author = $row['Book_Author'];
-                $book->Book_ISBN = $row['Book_ISBN'];
-                $book->Published_Year = $row['Published_Year'];
-                $book->Book_Genre = $row['Book_Genre'];
-                $book->Book_Publisher = $row['Book_Publisher'];
-                $book->Available_Copies = $row['Available_Copies'];
-                
-            ?>
-    <h2>Reservation Form</h2>
-        <form method="POST" action="reservationDB.php">
-        <input type="hidden" name="book_id" value="<?php echo $book->Book_ID; ?>">
-
-        <fieldset>
-                <legend>Book Information</legend>
-                Book Title: <br>
-                <input type="text" name="Book_Title" value="<?php echo htmlspecialchars($book->Book_Title, ENT_QUOTES); ?>" readonly><br>
-                Book Author: <br>
-                <input type="text" name="Book_Author" value="<?php echo htmlspecialchars($book->Book_Author, ENT_QUOTES); ?>" readonly><br>
-                Book ISBN: <br>
-                <input type="text" name="Book_ISBN" value="<?php echo htmlspecialchars($book->Book_ISBN, ENT_QUOTES); ?>" readonly><br>
-                Published Year: <br>
-                <input type="text" name="Published_Year" value="<?php echo htmlspecialchars($book->Published_Year, ENT_QUOTES); ?>" readonly><br>
-                <br>  <br>    
-            </fieldset>
-            <br>
-            <fieldset>
-                <legend>User Information</legend>
-                    Full Name: <br>
-                    <input type="text" name="name" required> 
-                    <br>     
-                    Email Address: <br>
-                    <input type="email" name="email" required>
-                    <br>  
-                    Phone Number: <br>
-                    <input type="text" name="phone_number" required>
-                    <br>  <br>    
-            </fieldset>
-            <br><br>
-
-            <fieldset>
-                <legend>Reservation Details</legend>
-                
-                Reservation Date: <br>
-                <input type="date" name="reservation_date" value="<?php echo date('Y-m-d'); ?>" required readonly>
-                <br>
-                
-                Pick-Up Date: <br>
-                <input type="date" id="pickup_date" name="pickup_date" required>
-                <br>
-                
-                Duration: <br>    
-                <select name="duration" id="duration" onchange="calculateExpectedReturnDate()" required>
-                    <option value="7">7 days</option>
-                    <option value="14">14 days</option>
-                    <option value="21">21 days</option>
-                </select><br>
-                
-                Expected Return Date: <br>
-                <input type="date" id="expected_return_date" name="expected_return_date" readonly required>
-                <br>                
-                
-                Notes/Comments: <br>
-                <textarea name="notes" rows="4" cols="50"></textarea>
-                <br><br>
-            </fieldset>
-
-    <script> //updates the date dynamically
-        function calculateExpectedReturnDate() {
-            // Get selected duration in days
-            var duration = parseInt(document.getElementById('duration').value);
-            
-            // Get pick-up date
-            var pickupDate = document.getElementById('pickup_date').value;
-            
-            if (pickupDate) {
-                // Create a new date object with the pickup date
-                var pickupDateObj = new Date(pickupDate);
-                
-                // Add the selected duration to the pick-up date
-                pickupDateObj.setDate(pickupDateObj.getDate() + duration);
-                
-                // Format the expected return date to 'YYYY-MM-DD'
-                var expectedReturnDate = pickupDateObj.toISOString().split('T')[0];
-                
-                // Set the calculated return date in the input field
-                document.getElementById('expected_return_date').value = expectedReturnDate;
-            } else {
-                alert('Please select a pickup date first.');
-            }
-        }
-        
-        // Trigger return date calculation when the pick-up date is changed
-        document.getElementById('pickup_date').addEventListener('change', calculateExpectedReturnDate);
-    </script>
-
-            <input type="checkbox" id="terms" name="terms" required> I agree to the terms and conditions
-        
-            <input type="submit" value="Submit">
-        </form>
+    </header>
+    
     <?php
-    //check session variables 
-        require_once './notifications.php';  // Ensure the notifications are availableyyyyy
-            if (isset($_SESSION['notification'])) {
-                
-                $notification = $_SESSION['notification'];
-                echo "<div class='notification {$notification['type']}'>";
-                echo "<h3>{$notification['title']}</h3>";
-                echo "<p>{$notification['message']}</p>";
-                echo "<small>Received on: {$notification['timestamp']}</small>";
-                echo "</div><br>";
-
-                // Clear the notification after displaying it
-                unset($_SESSION['notification']);
+        require_once 'check_session.php';
+        require_once './Database/database.php';
+        require_once './Database/crud.php';
+    
+        $id = isset($_GET['Book_ID']) ? $_GET['Book_ID'] : die('ERROR: Book ID not found.');
+    
+        $database = new Database();
+        $db = $database->getConnect();
+    
+        $book = new Books($db);
+        $book->Book_ID = $id;
+    
+        $reservation = new Reservations($db);
+        $query = "SELECT id, first_name, last_name, username, email, address, phone_number FROM users WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id', $_SESSION['id']);
+        $stmt->execute();
+    
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$user) {
+            echo "Error: User details not found.";
+            exit;
         }
+    
+        $stmt = $book->readID();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$row) {
+            die('ERROR: No data found for the given Book ID.');
+        }
+    
+        $book->Book_ID = $row['Book_ID'];
+        $book->Book_Title = $row['Book_Title'];
+        $book->Book_Author = $row['Book_Author'];
+        $book->Book_ISBN = $row['Book_ISBN'];
+        $book->Published_Year = $row['Published_Year'];
+        $book->Book_Genre = $row['Book_Genre'];
+        $book->Book_Publisher = $row['Book_Publisher'];
+        $book->Available_Copies = $row['Available_Copies'];
     ?>
 
+    <form method="POST" action="">
+        <div class="form-header">
+            <button type="button" onclick="window.history.back();" title="Go back">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Reservation Form</h1>
+            <p>Please provide the required details to reserve a book.</p>
+        </div>
+        
+        <input type="hidden" name="book_id" value="<?php echo $book->Book_ID; ?>">
+        
+        <div class="left-column">
+            <h3>Book Information</h3>
+            <span style="color: #727D3D;">Book Title:</span><br>
+            <input type="text" name="Book_Title" value="<?php echo htmlspecialchars($book->Book_Title, ENT_QUOTES); ?>" readonly><br>
 
+            <span style="color: #727D3D;">Book Author:</span><br>
+            <input type="text" name="Book_Author" value="<?php echo htmlspecialchars($book->Book_Author, ENT_QUOTES); ?>" readonly><br>
+
+            <span style="color: #727D3D;">Book ISBN:</span><br>
+            <input type="text" name="Book_ISBN" value="<?php echo htmlspecialchars($book->Book_ISBN, ENT_QUOTES); ?>" readonly><br>
+
+            <span style="color: #727D3D;">Published Year:</span><br>
+            <input type="text" name="Published_Year" value="<?php echo htmlspecialchars($book->Published_Year, ENT_QUOTES); ?>" readonly><br>
+        </div>
+        
+        <div class="right-column">
+            <h3>User Information</h3>
+            <span style="color: #727D3D;">Full Name:</span><br>
+            <input type="text" name="name" value="<?php echo htmlspecialchars($user['first_name']) . ' ' . htmlspecialchars($user['last_name']); ?>"><br>
+
+            <span style="color: #727D3D;">Email Address:</span><br>
+            <input type="text" name="email" value="<?php echo htmlspecialchars($user['email']); ?>"><br>
+
+            <span style="color: #727D3D;">Phone Number:</span><br>
+            <input type="text" name="phone_number" value="<?php echo htmlspecialchars($user['phone_number']); ?>"><br>
+        </div>
+
+        <div class="bottom-column">
+            <h3>Reservation Details</h3>
+            <span style="color: #727D3D;">Reservation Date:</span><br>
+            <input type="date" name="reservation_date" value="<?php echo date('Y-m-d'); ?>" required readonly>
+
+            <span style="color: #727D3D;">Pick-Up Date:</span><br>
+            <input type="date" id="pickup_date" name="pickup_date" required>
+
+            <span style="color: #727D3D;">Duration:</span><br>
+            <select name="duration" id="duration" onchange="calculateExpectedReturnDate()" required>
+                <option value="7">7 days</option>
+                <option value="14">14 days</option>
+                <option value="21">21 days</option>
+            </select>
+
+            <span style="color: #727D3D;">Expected Return Date:</span><br>
+            <input type="date" id="expected_return_date" name="expected_return_date" readonly required>
+
+            <span style="color: #727D3D;">Notes/Comments:</span><br>
+            <textarea name="notes" rows="4" cols="50"></textarea>
+        </div>
+
+        <script> 
+            function calculateExpectedReturnDate() {
+                var duration = parseInt(document.getElementById('duration').value);
+                var pickupDate = document.getElementById('pickup_date').value;
+                
+                if (pickupDate) {
+                    var pickupDateObj = new Date(pickupDate);
+                    pickupDateObj.setDate(pickupDateObj.getDate() + duration);
+                    var expectedReturnDate = pickupDateObj.toISOString().split('T')[0];
+                    document.getElementById('expected_return_date').value = expectedReturnDate;
+                } else {
+                    alert('Please select a pickup date first.');
+                }
+            }
+            document.getElementById('pickup_date').addEventListener('change', calculateExpectedReturnDate);
+        </script>
+
+        <input type="checkbox" id="terms" name="terms" required> I agree to the terms and conditions
+        <input type="submit" value="Submit">
+    </form>
+
+    <?php
+    
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $database = new Database();
+        $db = $database->getConnect();
+        $reservation = new Reservations($db);
+        $book = new Books($db);
+        $notification = new Notifications($db);
+
+        $Book_ID = isset($_POST['book_id']) ? $_POST['book_id'] : die('ERROR: Book ID not found.');
+        $book->Book_ID = $Book_ID;
+        
+        $stmt = $book->readID();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$row) {
+            die('ERROR: No data found for the given Book ID.');
+        }
+
+        $reservation->book_id = $Book_ID;
+        $reservation->name = htmlspecialchars(trim($_POST['name']));
+        $reservation->email = htmlspecialchars(trim($_POST['email']));
+        $reservation->phone_number = htmlspecialchars(trim($_POST['phone_number']));
+        $reservation->reservation_date = htmlspecialchars(trim($_POST['reservation_date']));
+        $reservation->pickup_date = htmlspecialchars(trim($_POST['pickup_date']));
+        $reservation->duration = htmlspecialchars(trim($_POST['duration']));
+        $reservation->expected_return_date = htmlspecialchars(trim($_POST['expected_return_date']));
+        $reservation->notes = htmlspecialchars(trim($_POST['notes']));
+
+        if ($reservation->create()) {
+
+            $notification->pendingBooking($reservation->name, $book->Book_Title); //created notification
+            $_SESSION['notification_message'] = "Dear " . $reservation->name . ", your booking for the book '" . $book->Book_Title . "' is pending approval.";
+            $title = "Pending Book Borrowing Request";
+            $message = htmlspecialchars($_SESSION['notification_message']);
+            echo "<script>
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: 'success',
+                title: 'Signed in successfully'
+            }).then(() => {
+                window.location.href = 'homepage.php';
+            });
+        </script>";
+        
+        
+            
+        } else {
+            echo "<script>
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error creating form',
+                icon: 'error',
+                confirmButtonText: 'Try Again',
+                background: '#fff',
+                backdrop: true,
+            }).then(() => {
+                window.location.href = 'homepage.php';
+            });
+          </script>";        }
+    }
+    ?>
 </body>
-
 </html>

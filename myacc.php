@@ -6,17 +6,22 @@ require_once 'Database/crud.php';
 $database = new Database();
 $db = $database->getConnect();
 
-$query = "SELECT user_id, first_name, last_name, username, email, address, phone_number FROM users WHERE user_id = :user_id";
-$stmt = $db->prepare($query);
-$stmt->bindParam(':user_id', $_SESSION['id']);
-$stmt->execute();
 
+$user = new Users($db);
+$stmt = $user->getUserDetails($_SESSION['id']); 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
 if (!$user) {
     echo "Error: User details not found.";
     exit;
 }
+
+$reservation = new Reservations($db);
+$stmt = $reservation->getUserReservations($_SESSION['id']);
+$reservation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +31,10 @@ if (!$user) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account</title>
     <link rel="stylesheet" href="./CSS/myacc.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 </head>
 <body>
     <header class="header">
@@ -67,8 +76,51 @@ if (!$user) {
                     <td><?php echo htmlspecialchars($user['phone_number']); ?></td>
                 </tr>
             </table>
-            <a href="logout.php" class="logout-btn">Log Out</a>
         </div>
     </section>
+    <section id="bookBorrow">
+    <div class="container">
+        <h2>Book Borrowing Details</h2>
+        <?php
+        if (empty($reservation)) {
+            echo "<p>You have not borrowed books yet. Borrow now and start reading!</p>";
+        } else {
+        ?>
+            <table id="reservationTable" class="display">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Author</th>
+                        <th>Reservation Date</th>
+                        <th>Pickup Date</th>
+                        <th>Duration (Days)</th>
+                        <th>Expected Return Date</th>
+                        <th>Notes</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($reservation as $reservation) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($reservation['Book_Title']); ?></td>
+                        <td><?php echo htmlspecialchars($reservation['Book_Author']); ?></td>
+                        <td><?php echo htmlspecialchars($reservation['reservation_date']); ?></td>
+                        <td><?php echo htmlspecialchars($reservation['pickup_date']); ?></td>
+                        <td><?php echo htmlspecialchars($reservation['duration']); ?></td>
+                        <td><?php echo htmlspecialchars($reservation['expected_return_date']); ?></td>
+                        <td><?php echo htmlspecialchars($reservation['notes']); ?></td>
+                        <td><?php echo htmlspecialchars($reservation['status']); ?></td>
+                        <td><a href="cancelReservation.php?reservation_id=<?php echo $reservation['reservation_id']; ?>" class="button">Cancel Borrowing</a></td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        <?php
+        }
+        ?>
+        <a href="logout.php" class="logout-btn">Log Out</a>
+    </div>
+</section>
 </body>
 </html>

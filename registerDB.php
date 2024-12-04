@@ -4,14 +4,12 @@ require_once './Database/crud.php';
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Initialize database connection
+
     $database = new Database();
     $db = $database->getConnect();
 
-    // Initialize the Users object
     $user = new Users($db);
 
-    // Sanitize and collect form data
     $username = htmlspecialchars(trim($_POST['username']));
     $first_name = htmlspecialchars(trim($_POST['first_name']));
     $last_name = htmlspecialchars(trim($_POST['last_name']));
@@ -61,10 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Hash the password
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    // Populate the user object
     $user->username = $username;
     $user->first_name = $first_name;
     $user->last_name = $last_name;

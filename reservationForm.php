@@ -33,8 +33,7 @@
         $book = new Books($db);
         $book->Book_ID = $id;
     
-        $reservation = new Reservations($db);
-        $query = "SELECT user_id, first_name, last_name, username, email, address, phone_number FROM users WHERE user_id = :user_id";
+        $query = "SELECT first_name, last_name, email, phone_number FROM users WHERE user_id = :user_id";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':user_id', $_SESSION['id']);
         $stmt->execute();
@@ -102,9 +101,9 @@
         </div>
 
         <div class="bottom-column">
-            <h3>Reservation Details</h3>
-            <span style="color: #727D3D;">Reservation Date:</span><br>
-            <input type="date" name="reservation_date" value="<?php echo date('Y-m-d'); ?>" required readonly>
+        <h3>Reservation Details</h3>
+            <span style="color: #727D3D;">Reservation Date and Time:</span><br>
+            <input type="datetime-local" name="reservation_date" value="<?php echo date('Y-m-d\TH:i'); ?>" required readonly> <br>
 
             <span style="color: #727D3D;">Pick-Up Date:</span><br>
             <input type="date" id="pickup_date" name="pickup_date" required>
@@ -145,74 +144,90 @@
     </form>
 
     <?php
+    $database = new Database();
+    $db = $database->getConnect();
+
+    $reservation = new Reservations($db);
+    $book = new Books($db);
+    $notification = new Notifications($db);
     
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $database = new Database();
-        $db = $database->getConnect();
-        $reservation = new Reservations($db);
-        $book = new Books($db);
-        $notification = new Notifications($db);
+    $reservation->getNoOfActiveReservations($_SESSION['id']);
+    $reservation_count = $stmt->fetchColumn();
 
-        $Book_ID = isset($_POST['book_id']) ? $_POST['book_id'] : die('ERROR: Book ID not found.');
-        $book->Book_ID = $Book_ID;
-        
-        $stmt = $book->readID();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$row) {
-            die('ERROR: No data found for the given Book ID.');
-        }
-
-        $reservation->book_id = $Book_ID;
-        $reservation->name = htmlspecialchars(trim($_POST['name']));
-        $reservation->email = htmlspecialchars(trim($_POST['email']));
-        $reservation->phone_number = htmlspecialchars(trim($_POST['phone_number']));
-        $reservation->reservation_date = htmlspecialchars(trim($_POST['reservation_date']));
-        $reservation->pickup_date = htmlspecialchars(trim($_POST['pickup_date']));
-        $reservation->duration = htmlspecialchars(trim($_POST['duration']));
-        $reservation->expected_return_date = htmlspecialchars(trim($_POST['expected_return_date']));
-        $reservation->notes = htmlspecialchars(trim($_POST['notes']));
-
-        if ($reservation->create()) {
-
-            $notification->pendingBooking($reservation->name, $book->Book_Title); //created notification
-            $_SESSION['notification_message'] = "Dear " . $reservation->name . ", your booking for the book '" . $book->Book_Title . "' is pending approval.";
-            $title = "Pending Book Borrowing Request";
-            $message = htmlspecialchars($_SESSION['notification_message']);
-            echo "<script>
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
-            });
-            Toast.fire({
-                icon: 'success',
-                title: 'Signed in successfully'
-            }).then(() => {
-                window.location.href = 'homepage.php';
-            });
-        </script>";
-            
-        } else {
-            echo "<script>
-            Swal.fire({
-                title: 'Error!',
-                text: 'Error creating form',
-                icon: 'error',
-                confirmButtonText: 'Try Again',
-                background: '#fff',
-                backdrop: true,
-            }).then(() => {
-                window.location.href = 'homepage.php';
-            });
-          </script>";        }
+    if ($reservation_count > 3 && $status = "Approved") {
+        echo "You have 3 active borrowed books, please finish your current borrowed books";
     }
-    ?>
+    else {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            
+    
+            $user_id = $_SESSION ['id'];
+    
+            $Book_ID = isset($_POST['book_id']) ? $_POST['book_id'] : die('ERROR: Book ID not found.');
+            $book->Book_ID = $Book_ID;
+            
+            $stmt = $book->readID();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$row) {
+                die('ERROR: No data found for the given Book ID.');
+            }
+    
+            $reservation->book_id = $Book_ID;
+            $reservation->name = htmlspecialchars(trim($_POST['name']));
+            $reservation->email = htmlspecialchars(trim($_POST['email']));
+            $reservation->phone_number = htmlspecialchars(trim($_POST['phone_number']));
+            $reservation->reservation_date = htmlspecialchars(trim($_POST['reservation_date']));
+            $reservation->pickup_date = htmlspecialchars(trim($_POST['pickup_date']));
+            $reservation->duration = htmlspecialchars(trim($_POST['duration']));
+            $reservation->expected_return_date = htmlspecialchars(trim($_POST['expected_return_date']));
+            $reservation->notes = htmlspecialchars(trim($_POST['notes']));
+            $reservation->user_id = $user_id;
+    
+            if ($reservation->create()) {
+    
+                $notification->pendingBooking($reservation->name, $book->Book_Title); //created notification
+                $_SESSION['notification_message'] = "Dear " . $reservation->name . ", your booking for the book '" . $book->Book_Title . "' is pending approval.";
+                $title = "Pending Book Borrowing Request";
+                $message = htmlspecialchars($_SESSION['notification_message']);
+                echo "<script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Pending Book Borrowing Approval'
+                }).then(() => {
+                    window.location.href = 'homepage.php';
+                });
+            </script>";
+                
+            } else {
+                echo "<script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error creating form',
+                    icon: 'error',
+                    confirmButtonText: 'Try Again',
+                    background: '#fff',
+                    backdrop: true,
+                }).then(() => {
+                    window.location.href = 'homepage.php';
+                });
+              </script>";        
+            }
+        }
+    }
+        ?>
+          
+    
 </body>
 </html>

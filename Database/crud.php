@@ -3,7 +3,7 @@ class Users {
     private $conn;
     private $tbl_name = "users";
 
-    public $id;
+    public $user_id;
     public $username;
     public $first_name;
     public $last_name;
@@ -86,22 +86,21 @@ class Users {
     public function readID(){
         $query = "SELECT username, first_name, last_name, email, address, phone_number 
               FROM " . $this->tbl_name . " 
-              WHERE id = :id LIMIT 0,1";
+              WHERE user_id = :user_id LIMIT 0,1";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $this->user_id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt;
     }
 
-    
     public function update() {
         $query = "UPDATE " . $this->tbl_name . " 
                   SET username = :username, first_name = :first_name, last_name = :last_name, email = :email, address = :address, phone_number = :phone_number, roles = :roles, status = :status
-                  WHERE id = :id";
+                  WHERE user_id = :user_id";
     
         $stmt = $this->conn->prepare($query);
         
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':user_id', $this->user_id);
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':first_name', $this->first_name);
         $stmt->bindParam(':last_name', $this->last_name);
@@ -120,7 +119,7 @@ class Users {
     public function updatePassword() {
         $query = "UPDATE " . $this->tbl_name . " 
                   SET password = :password
-                  WHERE id = :id";
+                  WHERE user_id = :user_id";
     
         $stmt = $this->conn->prepare($query);
 
@@ -131,12 +130,13 @@ class Users {
         }
         return false;
     }
-    public function getUserDetails($userId) {
-        $query = "SELECT username, email, phone_number FROM " . $this->tbl_name . " WHERE id = :userId";
+    public function getUserDetails($user_id) {
+        $query = "SELECT user_id, first_name, last_name, username, email, address, phone_number FROM users WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id); //bind user id
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $stmt;
     }
     
     
@@ -274,6 +274,7 @@ class Reservations {
     public $expected_return_date;
     public $status; // pending, active, cancelled
     public $notes;
+    public $user_id;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -281,8 +282,8 @@ class Reservations {
 
     // Function to create a new reservation
     public function create() {
-        $query = "INSERT INTO " . $this->tbl_name . " (book_id, name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, status, notes)
-          VALUES (:book_id, :name, :email, :phone_number, :reservation_date, :pickup_date, :duration, :expected_return_date, :status, :notes)";
+        $query = "INSERT INTO " . $this->tbl_name . " (book_id, name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, status, notes, user_id)
+          VALUES (:book_id, :name, :email, :phone_number, :reservation_date, :pickup_date, :duration, :expected_return_date, :status, :notes, :user_id)";
 
         $stmt = $this->conn->prepare($query);
         
@@ -299,6 +300,7 @@ class Reservations {
         $stmt->bindParam(':expected_return_date', $this->expected_return_date);
         $stmt->bindParam(':status', $defaultStatus); //set 
         $stmt->bindParam(':notes', $this->notes);
+        $stmt->bindParam(':user_id', $this->user_id);
 
         // Execute the query
         if ($stmt->execute()) {
@@ -310,7 +312,7 @@ class Reservations {
 
     // Function to read reservation list
     public function read() {
-        $query = "SELECT * FROM reservations";
+        $query = "SELECT * FROM " . $this->tbl_name;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
@@ -323,17 +325,32 @@ class Reservations {
         $stmt->bindParam(':reservation_id', $reservation_id);
         $stmt->execute();
     }
-    function getUserReservations($userId) {
+    public function getUserReservations($user_id) {
         $query = "SELECT 
-                    books.Book_Title, books.Book_Author, reservations.status 
-                  FROM reservations 
-                  INNER JOIN books ON reservations.book_id = books.id 
-                  WHERE reservations.user_id = :userId";
+                    b.Book_Title, 
+                    b.Book_Author, 
+                    r.reservation_date,
+                    r.pickup_date,
+                    r.duration,
+                    r.expected_return_date,
+                    r.notes,
+                    r.status,
+                    r.reservation_id
+                 FROM " . $this->tbl_name . " r 
+                 INNER JOIN books b ON r.book_id = b.Book_ID
+                 WHERE r.user_id = :user_id";
+    
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } 
+        return $stmt;
+    }
+
+    function getNoOfActiveReservations($user_id) {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM reservation WHERE user_id = :user_id AND status = 'Approved'");
+        $stmt->bindParam(':user_id', $_SESSION['id']);
+        $stmt->execute();
+    }
    
     
 

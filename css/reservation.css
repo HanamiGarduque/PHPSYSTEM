@@ -134,11 +134,11 @@ legend {
 fieldset:first-of-type {
     height: calc(100% - 1.5rem); /* Adjust for margin-bottom */
 }
-
 /* Input styles */
 input[type="text"],
 input[type="date"],
 input[type="email"],
+input[type="datetime-local"], /* Added datetime-local */
 select,
 textarea {
     width: 100%;
@@ -154,6 +154,7 @@ input[readonly] {
     background-color: #f5f5f500;
     cursor: not-allowed;
 }
+
 
 /* Select dropdown styles */
 select {

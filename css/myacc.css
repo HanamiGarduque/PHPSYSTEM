@@ -1,8 +1,12 @@
+:root {
+    --olive-green: #727D3D;
+    --yellow: #F7E135;
+}
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Inter';
 }
 
 body {
@@ -14,7 +18,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0);
 }
 
 .logo {
@@ -37,7 +41,7 @@ body {
 
 #myAccount {
     padding: 2rem 0;
-    background-color: #f8f9fa;
+
 }
 
 .container {
@@ -58,6 +62,17 @@ h2 {
     margin-bottom: 2rem;
     border-collapse: collapse;
     text-align: left;
+}
+
+.button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--olive-green);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-align: center;
 }
 
 .account-table th,
@@ -89,4 +104,33 @@ h2 {
 
 .logout-btn:hover {
     background-color: #e74c3c;
+}
+
+table {
+    margin: 3rem auto;
+    width: 80%;
+    border-collapse: collapse;
+    padding: 2rem;
+}
+
+table thead th,
+table tbody td {
+    padding: 10px;
+    border: 1px solid var(--olive-green);
+    text-align: left;
+}
+
+.button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--olive-green);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #d4b000;
 }

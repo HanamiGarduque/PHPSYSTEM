@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>   
+
+<body>
     <header class="header">
         <div class="logo"></div>
         <nav class="nav">
@@ -19,47 +21,47 @@
             <a href="myacc.php">My Account</a>
         </nav>
     </header>
-    
+
     <?php
-        require_once 'check_session.php';
-        require_once './Database/database.php';
-        require_once './Database/crud.php';
-    
-        $id = isset($_GET['Book_ID']) ? $_GET['Book_ID'] : die('ERROR: Book ID not found.');
-    
-        $database = new Database();
-        $db = $database->getConnect();
-    
-        $book = new Books($db);
-        $book->Book_ID = $id;
-    
-        $query = "SELECT first_name, last_name, email, phone_number FROM users WHERE user_id = :user_id";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':user_id', $_SESSION['id']);
-        $stmt->execute();
-    
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-        if (!$user) {
-            echo "Error: User details not found.";
-            exit;
-        }
-    
-        $stmt = $book->readID();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-        if (!$row) {
-            die('ERROR: No data found for the given Book ID.');
-        }
-    
-        $book->Book_ID = $row['Book_ID'];
-        $book->Book_Title = $row['Book_Title'];
-        $book->Book_Author = $row['Book_Author'];
-        $book->Book_ISBN = $row['Book_ISBN'];
-        $book->Published_Year = $row['Published_Year'];
-        $book->Book_Genre = $row['Book_Genre'];
-        $book->Book_Publisher = $row['Book_Publisher'];
-        $book->Available_Copies = $row['Available_Copies'];
+    require_once 'check_session.php';
+    require_once './Database/database.php';
+    require_once './Database/crud.php';
+
+    $id = isset($_GET['Book_ID']) ? $_GET['Book_ID'] : die('ERROR: Book ID not found.');
+
+    $database = new Database();
+    $db = $database->getConnect();
+
+    $book = new Books($db);
+    $book->Book_ID = $id;
+
+    $query = "SELECT first_name, last_name, email, phone_number FROM users WHERE user_id = :user_id";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':user_id', $_SESSION['id']);
+    $stmt->execute();
+
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user) {
+        echo "Error: User details not found.";
+        exit;
+    }
+
+    $stmt = $book->readID();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row) {
+        die('ERROR: No data found for the given Book ID.');
+    }
+
+    $book->Book_ID = $row['Book_ID'];
+    $book->Book_Title = $row['Book_Title'];
+    $book->Book_Author = $row['Book_Author'];
+    $book->Book_ISBN = $row['Book_ISBN'];
+    $book->Published_Year = $row['Published_Year'];
+    $book->Book_Genre = $row['Book_Genre'];
+    $book->Book_Publisher = $row['Book_Publisher'];
+    $book->Available_Copies = $row['Available_Copies'];
     ?>
 
     <form method="POST" action="">
@@ -70,9 +72,9 @@
             <h1>Book Borrowing Form</h1>
             <p>Please provide the required details to reserve a book.</p>
         </div>
-        
+
         <input type="hidden" name="book_id" value="<?php echo $book->Book_ID; ?>">
-        
+
         <div class="left-column">
             <h3>Book Information</h3>
             <span style="color: #727D3D;">Book Title:</span><br>
@@ -87,7 +89,7 @@
             <span style="color: #727D3D;">Published Year:</span><br>
             <input type="text" name="Published_Year" value="<?php echo htmlspecialchars($book->Published_Year, ENT_QUOTES); ?>" readonly><br>
         </div>
-        
+
         <div class="right-column">
             <h3>User Information</h3>
             <span style="color: #727D3D;">Full Name:</span><br>
@@ -101,7 +103,7 @@
         </div>
 
         <div class="bottom-column">
-        <h3>Reservation Details</h3>
+            <h3>Reservation Details</h3>
             <span style="color: #727D3D;">Reservation Date and Time:</span><br>
             <input type="datetime-local" name="reservation_date" value="<?php echo date('Y-m-d\TH:i'); ?>" required readonly> <br>
 
@@ -122,11 +124,11 @@
             <textarea name="notes" rows="4" cols="50"></textarea>
         </div>
 
-        <script> 
+        <script>
             function calculateExpectedReturnDate() {
                 var duration = parseInt(document.getElementById('duration').value);
                 var pickupDate = document.getElementById('pickup_date').value;
-                
+
                 if (pickupDate) {
                     var pickupDateObj = new Date(pickupDate);
                     pickupDateObj.setDate(pickupDateObj.getDate() + duration);
@@ -150,9 +152,9 @@
     $reservation = new Reservations($db);
     $book = new Books($db);
     $notification = new Notifications($db);
-    
-    $reservation_count= $reservation->getNoOfActiveReservations($_SESSION['id']);
-    
+
+    $reservation_count = $reservation->getNoOfActiveReservations($_SESSION['id']);
+
 
     if ($reservation_count > 3) {
         echo "<script>
@@ -170,20 +172,20 @@
         exit();
     } else {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            
-    
-            $user_id = $_SESSION ['id'];
-    
+
+
+            $user_id = $_SESSION['id'];
+
             $Book_ID = isset($_POST['book_id']) ? $_POST['book_id'] : die('ERROR: Book ID not found.');
             $book->Book_ID = $Book_ID;
-            
+
             $stmt = $book->readID();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!$row) {
                 die('ERROR: No data found for the given Book ID.');
             }
-    
+
             $reservation->book_id = $Book_ID;
             $reservation->name = htmlspecialchars(trim($_POST['name']));
             $reservation->email = htmlspecialchars(trim($_POST['email']));
@@ -194,9 +196,9 @@
             $reservation->expected_return_date = htmlspecialchars(trim($_POST['expected_return_date']));
             $reservation->notes = htmlspecialchars(trim($_POST['notes']));
             $reservation->user_id = $user_id;
-    
+
             if ($reservation->create()) {
-    
+
                 $notification->pendingBooking($reservation->name, $book->Book_Title); //created notification
                 $_SESSION['notification_message'] = "Dear " . $reservation->name . ", your booking for the book '" . $book->Book_Title . "' is pending approval.";
                 $title = "Pending Book Borrowing Request";
@@ -220,7 +222,6 @@
                     window.location.href = 'homepage.php';
                 });
             </script>";
-                
             } else {
                 echo "<script>
                 Swal.fire({
@@ -233,12 +234,13 @@
                 }).then(() => {
                     window.location.href = 'homepage.php';
                 });
-              </script>";        
+              </script>";
             }
         }
     }
-        ?>
-          
-    
+    ?>
+
+
 </body>
+
 </html>

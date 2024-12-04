@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '../../Admin/Book Management/bookManagement.php';
+                window.location.href = '../../Admin/BookManagement/bookManagement.php';
             }
         });
         </script>
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '../../Admin/Book Management/bookManagement.php';
+                window.location.href = '../../Admin/BookManagement/bookManagement.php';
             }
         });
         </script>

@@ -1,4 +1,10 @@
-    <!DOCTYPE html>
+<?php
+require_once '../../check_session.php';
+require_once '../../Database/database.php';
+require_once '../../Database/crud.php';
+ensureAdminAccess();
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,10 +24,7 @@
   
     <div class="container">
         <?php
-            require_once '../../Database/database.php';
-            require_once '../../Database/crud.php';
             
-    
             $id = isset($_GET['user_id']) ? $_GET['user_id'] : die('ERROR: User ID not found.');
     
             $database = new Database();
@@ -45,7 +48,7 @@
     
         <h2>Profile Information</h2>
         <form method="POST" action="">
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($user_id, ENT_QUOTES); ?>">
+            <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($id, ENT_QUOTES); ?>">
             Username: <br>
             <input type="text" name="username" value="<?php echo htmlspecialchars($user->username, ENT_QUOTES); ?>"><br>
             First Name: <br>
@@ -67,9 +70,10 @@
             </select><br>
             Account Status:
             <select name="status" id="status">
-                <option value="Active" <?php echo $user->roles == 'Active' ? 'selected' : ''; ?>>Active</option>
-                <option value="Suspended" <?php echo $user->roles == 'Suspended' ? 'selected' : ''; ?>>Suspended</option>
+                <option value="Active" <?php echo $user->status == 'Active' ? 'selected' : ''; ?>>Active</option>
+                <option value="Suspended" <?php echo $user->status == 'Suspended' ? 'selected' : ''; ?>>Suspended</option>
             </select><br>
+
             <input type="submit" value="Update User">
         </form>
 

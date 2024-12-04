@@ -43,7 +43,7 @@ if (isset($_SESSION['notification_message'])) {
     <header class="header">
         <div class="logo"></div>
         <nav class="nav">
-            <a href="homepage.php">Home</a>
+            <a href="homepage.php" style="color: #F7E135;">Home</a>
             <a href="search_catalog.php">Search a Book</a>
             <a href="notifications.php">Notifications</a>
             <a href="myacc.php">My Account</a>

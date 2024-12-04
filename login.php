@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $database = new Database();
     $db = $database->getConnect();
 
-    $query = "SELECT id, first_name, last_name, password, roles, status FROM users WHERE email = :email LIMIT 1";
+    $query = "SELECT user_id, first_name, last_name, password, roles, status FROM users WHERE email = :email LIMIT 1";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':email', $inputEmail);
     $stmt->execute();
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Verify password
         if (password_verify($inputPassword, $hashedPassword)) {
-            $_SESSION['id'] = $row['id']; 
+            $_SESSION['id'] = $row['user_id']; 
             $_SESSION['first_name'] = $row['first_name'];
             $_SESSION['last_name'] = $row['last_name'];
             $_SESSION['role'] = $role;

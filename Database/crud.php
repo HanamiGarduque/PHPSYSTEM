@@ -316,11 +316,11 @@ class Reservations {
 
         return $stmt;
     }
-    public function setStatus($status) { //pending, active, cancelled, overdue ADMIN
+    public function setStatus($reservation_id, $status) { //pending, active ADMIN, cancelled, done ADMIN, overdue ADMIN
         $query = "UPDATE " . $this->tbl_name . " SET status = :status WHERE reservation_id = :reservation_id LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':reservation_id', $this->reservation_id);
+        $stmt->bindParam(':reservation_id', $reservation_id);
         $stmt->execute();
     }
     function getUserReservations($userId) {

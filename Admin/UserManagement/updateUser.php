@@ -22,13 +22,13 @@
             require_once '../../Database/crud.php';
             
     
-            $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: User ID not found.');
+            $id = isset($_GET['user_id']) ? $_GET['user_id'] : die('ERROR: User ID not found.');
     
             $database = new Database();
             $db = $database->getConnect();
     
             $user = new Users($db);
-            $user->id = $id;
+            $user->user_id = $id;
     
             $stmt = $user->readID();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -45,7 +45,7 @@
     
         <h2>Profile Information</h2>
         <form method="POST" action="">
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($id, ENT_QUOTES); ?>">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($user_id, ENT_QUOTES); ?>">
             Username: <br>
             <input type="text" name="username" value="<?php echo htmlspecialchars($user->username, ENT_QUOTES); ?>"><br>
             First Name: <br>
@@ -78,7 +78,7 @@
         
         <?php
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $id = isset($_POST['id']) ? $_POST['id'] : die('ERROR: User ID not found.');
+                $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : die('ERROR: User ID not found.');
                 $username = isset($_POST['username']) ? $_POST['username'] : '';
                 $first_name = isset($_POST['first_name']) ? $_POST['first_name'] : '';
                 $last_name = isset($_POST['last_name']) ? $_POST['last_name'] : '';
@@ -88,7 +88,7 @@
                 $roles = isset($_POST['roles']) ? $_POST['roles'] : '';
                 $status = isset($_POST['status']) ? $_POST['status'] : '';
             
-                $user->id = $id;
+                $user->user_id = $user_id;
                 $user->username = $username;
                 $user->first_name = $first_name;
                 $user->last_name = $last_name;

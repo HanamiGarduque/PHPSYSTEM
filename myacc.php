@@ -6,9 +6,9 @@ require_once 'Database/crud.php';
 $database = new Database();
 $db = $database->getConnect();
 
-$query = "SELECT id, first_name, last_name, username, email, address, phone_number FROM users WHERE id = :id";
+$query = "SELECT user_id, first_name, last_name, username, email, address, phone_number FROM users WHERE user_id = :user_id";
 $stmt = $db->prepare($query);
-$stmt->bindParam(':id', $_SESSION['id']);
+$stmt->bindParam(':user_id', $_SESSION['id']);
 $stmt->execute();
 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -32,9 +32,9 @@ if (!$user) {
         <div class="logo"></div>
         <nav class="nav">
             <a href="homepage.php">Home</a>
-            <a href="search_catalog.php">Search</a>
-            <a href="#Services">Borrow History</a>
-            <a href="myAccount.php">My Account</a>
+            <a href="search_catalog.php">Search a Book</a>
+            <a href="notifications.php">Notifications</a>
+            <a href="myacc.php" style="color: #F7E135;">My Account</a>
         </nav>
     </header>
 

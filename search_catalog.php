@@ -98,7 +98,7 @@ $conn = null;
         <div class="logo"></div>
         <nav class="nav">
             <a href="homepage.php">Home</a>
-            <a href="search_catalog.php">Search a Book</a>
+            <a href="search_catalog.php" style="color: #F7E135;">Search a Book</a>
             <a href="notifications.php">Notifications</a>
             <a href="myacc.php">My Account</a>
         </nav>

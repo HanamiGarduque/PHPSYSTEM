@@ -34,9 +34,9 @@
         $book->Book_ID = $id;
     
         $reservation = new Reservations($db);
-        $query = "SELECT id, first_name, last_name, username, email, address, phone_number FROM users WHERE id = :id";
+        $query = "SELECT user_id, first_name, last_name, username, email, address, phone_number FROM users WHERE user_id = :user_id";
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':id', $_SESSION['id']);
+        $stmt->bindParam(':user_id', $_SESSION['id']);
         $stmt->execute();
     
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -68,7 +68,7 @@
             <button type="button" onclick="window.history.back();" title="Go back">
                 <i class="fas fa-arrow-left"></i>
             </button>
-            <h1>Reservation Form</h1>
+            <h1>Book Borrowing Form</h1>
             <p>Please provide the required details to reserve a book.</p>
         </div>
         
@@ -198,8 +198,6 @@
                 window.location.href = 'homepage.php';
             });
         </script>";
-        
-        
             
         } else {
             echo "<script>

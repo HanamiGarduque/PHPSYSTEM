@@ -68,7 +68,7 @@
                         if($num > 0) {
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                                 echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['user_id']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['username']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['first_name']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['last_name']) . "</td>";
@@ -77,7 +77,7 @@
                                 echo "<td>" . htmlspecialchars($row['phone_number']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['roles']) . "</td>";                    
                                 echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                                echo "<td><a href='updateUser.php?id=" . htmlspecialchars($row['id']) . "'>Edit</a></td>";
+                                echo "<td><a href='updateUser.php?user_id=" . htmlspecialchars($row['user_id']) . "'>Edit</a></td>";
                                 echo "</tr>";
                             }
                         }

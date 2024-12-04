@@ -178,6 +178,7 @@ class Books {
         }
         return false;
     }
+
     public function read10Books(){
         $query = "SELECT * FROM " .$this->tbl_name. " LIMIT 10";
         $stmt = $this->conn->prepare($query);
@@ -185,6 +186,7 @@ class Books {
 
         return $stmt;
     }
+
     public function read(){
         $query = "SELECT * FROM " .$this->tbl_name;
         $stmt = $this->conn->prepare($query);
@@ -246,7 +248,6 @@ class Books {
         $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies - 1 WHERE Book_ID = :Book_ID";
         $stmt = $this->conn->prepare($query);
     
-        // Bind the Book_ID to the query
         $stmt->bindParam(':Book_ID', $this->Book_ID);
     
         if ($stmt->execute()) {
@@ -263,7 +264,7 @@ class Reservations {
     private $tbl_name = "reservation";
 
 
-    public $book_id; // foreign key
+    public $book_id;
     public $reservation_id;
     public $name;
     public $email;
@@ -272,7 +273,7 @@ class Reservations {
     public $pickup_date;
     public $duration;
     public $expected_return_date;
-    public $status; // pending, active, cancelled
+    public $status;
     public $notes;
     public $user_id;
 
@@ -280,14 +281,12 @@ class Reservations {
         $this->conn = $db;
     }
 
-    // Function to create a new reservation
     public function create() {
         $query = "INSERT INTO " . $this->tbl_name . " (book_id, name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, status, notes, user_id)
           VALUES (:book_id, :name, :email, :phone_number, :reservation_date, :pickup_date, :duration, :expected_return_date, :status, :notes, :user_id)";
 
         $stmt = $this->conn->prepare($query);
         
-        // Bind parameters
         $defaultStatus = 'Pending Approval';
         
         $stmt->bindParam(':book_id', $this->book_id);
@@ -302,7 +301,6 @@ class Reservations {
         $stmt->bindParam(':notes', $this->notes);
         $stmt->bindParam(':user_id', $this->user_id);
 
-        // Execute the query
         if ($stmt->execute()) {
             return true;
         }
@@ -310,7 +308,6 @@ class Reservations {
         return false;
     }
 
-    // Function to read reservation list
     public function read() {
         $query = "SELECT * FROM " . $this->tbl_name;
         $stmt = $this->conn->prepare($query);
@@ -318,6 +315,7 @@ class Reservations {
 
         return $stmt;
     }
+
     public function setStatus($reservation_id, $status) { //pending, active ADMIN, cancelled, done ADMIN, overdue ADMIN
         $query = "UPDATE " . $this->tbl_name . " SET status = :status WHERE reservation_id = :reservation_id LIMIT 1";
         $stmt = $this->conn->prepare($query);
@@ -325,6 +323,7 @@ class Reservations {
         $stmt->bindParam(':reservation_id', $reservation_id);
         $stmt->execute();
     }
+    
     public function getUserReservations($user_id) {
         $query = "SELECT 
                     b.Book_Title, 
@@ -363,7 +362,7 @@ class Notifications{
 
 
     public $notification_id;
-    public $user_id; //foreign key
+    public $user_id;
     public $message;
 
 
@@ -383,7 +382,6 @@ class Notifications{
             return false;
         }
     }
-    
 
     public function createNotification($title, $message, $type){
 
@@ -394,16 +392,12 @@ class Notifications{
         echo "</div><br>";
     }
 
-
-    // Notification for pending booking
     public function pendingBooking($userName, $bookTitle) {
         $message = "Dear $userName, thank you for submitting your request to borrow the book '$bookTitle'. Your booking is currently **pending approval**. You will be notified once the request is reviewed.";
         
         $this->saveNotification($message);
     }
     
-
-    // Notification for cancelled booking
     public function cancelledBooking($userName, $bookTitle){
         $this->createNotification(
             'Cancelled Book Borrowing Request',
@@ -412,7 +406,6 @@ class Notifications{
         );
     }
 
-    // Notification for approved booking
     public function approvedBooking($userName, $bookTitle){
         $this->createNotification(
             'Approved Booking',
@@ -421,7 +414,6 @@ class Notifications{
         );
     }
 
-    // Notification for successful signup
     public function successfulSignup($userName){
         $this->createNotification(
             'Signup Successful',
@@ -430,7 +422,6 @@ class Notifications{
         );
     }
 
-    // Notification for overdue booking
     public function overdueBooking($userName, $bookTitle){
         $this->createNotification(
             'Overdue Booking',
@@ -439,7 +430,6 @@ class Notifications{
         );
     }
 
-    // Notification for returned books
     public function returnedBooks($userName, $bookTitle){
         $this->createNotification(
             'Books Returned',
@@ -448,7 +438,6 @@ class Notifications{
         );
     }
 
-    // Notification for featured books (for example, a promotional notification)
     public function featuredBooks($bookTitle){
         $this->createNotification(
             'Featured Book',
@@ -456,12 +445,22 @@ class Notifications{
             'info'
         );
     }
+
     function getUserNotifications($userId) {
         $query = "SELECT subject, message FROM notifications WHERE user_id = :userId";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function read($user_id) {
+        $query = "SELECT message FROM " .$this->tbl_name. " WHERE user_id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+
+        return $stmt;
     }
 }
                                 

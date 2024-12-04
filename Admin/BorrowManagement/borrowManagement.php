@@ -74,7 +74,7 @@ $db = $database->getConnect();
 
                         <?php
                         $query = "SELECT reservation_id, name, email, phone_number, reservation_date, expected_return_date, pickup_date, 
-                                  duration, notes, status, Book_ID 
+                                  duration, notes, status, Book_ID
                                   FROM reservation";
                         $stmt = $db->prepare($query);
                         $stmt->execute();

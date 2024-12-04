@@ -1,3 +1,13 @@
+<?php
+require_once '../../check_session.php';
+require_once '../../Database/database.php';
+require_once '../../Database/crud.php';
+ensureAdminAccess();
+
+$database = new Database();
+$db = $database->getConnect();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,12 +65,7 @@
                     </thead>
                     <tbody>
                         <?php
-                        require_once '../../Database/database.php';
-                        require_once '../../Database/crud.php';
-
-                        $database = new Database();
-                        $db = $database->getConnect();
-
+                        
                         $user = new Users($db);
                         $stmt = $user->read();
                         $num = $stmt->rowCount();

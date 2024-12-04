@@ -69,8 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Verify password
         if (password_verify($inputPassword, $hashedPassword)) {
             $_SESSION['id'] = $row['user_id']; 
-            $_SESSION['first_name'] = $row['first_name'];
-            $_SESSION['last_name'] = $row['last_name'];
             $_SESSION['role'] = $role;
 
             if ($role === 'Admin') {

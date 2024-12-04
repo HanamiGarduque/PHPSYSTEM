@@ -1,4 +1,5 @@
 <?php
+require_once '../../check_session.php';
 require_once '../../Database/database.php';
 
 $database = new Database();
@@ -31,6 +32,22 @@ $db = $database->getConnect();
         $(document).ready(function () {
             $('#borrowTable').DataTable();
         });
+
+        function showConfirmation(reservationId, formId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to update the status of this reservation?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, update it!',
+                cancelButtonText: 'No, cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If user confirms, submit the form
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
     </script>
 </head>
 
@@ -67,20 +84,18 @@ $db = $database->getConnect();
                             <th>Notes</th>
                             <th>Status</th>
                             <th>Book ID</th>
-                            <th>Actions</th>
+                            <th>Set Status</th>
                         </tr>
                     </thead>
                     <tbody>
-
                         <?php
                         $query = "SELECT reservation_id, name, email, phone_number, reservation_date, expected_return_date, pickup_date, 
-                                  duration, notes, status, Book_ID
+                                  duration, notes, status, Book_ID 
                                   FROM reservation";
                         $stmt = $db->prepare($query);
                         $stmt->execute();
 
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
                             echo "<tr>";
                             echo "<td>" . htmlspecialchars($row['reservation_id']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['name']) . "</td>";
@@ -93,18 +108,27 @@ $db = $database->getConnect();
                             echo "<td>" . htmlspecialchars($row['notes']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['Book_ID']) . "</td>";
+                            echo "<td>";
+                            // Form with dropdown and submit button
+                            echo "<form method='POST' id='statusForm_" . $row['reservation_id'] . "' action='update_status.php'>";
+                            echo "<input type='hidden' name='reservation_id' value='" . $row['reservation_id'] . "'>";
+                            echo "<select name='status'>
+                                    <option value='Approved' " . ($row['status'] == 'Approved' ? 'selected' : '') . ">Approved</option>
+                                    <option value='Done' " . ($row['status'] == 'Done' ? 'selected' : '') . ">Done</option>
+                                    <option value='Overdue' " . ($row['status'] == 'Overdue' ? 'selected' : '') . ">Overdue</option>
+                                    <option value='Cancelled' " . ($row['status'] == 'Cancelled' ? 'selected' : '') . ">Cancelled</option>
+                                </select>";
+                            echo "<button type='button' onclick='showConfirmation(" . $row['reservation_id'] . ", \"statusForm_" . $row['reservation_id'] . "\")'>Submit</button>";
+                            echo "</form>";
+                            echo "</td>";
                             echo "</tr>";
-
                         }
                         ?>
-
                     </tbody>
                 </table>
-
             </div>
         </div>
     </div>
 
 </body>
-
 </html>

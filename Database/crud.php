@@ -273,7 +273,7 @@ class Reservations {
     public $pickup_date;
     public $duration;
     public $expected_return_date;
-    public $status;
+    public $status; 
     public $notes;
     public $user_id;
 
@@ -308,6 +308,7 @@ class Reservations {
         return false;
     }
 
+
     public function read() {
         $query = "SELECT * FROM " . $this->tbl_name;
         $stmt = $this->conn->prepare($query);
@@ -315,15 +316,6 @@ class Reservations {
 
         return $stmt;
     }
-
-    public function setStatus($reservation_id, $status) { //pending, active ADMIN, cancelled, done ADMIN, overdue ADMIN
-        $query = "UPDATE " . $this->tbl_name . " SET status = :status WHERE reservation_id = :reservation_id LIMIT 1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':reservation_id', $reservation_id);
-        $stmt->execute();
-    }
-    
     public function getUserReservations($user_id) {
         $query = "SELECT 
                     b.Book_Title, 
@@ -340,16 +332,18 @@ class Reservations {
                  WHERE r.user_id = :user_id";
     
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt;
     }
 
-    function getNoOfActiveReservations($user_id) {
-        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM reservation WHERE user_id = :user_id AND status = 'Approved'");
-        $stmt->bindParam(':user_id', $_SESSION['id']);
-        $stmt->execute();
-    }
+    public function getNoOfActiveReservations($user_id) {
+        $query = "SELECT COUNT(*) FROM " .$this->tbl_name. " WHERE user_id = :user_id AND status = 'Approved'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();   
+        return $stmt->fetchColumn();
+        }
    
     
 

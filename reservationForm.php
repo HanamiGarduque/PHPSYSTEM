@@ -151,13 +151,24 @@
     $book = new Books($db);
     $notification = new Notifications($db);
     
-    $reservation->getNoOfActiveReservations($_SESSION['id']);
-    $reservation_count = $stmt->fetchColumn();
+    $reservation_count= $reservation->getNoOfActiveReservations($_SESSION['id']);
+    
 
-    if ($reservation_count > 3 && $status = "Approved") {
-        echo "You have 3 active borrowed books, please finish your current borrowed books";
-    }
-    else {
+    if ($reservation_count > 3) {
+        echo "<script>
+            Swal.fire({
+                title: 'Error!',
+                text: 'You have 3 active borrowed books, please finish your current borrowed books before making a new reservation.',
+                icon: 'error',
+                confirmButtonText: 'Close',
+                background: '#fff',
+                backdrop: true
+            }).then(() => {
+                window.history.back();
+            });
+        </script>";
+        exit();
+    } else {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
     

@@ -111,7 +111,7 @@ $reservation = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo htmlspecialchars($reservation['expected_return_date']); ?></td>
                         <td><?php echo htmlspecialchars($reservation['notes']); ?></td>
                         <td><?php echo htmlspecialchars($reservation['status']); ?></td>
-                        <td><a href="cancelReservation.php?reservation_id=<?php echo $reservation['reservation_id']; ?>" class="button">Cancel Borrowing</a></td>
+                        <td><a href="cancelReservation.php?reservation_id=<?php echo $reservation['reservation_id']; ?>" class="button">Cancel</a></td>
                     </tr>
                     <?php } ?>
                 </tbody>

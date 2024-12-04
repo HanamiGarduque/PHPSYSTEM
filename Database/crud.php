@@ -1,5 +1,6 @@
 <?php
-class Users {
+class Users
+{
     private $conn;
     private $tbl_name = "users";
 
@@ -9,18 +10,20 @@ class Users {
     public $last_name;
     public $email;
     public $address;
-    public $phone_number;  
+    public $phone_number;
     public $roles;
     public $status;
     public $password;
-    
-    public function __construct($db) {
+
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
-    public function checkAccStatus($username) {
+    public function checkAccStatus($username)
+    {
         $query = "SELECT status FROM " . $this->tbl_name . " WHERE username = :username";
         $stmt = $this->conn->prepare($query);
-        
+
         // Bind the user ID to the query
         $stmt->bindParam('username', $username);
 
@@ -33,27 +36,29 @@ class Users {
             return false; //account active
         }
     }
-    
-    public function checkDuplicateAcc() {
+
+    public function checkDuplicateAcc()
+    {
         $query = "SELECT * FROM " . $this->tbl_name . " WHERE username = :username OR email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':email', $this->email);
         $stmt->execute();
-        
+
         return $stmt->rowCount() > 0;
     }
-    
-    public function create() {
+
+    public function create()
+    {
 
         if ($this->checkDuplicateAcc()) {
             echo "Username or Email already exists.";
             return false;
         }
-    
+
         $query = "INSERT INTO " . $this->tbl_name . " (username, first_name, last_name, email, address, phone_number, roles, status, password) 
                 VALUES (:username, :first_name, :last_name, :email, :address, :phone_number, :roles, :status, :password)";
-        
+
         $stmt = $this->conn->prepare($query);
 
         $defaultRole = 'User';
@@ -73,17 +78,19 @@ class Users {
         }
 
         return false;
-    } 
-    
-    public function read(){
-        $query = "SELECT * FROM " .$this->tbl_name;
+    }
+
+    public function read()
+    {
+        $query = "SELECT * FROM " . $this->tbl_name;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
         return $stmt;
     }
 
-    public function readID(){
+    public function readID()
+    {
         $query = "SELECT username, first_name, last_name, email, address, phone_number 
               FROM " . $this->tbl_name . " 
               WHERE user_id = :user_id LIMIT 0,1";
@@ -93,13 +100,14 @@ class Users {
         return $stmt;
     }
 
-    public function update() {
+    public function update()
+    {
         $query = "UPDATE " . $this->tbl_name . " 
                   SET username = :username, first_name = :first_name, last_name = :last_name, email = :email, address = :address, phone_number = :phone_number, roles = :roles, status = :status
                   WHERE user_id = :user_id";
-    
+
         $stmt = $this->conn->prepare($query);
-        
+
         $stmt->bindParam(':user_id', $this->user_id);
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':first_name', $this->first_name);
@@ -109,28 +117,30 @@ class Users {
         $stmt->bindParam(':phone_number', $this->phone_number);
         $stmt->bindParam(':roles', $this->roles);
         $stmt->bindParam(':status', $this->status);
-    
+
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
-    
-    public function updatePassword() {
+
+    public function updatePassword()
+    {
         $query = "UPDATE " . $this->tbl_name . " 
                   SET password = :password
                   WHERE user_id = :user_id";
-    
+
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':email', $this->password);
-    
+
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
-    public function getUserDetails($user_id) {
+    public function getUserDetails($user_id)
+    {
         $query = "SELECT user_id, first_name, last_name, username, email, address, phone_number FROM users WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id); //bind user id
@@ -138,12 +148,10 @@ class Users {
 
         return $stmt;
     }
-    
-    
-   
 }
 
-class Books {
+class Books
+{
     private $conn;
     private $tbl_name = "books";
 
@@ -157,12 +165,14 @@ class Books {
     public $Available_Copies;
     public $Book_Cover;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function create() {
-        $query = "INSERT INTO " .$this->tbl_name ." (Book_Title, Book_Author, Book_ISBN, Published_Year, Book_Genre, Book_Publisher, Available_Copies) VALUES (:title, :author, :isbn, :published_year, :genre, :publisher, :available_copies)";
+    public function create()
+    {
+        $query = "INSERT INTO " . $this->tbl_name . " (Book_Title, Book_Author, Book_ISBN, Published_Year, Book_Genre, Book_Publisher, Available_Copies) VALUES (:title, :author, :isbn, :published_year, :genre, :publisher, :available_copies)";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':title', $this->Book_Title);
@@ -179,24 +189,27 @@ class Books {
         return false;
     }
 
-    public function read10Books(){
-        $query = "SELECT * FROM " .$this->tbl_name. " LIMIT 10";
+    public function read10Books()
+    {
+        $query = "SELECT * FROM " . $this->tbl_name . " LIMIT 10";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
         return $stmt;
     }
 
-    public function read(){
-        $query = "SELECT * FROM " .$this->tbl_name;
+    public function read()
+    {
+        $query = "SELECT * FROM " . $this->tbl_name;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
         return $stmt;
     }
 
-    public function update() {
-        $query = "UPDATE " .$this->tbl_name . " SET 
+    public function update()
+    {
+        $query = "UPDATE " . $this->tbl_name . " SET 
                     Book_Title = :bookTitle, 
                     Book_Author = :bookAuthor, 
                     Book_ISBN = :bookIsbn, 
@@ -205,9 +218,9 @@ class Books {
                     Book_Publisher = :bookPublisher, 
                     Available_Copies = :availableCopies 
                   WHERE Book_ID = :bookId";
-                  
+
         $stmt = $this->conn->prepare($query);
-    
+
         $stmt->bindParam(':bookTitle', $this->Book_Title);
         $stmt->bindParam(':bookAuthor', $this->Book_Author);
         $stmt->bindParam(':bookIsbn', $this->Book_ISBN);
@@ -216,51 +229,53 @@ class Books {
         $stmt->bindParam(':bookPublisher', $this->Book_Publisher);
         $stmt->bindParam(':availableCopies', $this->Available_Copies);
         $stmt->bindParam(':bookId', $this->Book_ID);
-    
+
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
-    
-    public function readID() {
+
+    public function readID()
+    {
         $query = "SELECT * FROM Books WHERE Book_ID = :Book_ID LIMIT 0,1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':Book_ID', $this->Book_ID);
         $stmt->execute();
-    
+
         return $stmt;
     }
 
-    public function delete() {
-        $query = "DELETE FROM " .$this->tbl_name ." WHERE Book_ID = :id";
+    public function delete()
+    {
+        $query = "DELETE FROM " . $this->tbl_name . " WHERE Book_ID = :id";
         $stmt = $this->conn->prepare($query);
-    
+
         $stmt->bindParam(':id', $this->Book_ID);
-    
+
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
 
-    public function updateBookCopies() {
+    public function updateBookCopies()
+    {
         $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies - 1 WHERE Book_ID = :Book_ID";
         $stmt = $this->conn->prepare($query);
-    
+
         $stmt->bindParam(':Book_ID', $this->Book_ID);
-    
+
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
-    
-    
 }
 
-class Reservations {
-    private $conn;      
+class Reservations
+{
+    private $conn;
     private $tbl_name = "reservation";
 
 
@@ -273,22 +288,24 @@ class Reservations {
     public $pickup_date;
     public $duration;
     public $expected_return_date;
-    public $status; 
+    public $status;
     public $notes;
     public $user_id;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function create() {
+    public function create()
+    {
         $query = "INSERT INTO " . $this->tbl_name . " (book_id, name, email, phone_number, reservation_date, pickup_date, duration, expected_return_date, status, notes, user_id)
           VALUES (:book_id, :name, :email, :phone_number, :reservation_date, :pickup_date, :duration, :expected_return_date, :status, :notes, :user_id)";
 
         $stmt = $this->conn->prepare($query);
-        
+
         $defaultStatus = 'Pending Approval';
-        
+
         $stmt->bindParam(':book_id', $this->book_id);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':email', $this->email);
@@ -309,14 +326,16 @@ class Reservations {
     }
 
 
-    public function read() {
+    public function read()
+    {
         $query = "SELECT * FROM " . $this->tbl_name;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
         return $stmt;
     }
-    public function getUserReservations($user_id) {
+    public function getUserReservations($user_id)
+    {
         $query = "SELECT 
                     b.Book_Title, 
                     b.Book_Author, 
@@ -330,27 +349,34 @@ class Reservations {
                  FROM " . $this->tbl_name . " r 
                  INNER JOIN books b ON r.book_id = b.Book_ID
                  WHERE r.user_id = :user_id";
-    
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt;
     }
 
-    public function getNoOfActiveReservations($user_id) {
-        $query = "SELECT COUNT(*) FROM " .$this->tbl_name. " WHERE user_id = :user_id AND status = 'Approved'";
+    public function getNoOfActiveReservations($user_id)
+    {
+        $query = "SELECT COUNT(*) FROM " . $this->tbl_name . " WHERE user_id = :user_id AND status = 'Active'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        $stmt->execute();   
+        $stmt->execute();
         return $stmt->fetchColumn();
-        }
-   
-    
-
-    
+    }
+    public function updateStatus($status)
+    {
+        $query = "UPDATE " . $this->tbl_name . " SET status = :status WHERE reservation_id = :reservation_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':reservation_id', $this->reservation_id, PDO::PARAM_INT);
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt;
+    }
 }
 
-class Notifications{
+class Notifications
+{
     private $conn;
     private $tbl_name = "notifications";
 
@@ -360,16 +386,18 @@ class Notifications{
     public $message;
 
 
-    public function __construct($db){
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function saveNotification($message) {
+    public function saveNotification($message)
+    {
         $query = "INSERT INTO " . $this->tbl_name . "(user_id, message) VALUES (:user_id, :message)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $_SESSION['id']);
         $stmt->bindParam(':message', $message);
-    
+
         if ($stmt->execute()) {
             return true;
         } else {
@@ -377,70 +405,44 @@ class Notifications{
         }
     }
 
-    public function createNotification($title, $message, $type){
-
-        echo "<div class='notification $type'>";
-        echo "<h3>$title</h3>";
-        echo "<p>$message</p>";
-        echo "<small>Received on: " . date('Y-m-d H:i:s') . "</small>";
-        echo "</div><br>";
-    }
-
-    public function pendingBooking($userName, $bookTitle) {
+    public function pendingBooking($userName, $bookTitle)
+    {
         $message = "Dear $userName, thank you for submitting your request to borrow the book '$bookTitle'. Your booking is currently **pending approval**. You will be notified once the request is reviewed.";
-        
         $this->saveNotification($message);
     }
-    
-    public function cancelledBooking($userName, $bookTitle){
-        $this->createNotification(
-            'Cancelled Book Borrowing Request',
-            "$userName, your booking for the book '$bookTitle' has been cancelled.",
-            'warning'
-        );
+
+    public function approvedBooking($userName, $bookTitle)
+    {
+        $message = "Dear $userName, your request to borrow the book '$bookTitle' has been **approved**! Please proceed with collecting the book. Thank you for your patience.";
+        $this->saveNotification($message);
     }
 
-    public function approvedBooking($userName, $bookTitle){
-        $this->createNotification(
-            'Approved Booking',
-            "$userName, your booking for the book '$bookTitle' has been approved!",
-            'success'
-        );
+    public function activeBooking($userName, $bookTitle)
+    {
+        $message = "Dear $userName, your booking for the book '$bookTitle' is now **active**. Enjoy reading the book, and remember to return it by the due date.";
+        $this->saveNotification($message);
     }
 
-    public function successfulSignup($userName){
-        $this->createNotification(
-            'Signup Successful',
-            "Welcome, $userName! Your account has been successfully created.",
-            'success'
-        );
+    public function adminCancelledBooking($userName, $bookTitle)
+    {
+        $message = "Dear $userName, we regret to inform you that your request to borrow the book '$bookTitle' has been **cancelled**. If you have any questions, please contact support.";
+        $this->saveNotification($message);
     }
 
-    public function overdueBooking($userName, $bookTitle){
-        $this->createNotification(
-            'Overdue Booking',
-            "$userName, the book '$bookTitle' is overdue. Please return it as soon as possible.",
-            'error'
-        );
+    public function overdueBooking($userName, $bookTitle)
+    {
+        $message = "Dear $userName, your borrowing period for the book '$bookTitle' has **expired** and is now **overdue**. Please return the book at your earliest convenience to avoid additional fines.";
+        $this->saveNotification($message);
+    }
+    public function bookingReturnCompleted($userName, $bookTitle)
+    {
+        $message = "Dear $userName, thank you for returning the book '$bookTitle' on time. Your return has been successfully processed. We appreciate your timely return and hope to serve you again soon!";
+        $this->saveNotification($message);
     }
 
-    public function returnedBooks($userName, $bookTitle){
-        $this->createNotification(
-            'Books Returned',
-            "$userName, you have successfully returned the book '$bookTitle'.",
-            'success'
-        );
-    }
 
-    public function featuredBooks($bookTitle){
-        $this->createNotification(
-            'Featured Book',
-            "Check out our featured book of the week: '$bookTitle'.",
-            'info'
-        );
-    }
-
-    function getUserNotifications($userId) {
+    public function getUserNotifications($userId)
+    {
         $query = "SELECT subject, message FROM notifications WHERE user_id = :userId";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -448,14 +450,155 @@ class Notifications{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function read($user_id) {
-        $query = "SELECT message FROM " .$this->tbl_name. " WHERE user_id = :user_id";
+    public function read($user_id)
+    {
+        $query = "SELECT * FROM " . $this->tbl_name . " WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
 
         return $stmt;
     }
+
+    public function delete()
+    {
+        $query = "DELETE FROM " . $this->tbl_name . " WHERE notification_id = :notification_id";
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':notification_id', $this->notification_id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
 }
-                                
-?>
+class ReservationLog
+{
+    private $conn;
+    private $tbl_name = "reservation_log";
+
+    public $log_id;
+    public $reservation_id;
+    public $action;
+    public $performed_by;
+    public $timestamp;
+
+    public function __construct($db)
+    {
+        $this->conn = $db;
+    }
+
+    public function create($action, $performed_by)
+    {
+        $query = "INSERT INTO " . $this->tbl_name . " 
+                    (reservation_id, action, performed_by) 
+                  VALUES 
+                    (:reservation_id, :action, :performed_by)";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':reservation_id', $this->reservation_id);
+        $stmt->bindParam(':action', $action);
+        $stmt->bindParam(':performed_by', $performed_by);
+
+        // Execute the query
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function read()
+    {
+        $query = "SELECT * FROM " . $this->tbl_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        return $stmt;
+    }
+    public function getTimestamp (){
+        $query = "SELECT timestamp FROM " . $this->tbl_name . " WHERE log_id = :log_id LIMIT BY 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':log_id', $this->log_id);
+        $stmt->execute();
+
+        return $stmt;
+    }
+}
+class FinesAndFees
+{
+    private $conn;
+    private $tbl_name = "fines_and_fees";
+
+    public $fee_id;
+    public $reservation_id;
+    public $fine_or_fee;
+    public $amount;
+    public $reason;
+    public $imposed_by;
+    public $date_imposed;
+    public $paid;
+
+    public function __construct($db)
+    {
+        $this->conn = $db;
+    }
+
+    public function create($fine_or_fee, $amount, $reason, $imposed_by)
+    {
+        $query = "INSERT INTO " . $this->tbl_name . " 
+                    (reservation_id, fine_or_fee, amount, reason, imposed_by, paid) 
+                  VALUES 
+                    (:reservation_id, :fine_or_fee, :amount, :reason, :imposed_by, :paid)";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':reservation_id', $this->reservation_id);
+        $stmt->bindParam(':fine_or_fee', $fine_or_fee);
+        $stmt->bindParam(':amount', $amount);
+        $stmt->bindParam(':reason', $reason);
+        $stmt->bindParam(':imposed_by', $imposed_by);
+        $stmt->bindParam(':paid', $this->paid);
+
+        // Execute the query
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function read()
+    {
+        $query = "SELECT * FROM " . $this->tbl_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+    public function getByReservation($reservation_id)
+    {
+        $query = "SELECT * FROM " . $this->tbl_name . " WHERE reservation_id = :reservation_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':reservation_id', $reservation_id);
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+    public function updatePaymentStatus($fee_id, $status)
+    {
+        $query = "UPDATE " . $this->tbl_name . " SET paid = :paid WHERE fee_id = :fee_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':paid', $status);
+        $stmt->bindParam(':fee_id', $fee_id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
+    }
+}

@@ -29,7 +29,7 @@ $db = $database->getConnect();
     <link rel="stylesheet" href="../../Admin/BorrowManagement/borrowManagement.css">
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#borrowTable').DataTable();
         });
 
@@ -52,7 +52,7 @@ $db = $database->getConnect();
 </head>
 
 <body>
-<h1>ADMIN DASHBOARD</h1>
+    <h1>ADMIN DASHBOARD</h1>
     <div class="Container">
         <div class="side_dashboard">
             <nav>
@@ -110,10 +110,11 @@ $db = $database->getConnect();
                             echo "<td>" . htmlspecialchars($row['Book_ID']) . "</td>";
                             echo "<td>";
                             // Form with dropdown and submit button
-                            echo "<form method='POST' id='statusForm_" . $row['reservation_id'] . "' action='update_status.php'>";
+                            echo "<form method='POST' id='statusForm_" . $row['reservation_id'] . "' action='approveReservation.php'>";
                             echo "<input type='hidden' name='reservation_id' value='" . $row['reservation_id'] . "'>";
                             echo "<select name='status'>
                                     <option value='Approved' " . ($row['status'] == 'Approved' ? 'selected' : '') . ">Approved</option>
+                                    <option value='Active' " . ($row['status'] == 'Active' ? 'selected' : '') . ">Active</option>
                                     <option value='Done' " . ($row['status'] == 'Done' ? 'selected' : '') . ">Done</option>
                                     <option value='Overdue' " . ($row['status'] == 'Overdue' ? 'selected' : '') . ">Overdue</option>
                                     <option value='Cancelled' " . ($row['status'] == 'Cancelled' ? 'selected' : '') . ">Cancelled</option>
@@ -131,4 +132,5 @@ $db = $database->getConnect();
     </div>
 
 </body>
+
 </html>

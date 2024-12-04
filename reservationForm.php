@@ -139,6 +139,18 @@
                 }
             }
             document.getElementById('pickup_date').addEventListener('change', calculateExpectedReturnDate);
+            let localDate = new Date();
+
+            let utcDate = new Date(localDate.toISOString());
+            
+            let year = utcDate.getFullYear();
+            let month = String(utcDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            let day = String(utcDate.getDate()).padStart(2, '0');
+            let hours = String(utcDate.getHours()).padStart(2, '0');
+            let minutes = String(utcDate.getMinutes()).padStart(2, '0');
+            let seconds = String(utcDate.getSeconds()).padStart(2, '0');
+
+            document.querySelector("input[type='datetime-local']").value = `${year}-${month}-${day}T${hours}:${minutes}`;
         </script>
 
         <input type="checkbox" id="terms" name="terms" required> I agree to the terms and conditions

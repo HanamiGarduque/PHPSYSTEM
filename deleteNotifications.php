@@ -12,11 +12,11 @@ if (isset($_GET['notification_id'])) {
     $notification = new Notifications($db);
     $notification->notification_id = $notification_id;
 
-    // if ($notification->delete()) {
-    //     header('Location: notifications.php?status=success');
-    // } else {
-    //     header('Location: notifications.php?status=error');
-    // }
+    if ($notification->delete()) {
+        header('Location: notifications.php?status=success');
+    } else {
+        header('Location: notifications.php?status=error');
+    }
 } else {
     header('Location: notifications.php?status=error');
 }

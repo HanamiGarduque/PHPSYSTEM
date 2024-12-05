@@ -52,7 +52,7 @@ $db = $database->getConnect();
             <?php
 
             $notification = new Notifications($db);
-            // $stmt = $notification->read($_SESSION['id']);
+            $stmt = $notification->read($_SESSION['id']);
             $num = $stmt->rowCount();
 
             if ($num > 0) {

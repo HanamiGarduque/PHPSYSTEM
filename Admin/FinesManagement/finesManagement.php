@@ -1,5 +1,6 @@
 <?php
 require_once '../../Database/database.php';
+require_once '../../Database/crud.php';
 
 $database = new Database();
 $db = $database->getConnect();
@@ -31,6 +32,22 @@ $db = $database->getConnect();
         $(document).ready(function() {
             $('#finesTable').DataTable();
         });
+
+        function showConfirmation(feeId, formId) {
+            Swal.fire({
+                title: 'Update Status',
+                text: "User already paid?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, update it!',
+                cancelButtonText: 'No, cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('paid_' + feeId).value = '1';
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
     </script>
 </head>
 
@@ -53,7 +70,7 @@ $db = $database->getConnect();
             <div class="main_content">
                 <h2>Overdue Fines</h2>
 
-                <table>
+                <table id="finesTable" class="display">
                     <thead>
                         <tr>
                             <th>Fee ID</th>
@@ -64,11 +81,12 @@ $db = $database->getConnect();
                             <th>Imposed By</th>
                             <th>Date Imposed</th>
                             <th>Paid</th>
+                            <th>Set Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $finesAndFees = new FinesAndFees($db);  
+                        $finesAndFees = new FinesAndFees($db);
                         $stmt = $finesAndFees->read();
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             echo "<tr>";
@@ -80,6 +98,13 @@ $db = $database->getConnect();
                             echo "<td>" . htmlspecialchars($row['imposed_by']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['date_imposed']) . "</td>";
                             echo "<td>" . ($row['paid'] ? 'Yes' : 'No') . "</td>";
+                            echo "<td>";
+                            echo "<form id='statusForm_" . htmlspecialchars($row['fee_id']) . "' method='POST' action=''>";
+                            echo "<input type='hidden' name='fee_id' value='" . htmlspecialchars($row['fee_id']) . "'>";
+                            echo "<input type='hidden' name='paid' id='paid_" . htmlspecialchars($row['fee_id']) . "' value='" . ($row['paid'] ? '1' : '0') . "'>";  // Hidden input for 'paid' status
+                            echo "<button type='button' onclick='showConfirmation(" . htmlspecialchars($row['fee_id']) . ", \"statusForm_" . htmlspecialchars($row['fee_id']) . "\")'>Update Status</button>";
+                            echo "</form>";
+                            echo "</td>";
                             echo "</tr>";
                         }
                         ?>
@@ -90,6 +115,22 @@ $db = $database->getConnect();
             </div>
         </div>
     </div>
+    <?php 
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $fee_id = $_POST['fee_id'];
+        $paid = $_POST['paid'];  // This will be 'Yes' if the user confirmed
+    
+        // Assuming you have a method in your FinesAndFees class to update the 'paid' status
+        $finesAndFees = new FinesAndFees($db);
+        
+        // Call a method to update the 'paid' field for the fee_id
+        if ($finesAndFees->updatePaymentStatus($fee_id, $paid)) {
+            echo "Paid status updated successfully.";
+        } else {
+            echo "Failed to update paid status.";
+        }
+    }
+    ?>
 
 </body>
 

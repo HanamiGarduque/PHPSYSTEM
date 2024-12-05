@@ -364,11 +364,11 @@ class Reservations
         $stmt->execute();
         return $stmt->fetchColumn();
     }
-    public function updateStatus($status)
+    public function updateStatus($reservation_id, $status)
     {
         $query = "UPDATE " . $this->tbl_name . " SET status = :status WHERE reservation_id = :reservation_id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':reservation_id', $this->reservation_id, PDO::PARAM_INT);
+        $stmt->bindParam(':reservation_id', $reservation_id, PDO::PARAM_INT);
         $stmt->bindParam(':status', $status, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt;
@@ -489,7 +489,7 @@ class ReservationLog
         $this->conn = $db;
     }
 
-    public function create($action, $performed_by)
+    public function create($reservation_id, $action, $performed_by)
     {
         $query = "INSERT INTO " . $this->tbl_name . " 
                     (reservation_id, action, performed_by) 
@@ -497,7 +497,7 @@ class ReservationLog
                     (:reservation_id, :action, :performed_by)";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':reservation_id', $this->reservation_id);
+        $stmt->bindParam(':reservation_id', $reservation_id);
         $stmt->bindParam(':action', $action);
         $stmt->bindParam(':performed_by', $performed_by);
 
@@ -517,8 +517,9 @@ class ReservationLog
 
         return $stmt;
     }
-    public function getTimestamp (){
-        $query = "SELECT timestamp FROM " . $this->tbl_name . " WHERE log_id = :log_id LIMIT BY 1";
+    public function getTimestamp()
+    {
+        $query = "SELECT timestamp FROM " . $this->tbl_name . " WHERE log_id = :log_id LIMIT 0,1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':log_id', $this->log_id);
         $stmt->execute();
@@ -588,12 +589,12 @@ class FinesAndFees
         return $stmt;
     }
 
-    public function updatePaymentStatus($fee_id, $status)
+    public function updatePaymentStatus($status)
     {
         $query = "UPDATE " . $this->tbl_name . " SET paid = :paid WHERE fee_id = :fee_id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':paid', $status);
-        $stmt->bindParam(':fee_id', $fee_id);
+        $stmt->bindParam(':fee_id', $this->fee_id);
 
         if ($stmt->execute()) {
             return true;

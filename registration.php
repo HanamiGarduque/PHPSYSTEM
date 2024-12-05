@@ -12,7 +12,7 @@ session_start();
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="../PHPSYSTEM-Branch-Marquez/CSS/registration.css">
+    <link rel="stylesheet" href="./CSS/registration.css">
 </head>
 
 <body>

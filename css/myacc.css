@@ -1,0 +1,136 @@
+:root {
+    --olive-green: #727D3D;
+    --yellow: #F7E135;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+body {
+    background-color: #fff;
+}
+
+.header {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    background-image: url("../Images/BLib\ (5).png");
+    background-size: cover;
+    border-radius: 50%;
+}
+
+.nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #333;
+}
+
+#myAccount {
+    padding: 2rem 0;
+
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+.account-table {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--olive-green);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.account-table th,
+.account-table td {
+    padding: 1rem;
+    border: 1px solid #ddd;
+}
+
+.account-table th {
+    background-color: #ffd700;
+    color: #000;
+}
+
+.account-table td {
+    background-color: #f9f9f9;
+}
+
+.logout-btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    margin-top: 1rem;
+    background-color: #ff5c5c;
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #e74c3c;
+}
+
+table {
+    margin: 3rem auto;
+    width: 80%;
+    border-collapse: collapse;
+    padding: 2rem;
+}
+
+table thead th,
+table tbody td {
+    padding: 10px;
+    border: 1px solid var(--olive-green);
+    text-align: left;
+}
+
+.button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--olive-green);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #d4b000;
+}

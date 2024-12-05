@@ -1,3 +1,9 @@
+<?php
+require_once '../../check_session.php';
+require_once '../../Database/database.php';
+require_once '../../Database/crud.php';
+// ensureAdminAccess();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,15 +15,6 @@
 </head>
 <body>
 
-    <nav>
-        <ul>
-            <li><a href="userManagement.php">User Management</a></li>
-            <li><a href="bookManagement.php">Book Management</a></li>
-            <li><a href="reservationManagement.php">Reservation Management</a></li>
-            <li><a href="loanManagement.php">Loan Management</a></li>
-            <li><a href="adminAccount.php">Loan Management</a></li>
-        </ul>
-    </nav>
     <div class = "header">
         <h2>User Information Update</h2>
         <p>Please review and update the user's information as necessary.</p>
@@ -27,17 +24,14 @@
   
     <div class="container">
         <?php
-            require_once '../../Database/database.php';
-            require_once '../../Database/crud.php';
             
-    
-            $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: User ID not found.');
+            $id = isset($_GET['user_id']) ? $_GET['user_id'] : die('ERROR: User ID not found.');
     
             $database = new Database();
             $db = $database->getConnect();
     
             $user = new Users($db);
-            $user->id = $id;
+            $user->user_id = $id;
     
             $stmt = $user->readID();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -48,13 +42,13 @@
             $user->email = $row['email'];
             $user->address = $row['address'];
             $user->phone_number = $row['phone_number'];
-            $user->roles = $row['roles'];
-            $user->status = $row['status'];
+            // $user->roles = $row['roles'];
+            // $user->status = $row['status'];
         ?>
     
         <h2>Profile Information</h2>
         <form method="POST" action="">
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($id, ENT_QUOTES); ?>">
+            <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($id, ENT_QUOTES); ?>">
             Username: <br>
             <input type="text" name="username" value="<?php echo htmlspecialchars($user->username, ENT_QUOTES); ?>"><br>
             First Name: <br>
@@ -76,9 +70,10 @@
             </select><br>
             Account Status:
             <select name="status" id="status">
-                <option value="Active" <?php echo $user->roles == 'Active' ? 'selected' : ''; ?>>Active</option>
-                <option value="Suspended" <?php echo $user->roles == 'Suspended' ? 'selected' : ''; ?>>Suspended</option>
+                <option value="Active" <?php echo $user->status == 'Active' ? 'selected' : ''; ?>>Active</option>
+                <option value="Suspended" <?php echo $user->status == 'Suspended' ? 'selected' : ''; ?>>Suspended</option>
             </select><br>
+
             <input type="submit" value="Update User">
         </form>
 
@@ -87,7 +82,7 @@
         
         <?php
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $id = isset($_POST['id']) ? $_POST['id'] : die('ERROR: User ID not found.');
+                $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : die('ERROR: User ID not found.');
                 $username = isset($_POST['username']) ? $_POST['username'] : '';
                 $first_name = isset($_POST['first_name']) ? $_POST['first_name'] : '';
                 $last_name = isset($_POST['last_name']) ? $_POST['last_name'] : '';
@@ -97,7 +92,7 @@
                 $roles = isset($_POST['roles']) ? $_POST['roles'] : '';
                 $status = isset($_POST['status']) ? $_POST['status'] : '';
             
-                $user->id = $id;
+                $user->user_id = $user_id;
                 $user->username = $username;
                 $user->first_name = $first_name;
                 $user->last_name = $last_name;

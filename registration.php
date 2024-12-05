@@ -1,79 +1,77 @@
 <?php
+// Start the session to handle status messages
 session_start();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blib: Library Management System</title>
-    <!-- SweetAlert2 CDN -->
+    <title>Registration Form</title>
+    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<h2>Register</h2>
+    <?php
+    // Check if a status is set in the session
+    if (isset($_SESSION['status'])) {
+        $status = $_SESSION['status'];
+        $message = $_SESSION['message'];
+
+        // If registration is successful, redirect to login.php
+        if ($status === 'success') {
+            echo "<script>
+                Swal.fire({
+                    icon: '$status',
+                    title: 'Success',
+                    text: '$message',
+                    confirmButtonText: 'Go to Login'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'login.php';
+                    }
+                });
+            </script>";
+        } else {
+            // Display error message for other statuses
+            echo "<script>
+                Swal.fire({
+                    icon: '$status',
+                    title: 'Error',
+                    text: '$message'
+                });
+            </script>";
+        }
+
+        // Clear session messages after displaying
+        unset($_SESSION['status']);
+        unset($_SESSION['message']);
+    }
+    ?>
+
+    <h2>Register</h2>
     <form method="POST" action="registerDB.php">
-        <fieldset>
-            <legend>Register</legend>
-        Username: <br> <input type="text" name="username" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>" required>
-        <br>
-        First Name: <br> <input type="text" name="first_name" value="<?php echo isset($_POST['first_name']) ? $_POST['first_name'] : ''; ?>" required>
-        <br>
-        Last Name: <br> <input type="text" name="last_name" value="<?php echo isset($_POST['last_name']) ? $_POST['last_name'] : ''; ?>" required>
-        <br>
-        Email: <br> <input type="email" name="email" value="<?php echo isset($_POST['email']) ? $_POST['email'] : ''; ?>" required>
-        <br>
-        Address: <br> <input type="text" name="address" value="<?php echo isset($_POST['address']) ? $_POST['address'] : ''; ?>" required>
-        <br>
-        Phone Number: <i>11 digits</i>  <br> <input type="text" name="phone_number" value="<?php echo isset($_POST['phone_number']) ? $_POST['phone_number'] : ''; ?>" required>
-        <br>
-        Password: <i>minimum of 8 characters, at least 1 uppercase and a number</i> <br> 
-        <input type="password" name="password" required><br>
-        Confirm Password: <br> 
-        <input type="password" name="confirm_password" required><br>
+        Username: <input type="text" name="username" required>
+        <br><br>
+        First Name: <input type="text" name="first_name" required>
+        <br><br>
+        Last Name: <input type="text" name="last_name" required>
+        <br><br>
+        Email: <input type="email" name="email" required>
+        <br><br>
+        Address: <textarea name="address" required></textarea>
+        <br><br>
+        Phone Number: <input type="text" name="phone_number" required>
+        <br><br>
+        Password: <input type="password" name="password" required>
+        <br><br>
+        Confirm Password: <input type="password" name="confirm_password" required>
+        <br><br>
         <input type="submit" value="Register">
-        </fieldset>
     </form>
 
-    <p>Already have an account? <a href="login.php">Sign in.</a></p>
+    <p>Don't have an account? <a href="login.php">Sign in</a></p>
 
-<?php
-    //check session variables 
-    if (isset($_SESSION['status']) && $_SESSION['status'] == 'success') {
-        echo "<script>
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'User created successfully!',
-                    icon: 'success',
-                    confirmButtonText: 'Okay',
-                    background: '#fff',
-                    backdrop: true
-                });
-              </script>";
-        // clear session data after success
-        session_unset();
-        session_destroy();
-    } elseif (isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
-        $message = (isset($_SESSION['message']) && $_SESSION['message'] == 'duplicate') 
-                   ? 'Username or Email already exists!' 
-                   : 'There was an error creating the user. Please review the entered information and try again';
-        
-        echo "<script>
-                Swal.fire({
-                    title: 'Error!',
-                    text: '$message',
-                    icon: 'error',
-                    confirmButtonText: 'Try Again',
-                    background: '#fff',
-                    backdrop: true
-                });
-              </script>";
-
-        
-        
-        session_unset();
-        session_destroy();
-    }
-?>
 </body>
 </html>

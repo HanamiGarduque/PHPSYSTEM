@@ -28,14 +28,14 @@ $db = $database->getConnect();
     <link rel="stylesheet" href="../../Admin/FinesManagement/finesManagement.css">
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#finesTable').DataTable();
         });
     </script>
 </head>
 
 <body>
-<h1>ADMIN DASHBOARD</h1>
+    <h1>ADMIN DASHBOARD</h1>
     <div class="Container">
         <div class="side_dashboard">
             <nav>
@@ -53,45 +53,44 @@ $db = $database->getConnect();
             <div class="main_content">
                 <h2>Overdue Fines</h2>
 
-                <table id="finesTable" class="display">
+                <table>
                     <thead>
                         <tr>
                             <th>Fee ID</th>
                             <th>Reservation ID</th>
-                            <th>Expected Return Date</th>
-                            <th>Current Date</th>
-                            <th>Overdue Fine (PHP)</th>
+                            <th>Fine or Fee</th>
+                            <th>Amount (PHP)</th>
+                            <th>Reason</th>
+                            <th>Imposed By</th>
+                            <th>Date Imposed</th>
+                            <th>Paid</th>
                         </tr>
                     </thead>
                     <tbody>
-
                         <?php
-                        $query = "SELECT o.fee_id, o.reservation_id, r.expected_return_date, 
-                                         DATEDIFF(CURDATE(), r.expected_return_date) AS overdue_days,
-                                         CASE WHEN DATEDIFF(CURDATE(), r.expected_return_date) > 0 THEN 
-                                              DATEDIFF(CURDATE(), r.expected_return_date) * 10 ELSE 0 END AS overdue_fine
-                                  FROM overdue_fees o
-                                  JOIN reservation r ON o.reservation_id = r.reservation_id";
-                        $stmt = $db->prepare($query);
-                        $stmt->execute();
-
+                        $finesAndFees = new FinesAndFees($db);  
+                        $stmt = $finesAndFees->read();
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             echo "<tr>";
                             echo "<td>" . htmlspecialchars($row['fee_id']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['reservation_id']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['expected_return_date']) . "</td>";
-                            echo "<td>" . htmlspecialchars(date("Y-m-d")) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['overdue_fine']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['fine_or_fee']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['amount']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['reason']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['imposed_by']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['date_imposed']) . "</td>";
+                            echo "<td>" . ($row['paid'] ? 'Yes' : 'No') . "</td>";
                             echo "</tr>";
                         }
                         ?>
-
                     </tbody>
                 </table>
+
 
             </div>
         </div>
     </div>
 
 </body>
+
 </html>

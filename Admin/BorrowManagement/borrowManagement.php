@@ -111,14 +111,16 @@ $db = $database->getConnect();
                             echo "<td>";
                             echo "<form method='POST' id='statusForm_" . $row['reservation_id'] . "' action='approveReservation.php'>";
                             echo "<input type='hidden' name='reservation_id' value='" . $row['reservation_id'] . "'>";
-                            echo "<select name='status'>
-                                    <option value='Approved' " . ($row['status'] == 'Approved' ? 'selected' : '') . ">Approved</option>
+                            echo "<select name='status' class='statusDropdown' " . ($row['status'] == 'Done' ? 'disabled' : '') . ($row['status'] == 'Cancelled' ? 'disabled' : '') . " data-current-status='" . htmlspecialchars($row['status']) . "'>";  // Pass the current status
+                            echo "<option value='Approved' " . ($row['status'] == 'Approved' ? 'selected' : '') . ">Approved</option>
                                     <option value='Active' " . ($row['status'] == 'Active' ? 'selected' : '') . ">Active</option>
                                     <option value='Done' " . ($row['status'] == 'Done' ? 'selected' : '') . ">Done</option>
                                     <option value='Overdue' " . ($row['status'] == 'Overdue' ? 'selected' : '') . ">Overdue</option>
                                     <option value='Cancelled' " . ($row['status'] == 'Cancelled' ? 'selected' : '') . ">Cancelled</option>
                                 </select>";
-                            echo "<button type='button' onclick='showConfirmation(" . $row['reservation_id'] . ", \"statusForm_" . $row['reservation_id'] . "\")'>Submit</button>";
+                            if ($row['status'] != 'Done' && $row['status'] != 'Cancelled') {
+                                echo "<button type='button' onclick='showConfirmation(" . $row['reservation_id'] . ", \"statusForm_" . $row['reservation_id'] . "\")'>Submit</button>";
+                            }
                             echo "</form>";
                             echo "</td>";
                             echo "</tr>";

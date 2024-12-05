@@ -397,12 +397,11 @@ class Reservations
                   GROUP BY r.book_id 
                   ORDER BY borrow_count DESC 
                   LIMIT 3";
-    
+
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
     }
-    
 }
 
 class Notifications
@@ -438,31 +437,37 @@ class Notifications
 
     public function pendingBooking($userName, $bookTitle)
     {
-        $message = "Dear $userName, thank you for submitting your request to borrow the book '$bookTitle'. Your booking is currently **pending approval**. You will be notified once the request is reviewed.";
+        $message = "Dear $userName, thank you for submitting your request to borrow the book '$bookTitle'. Your booking is currently PENDING APPROVAL. You will be notified once the request is reviewed.";
         $this->saveNotification($message);
     }
 
     public function approvedBooking($userName, $bookTitle)
     {
-        $message = "Dear $userName, your request to borrow the book '$bookTitle' has been **approved**! Please proceed with collecting the book. Thank you for your patience.";
+        $message = "Dear $userName, your request to borrow the book '$bookTitle' has been APPROVED! Please proceed with collecting the book. Thank you for your patience.";
         $this->saveNotification($message);
     }
 
     public function activeBooking($userName, $bookTitle)
     {
-        $message = "Dear $userName, your booking for the book '$bookTitle' is now **active**. Enjoy reading the book, and remember to return it by the due date.";
+        $message = "Dear $userName, your booking for the book '$bookTitle' is now ACTIVE. Enjoy reading the book, and remember to return it by the due date.";
         $this->saveNotification($message);
     }
 
     public function adminCancelledBooking($userName, $bookTitle)
     {
-        $message = "Dear $userName, we regret to inform you that your request to borrow the book '$bookTitle' has been **cancelled**. If you have any questions, please contact support.";
+        $message = "Dear $userName, we regret to inform you that your request to borrow the book '$bookTitle' has been CANCELLED. If you have any questions, please contact support.";
         $this->saveNotification($message);
+    }
+
+    public function userCancelledBooking($userName, $bookTitle)
+    {
+        $message = "Dear $userName, you have CANCELLED your request to borrow the book '$bookTitle'. If you have any questions, please contact support.";
+                $this->saveNotification($message);
     }
 
     public function overdueBooking($userName, $bookTitle)
     {
-        $message = "Dear $userName, your borrowing period for the book '$bookTitle' has **expired** and is now **overdue**. Please return the book at your earliest convenience to avoid additional fines.";
+        $message = "Dear $userName, your borrowing period for the book '$bookTitle' has EXPIRED and is now OVERDUE. Please return the book at your earliest convenience to avoid additional fines.";
         $this->saveNotification($message);
     }
     public function bookingReturnCompleted($userName, $bookTitle)

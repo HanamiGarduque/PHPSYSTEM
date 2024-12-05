@@ -35,13 +35,13 @@
     $book = new Books($db);
     $book->Book_ID = $id;
 
-    $query = "SELECT first_name, last_name, email, phone_number FROM users WHERE user_id = :user_id";
+    $query = "SELECT username, first_name, last_name, email, phone_number FROM users WHERE user_id = :user_id";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':user_id', $_SESSION['id']);
     $stmt->execute();
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+$username = $user['username'];
     if (!$user) {
         echo "Error: User details not found.";
         exit;
@@ -142,7 +142,7 @@
             let localDate = new Date();
 
             let utcDate = new Date(localDate.toISOString());
-            
+
             let year = utcDate.getFullYear();
             let month = String(utcDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
             let day = String(utcDate.getDate()).padStart(2, '0');
@@ -210,8 +210,9 @@
             $reservation->user_id = $user_id;
 
             if ($reservation->create()) {
+                $notification->user_id = $user_id;
 
-                $notification->pendingBooking($reservation->name, $book->Book_Title); //created notification
+                $notification->pendingBooking($username, $book->Book_Title); //created notification
                 $_SESSION['notification_message'] = "Dear " . $reservation->name . ", your booking for the book '" . $book->Book_Title . "' is pending approval.";
                 $title = "Pending Book Borrowing Request";
                 $message = htmlspecialchars($_SESSION['notification_message']);

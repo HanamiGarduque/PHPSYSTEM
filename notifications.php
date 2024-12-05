@@ -62,7 +62,7 @@ $db = $database->getConnect();
                         echo "<tr>";
                         echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['message']) . "</td>";
-                        echo "<td><a href='deleteNotification.php?notification_id=" . htmlspecialchars($row['notification_id']) . "' class='button'>Delete</a></td>";
+                        echo "<td><a href='deleteNotifications.php?notification_id=" . htmlspecialchars($row['notification_id']) . "' class='button'>Delete</a></td>";
                         echo "</tr>";
                     } else {
                         echo "<tr><td colspan='2'>Error: notification_id not found.</td></tr>";

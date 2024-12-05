@@ -1,25 +1,26 @@
 <?php
-// Start the session to handle status messages
 session_start();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="../PHPSYSTEM-Branch-Marquez/CSS/registration.css">
 </head>
+
 <body>
     <?php
-    // Check if a status is set in the session
     if (isset($_SESSION['status'])) {
         $status = $_SESSION['status'];
         $message = $_SESSION['message'];
 
-        // If registration is successful, redirect to login.php
         if ($status === 'success') {
             echo "<script>
                 Swal.fire({
@@ -34,7 +35,6 @@ session_start();
                 });
             </script>";
         } else {
-            // Display error message for other statuses
             echo "<script>
                 Swal.fire({
                     icon: '$status',
@@ -44,34 +44,33 @@ session_start();
             </script>";
         }
 
-        // Clear session messages after displaying
         unset($_SESSION['status']);
         unset($_SESSION['message']);
     }
     ?>
 
-    <h2>Register</h2>
-    <form method="POST" action="registerDB.php">
-        Username: <input type="text" name="username" required>
-        <br><br>
-        First Name: <input type="text" name="first_name" required>
-        <br><br>
-        Last Name: <input type="text" name="last_name" required>
-        <br><br>
-        Email: <input type="email" name="email" required>
-        <br><br>
-        Address: <textarea name="address" required></textarea>
-        <br><br>
-        Phone Number: <input type="text" name="phone_number" required>
-        <br><br>
-        Password: <input type="password" name="password" required>
-        <br><br>
-        Confirm Password: <input type="password" name="confirm_password" required>
-        <br><br>
-        <input type="submit" value="Register">
-    </form>
-
-    <p>Don't have an account? <a href="login.php">Sign in</a></p>
+<div class="container">
+        <div class="left-side"></div>
+        <div class="right-side">
+        <div class="logo"></div>
+            <h1>Register</h1>
+            <p>Please complete the form to create your account and enjoy access to our collection.</p>
+            <form method="POST" action="registerDB.php">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="text" name="first_name" placeholder="First Name" required>
+                <input type="text" name="last_name" placeholder="Last Name" required>
+                <input type="email" name="email" placeholder="Email Address" required>
+                <input type="text" name="address" placeholder="Address" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+                <div class="signin">
+                    Already have an account? <a href="login.php">Login</a>
+                </div>
+        </div>
+    </div>
 
 </body>
+
 </html>

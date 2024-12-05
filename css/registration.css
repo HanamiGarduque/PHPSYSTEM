@@ -1,0 +1,117 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-size: 100%;
+    background-image: url("../Images/der.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.left-side {
+    display: none;
+    width: 45%;
+    background-size: 100%;
+    background-color: #ffeb3b00;
+    position: relative;
+    overflow: hidden;
+}
+
+
+
+.right-side {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 7rem;
+    box-sizing: border-box;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    background-image: url("../Images/BLib\ \(5\).png");
+    background-size: cover;
+    border-radius: 50%;
+    position: absolute; /* Position the logo absolutely within the right-side */
+    top: 2rem; /* Adjust this value to move the logo further down or up */
+    right: 1rem; /* Adjust this value to move the logo further right or left */
+  }
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+form {
+    width: 100%;
+    max-width: 300px;
+}
+
+input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+
+.forgot-password a {
+    color: #808000;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #808000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #6a6a00;
+}
+
+.signin {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.signin a {
+    color: #808000;
+    text-decoration: none;
+}
+
+@media (min-width: 768px) {
+    .left-side {
+        display: block;
+    }
+
+    .right-side {
+        width: 50%;
+    }
+}

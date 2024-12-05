@@ -56,7 +56,6 @@ session_start();
             $role = $row['roles'];
             $status = $row['status'];
 
-            // Check account status
             if ($status === 'suspended') {
                 echo '<script>
                 Swal.fire({
@@ -68,7 +67,6 @@ session_start();
                 exit;
             }
 
-            // Verify password
             if (password_verify($inputPassword, $hashedPassword)) {
                 $_SESSION['id'] = $row['user_id'];
                 $_SESSION['role'] = $role;

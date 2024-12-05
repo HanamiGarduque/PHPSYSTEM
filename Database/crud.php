@@ -259,12 +259,24 @@ class Books
         return false;
     }
 
-    public function updateBookCopies()
+    public function minusBookCopies($book_id)
     {
         $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies - 1 WHERE Book_ID = :Book_ID";
         $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(':Book_ID', $this->Book_ID);
+        $stmt->bindParam(':Book_ID', $book_id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+    public function addBookCopies($book_id)
+    {
+        $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies + 1 WHERE Book_ID = :Book_ID";
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':Book_ID', $book_id);
 
         if ($stmt->execute()) {
             return true;

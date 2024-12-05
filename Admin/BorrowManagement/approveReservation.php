@@ -14,14 +14,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $notification = new Notifications($db);
     $reservationLog = new ReservationLog($db);
     $finesAndFees = new FinesAndFees($db);
+    $book = new Books($db);
 
     if (!isAdmin()) {
         exit('You are not authorized.');
     }
 
-    // Fixing the missing comma in the SQL query
     $query = "
         SELECT 
+            r.reservation_id,
             b.Book_Title,
             r.user_id,
             u.username,
@@ -42,53 +43,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($reservation) {
+        $book_id = $row['Book_ID'];
         $bookTitle = $row['Book_Title'];
         $userName = $row['username'];
         $expected_return_date = $row['expected_return_date'];
         $reservation_date = $row['reservation_date'];  // For cancellation logic
-        $pickup_date = $row['pickup_date'];  // For possible future use
+        $pickup_date = $row['pickup_date'];
 
-        // Set status based on the provided status
         if ($status == 'Approved') {
-            $reservation->updateStatus('Approved');
+            $reservation->updateStatus($reservation_id, 'Approved');
             $notification->approvedBooking($userName, $bookTitle);
-            if ($reservationLog->create('Approved', $_SESSION['id'])) {
-                echo "Reservation log created successfully.";
-            } else {
-                echo "Failed to create reservation log.";
-            }
-        } else if ($status == 'Active') {
-            $reservation->updateStatus('Active');
-            $notification->activeBooking($userName, $bookTitle);
-        } else if ($status == 'Done') {
-            $reservation->updateStatus('Done');
-            $notification->bookingReturnCompleted($userName, $bookTitle);
-        } else if ($status == 'Cancelled') {
-            $reservation->updateStatus('Cancelled');
-            $notification->adminCancelledBooking($userName, $bookTitle);
-
-            // Create reservation log entry for cancellation
-            if ($reservationLog->create($reservation_id, 'Cancelled', $_SESSION['id'])) {
-                echo "Cancellation log created successfully.";
-            }
-
-            // Get cancellation date from the log (Timestamp from the log)
-            $cancellation_date = $reservationLog->getTimestamp(); // Make sure your `getTimestamp` method works
-
-            // Convert expected return date and cancellation date to DateTime objects for comparison
-            $expectedReturnDate = new DateTime($expected_return_date);
-            $cancellationDate = new DateTime($cancellation_date);
-
-            // Check if the cancellation was before the expected return date
-            if ($expectedReturnDate > $cancellationDate) {
-                // Apply a fee if cancellation was made before the expected return date
-                $finesAndFees->create($reservation_id, 'Fee', 50.00, 'Cancellation before expected return', $_SESSION['id'], false);
-                echo "Fee applied for cancellation before expected return date.";
-            }
-
-            // Redirect after fee application
+            $reservationLog->create($reservation_id, 'Approved', $_SESSION['id']);
+            // minus book by 1
+            $book->minusBookCopies($book_id);
             header('Location: borrowManagement.php');
-            exit(); // To stop further execution after redirection
+
+        } else if ($status == 'Active') {
+            $reservation->updateStatus($reservation_id, 'Active');
+            $notification->activeBooking($userName, $bookTitle);
+            $reservationLog->create($reservation_id, 'Active', $_SESSION['id']);
+            header('Location: borrowManagement.php');
+
+        } else if ($status == 'Done') {
+            $reservation->updateStatus($reservation_id, 'Done');
+            $notification->bookingReturnCompleted($userName, $bookTitle);
+            $reservationLog->create($reservation_id, 'Done', $_SESSION['id']);
+            $book->addBookCopies($book_id);
+            header('Location: borrowManagement.php');
+
+        } else if ($status == 'Cancelled') {
+            $reservation->updateStatus($reservation_id, 'Cancelled');
+            $notification->adminCancelledBooking($userName, $bookTitle);
+            $reservationLog->create($reservation_id, 'Cancelled', $_SESSION['id']);
+        
+            $cancellationDate = new DateTime();
+            $expectedReturnDate = new DateTime($expected_return_date);
+            $pickup_date = new DateTime($pickup_date);
+            //check if cancellation date is earlier than expe
+            if ($expectedReturnDate > $cancellationDate && $cancellationDate > $pickup_date ) {
+                $finesAndFees->reservation_id = $reservation_id;
+                $finesAndFees->paid = false;
+
+                if ($finesAndFees->create('Fee', 50.00, 'Cancellation before expected return', $_SESSION['id'])) {
+                    echo "Fee applied for cancellation before expected return date.";
+                } else {
+                    echo "Failed to apply the fee.";
+                }}
+            header('Location: borrowManagement.php');
+            exit();
         }
     } else {
         echo 'Reservation not found.';
@@ -96,4 +98,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     echo 'Invalid request method.';
 }
-?>

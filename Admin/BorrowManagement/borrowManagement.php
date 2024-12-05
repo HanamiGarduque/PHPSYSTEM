@@ -109,7 +109,6 @@ $db = $database->getConnect();
                             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['Book_ID']) . "</td>";
                             echo "<td>";
-                            // Form with dropdown and submit button
                             echo "<form method='POST' id='statusForm_" . $row['reservation_id'] . "' action='approveReservation.php'>";
                             echo "<input type='hidden' name='reservation_id' value='" . $row['reservation_id'] . "'>";
                             echo "<select name='status'>

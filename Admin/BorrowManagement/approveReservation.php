@@ -52,8 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($status == 'Approved') {
             $reservation->updateStatus('Approved');
             $notification->approvedBooking($userName, $bookTitle);
-
-            // Create reservation log entry
             if ($reservationLog->create('Approved', $_SESSION['id'])) {
                 echo "Reservation log created successfully.";
             } else {

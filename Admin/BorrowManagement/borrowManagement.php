@@ -1,5 +1,5 @@
 <?php
-require_once '../../check_session.php';
+// require_once '../../check_session.php';
 require_once '../../Database/database.php';
 
 $database = new Database();

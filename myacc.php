@@ -6,7 +6,6 @@ require_once 'Database/crud.php';
 $database = new Database();
 $db = $database->getConnect();
 
-
 $user = new Users($db);
 $stmt = $user->getUserDetails($_SESSION['id']);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -23,6 +22,12 @@ $fines_and_fees = new FinesAndFees($db);
 $stmt = $fines_and_fees->getUserFines($_SESSION['id']);
 $fines = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$totalUnpaidFees = 0;
+foreach ($fines as $fine) {
+    if (!$fine['paid']) {
+        $totalUnpaidFees += $fine['amount'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +41,6 @@ $fines = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
 </head>
 
 <body>
@@ -81,6 +85,7 @@ $fines = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </table>
         </div>
     </section>
+
     <section id="bookBorrow">
         <div class="container">
             <h2>Book Borrowing Details</h2>
@@ -124,42 +129,46 @@ $fines = $stmt->fetchAll(PDO::FETCH_ASSOC);
             ?>
         </div>
     </section>
-    <section id="finesAndFees">
-        <div class="container">
-            <h2>Fines and Fees</h2>
-            <?php
-            if (empty($fines)) {
-                echo "<p>You have no outstanding fines or fees. Keep it up!</p>";
-            } else {
-            ?>
-                <table id="finesTable" class="display">
-                    <thead>
+
+<section id="finesAndFees">
+    <div class="container">
+        <h2>Fines and Fees</h2>
+        <?php
+        if (empty($fines)) {
+            echo "<p>You have no outstanding fines or fees. Keep it up!</p>";
+        } else {
+        ?>
+            <table id="finesTable" class="display">
+                <thead>
+                    <tr>
+                        <th>Reason</th>
+                        <th>Amount</th>
+                        <th>Date Imposed</th>
+                        <th>Imposed By</th>
+                        <th>Paid Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($fines as $fine) { ?>
                         <tr>
-                            <th>Reason</th>
-                            <th>Amount</th>
-                            <th>Date Imposed</th>
-                            <th>Imposed By</th>
-                            <th>Paid Status</th>
+                            <td><?php echo htmlspecialchars($fine['reason']); ?></td>
+                            <td><?php echo htmlspecialchars($fine['amount']); ?></td>
+                            <td><?php echo htmlspecialchars($fine['date_imposed']); ?></td>
+                            <td><?php echo htmlspecialchars($fine['imposed_by']); ?></td>
+                            <td><?php echo $fine['paid'] ? "Paid" : "Unpaid"; ?></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($fines as $fine) { ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($fine['reason']); ?></td>
-                                <td><?php echo htmlspecialchars($fine['amount']); ?></td>
-                                <td><?php echo htmlspecialchars($fine['date_imposed']); ?></td>
-                                <td><?php echo htmlspecialchars($fine['imposed_by']); ?></td>
-                                <td><?php echo $fine['paid'] ? "Paid" : "Unpaid"; ?></td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            <?php
-            }
-            ?>
-            <a href="logout.php" class="logout-btn">Log Out</a>
-        </div>
-    </section>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <div id="totalUnpaidFees" style="margin-top: 10px;">
+                <strong>Total Unpaid Fees:</strong> $<?php echo number_format($totalUnpaidFees, 2); ?>
+            </div>
+        <?php
+        }
+        ?>
+        <a href="logout.php" class="logout-btn">Log Out</a>
+    </div>
+</section>
 </body>
 
 </html>

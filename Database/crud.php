@@ -364,6 +364,7 @@ class Reservations
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+
     public function updateStatus($reservation_id, $status)
     {
         $query = "UPDATE " . $this->tbl_name . " SET status = :status WHERE reservation_id = :reservation_id";
@@ -373,6 +374,23 @@ class Reservations
         $stmt->execute();
         return $stmt;
     }
+
+    public function getTopBorrowedBooks()
+    {
+        $query = "SELECT b.Book_Title, COUNT(r.reservation_id) AS borrow_count 
+                  FROM reservation r 
+                  INNER JOIN books b ON r.book_id = b.Book_ID 
+                  WHERE MONTH(r.reservation_date) = MONTH(CURRENT_DATE()) 
+                  AND YEAR(r.reservation_date) = YEAR(CURRENT_DATE())
+                  GROUP BY r.book_id 
+                  ORDER BY borrow_count DESC 
+                  LIMIT 3";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+    
 }
 
 class Notifications

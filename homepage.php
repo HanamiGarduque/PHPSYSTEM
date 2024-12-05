@@ -169,7 +169,10 @@ if (isset($_SESSION['notification_message'])) {
     <footer>
         <div class="container">
             <div class="company-info">
-                <p><i class="fas fa-building"></i> © Blib: Library Management System</p>
+                <p><i class="fas fa-building"></i><strong>© BLib: Library Management System</strong></p>
+                <p><strong>Address:</strong> Here, There, and Everywhere</p>
+                <p><strong>Contact:</strong> 0914 3143 143</p>
+                <p><strong>Socials:</strong></p>
             </div>
 
             <ul class="social-icons">
@@ -179,7 +182,7 @@ if (isset($_SESSION['notification_message'])) {
             </ul>
         </div>
     </footer>
-    </div>
+
 
 
 </body>

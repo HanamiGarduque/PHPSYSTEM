@@ -189,7 +189,7 @@ foreach ($fines as $fine) {
                 </tbody>
             </table>
             <div id="totalUnpaidFees" style="margin-top: 10px;">
-                <strong>Total Unpaid Fees:</strong> $<?php echo number_format($totalUnpaidFees, 2); ?>
+                <strong>Total Unpaid Fees:</strong> Php<?php echo number_format($totalUnpaidFees, 2); ?>
             </div>
         <?php
         }

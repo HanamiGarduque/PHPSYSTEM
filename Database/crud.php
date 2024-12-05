@@ -259,24 +259,24 @@ class Books
         return false;
     }
 
-    public function minusBookCopies($book_id)
+    public function minusBookCopies()
     {
         $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies - 1 WHERE Book_ID = :Book_ID";
         $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(':Book_ID', $book_id);
+        $stmt->bindParam(':Book_ID', $this->Book_ID);
 
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
-    public function addBookCopies($book_id)
+    public function addBookCopies()
     {
         $query = "UPDATE " . $this->tbl_name . " SET Available_Copies = Available_Copies + 1 WHERE Book_ID = :Book_ID";
         $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(':Book_ID', $book_id);
+        $stmt->bindParam(':Book_ID', $this->Book_ID);
 
         if ($stmt->execute()) {
             return true;
@@ -414,6 +414,7 @@ class Notifications
     public $notification_id;
     public $user_id;
     public $message;
+    public $timestamp;
 
 
     public function __construct($db)
@@ -425,7 +426,7 @@ class Notifications
     {
         $query = "INSERT INTO " . $this->tbl_name . "(user_id, message) VALUES (:user_id, :message)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $_SESSION['id']);
+        $stmt->bindParam(':user_id', $this->user_id);
         $stmt->bindParam(':message', $message);
 
         if ($stmt->execute()) {
@@ -471,24 +472,24 @@ class Notifications
     }
 
 
-    public function getUserNotifications($userId)
+    public function getUserNotifications($user_id)
     {
-        $query = "SELECT subject, message FROM notifications WHERE user_id = :userId";
+        $query = "SELECT * FROM notifications WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function read($user_id)
-    {
-        $query = "SELECT * FROM " . $this->tbl_name . " WHERE user_id = :user_id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->execute();
-
         return $stmt;
     }
+
+    // public function read($user_id)
+    // {
+    //     $query = "SELECT * FROM " . $this->tbl_name . " WHERE user_id = :user_id";
+    //     $stmt = $this->conn->prepare($query);
+    //     $stmt->bindParam(':user_id', $user_id);
+    //     $stmt->execute();
+
+    //     return $stmt;
+    // }
 
     public function delete()
     {

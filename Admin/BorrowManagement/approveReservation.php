@@ -16,12 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $finesAndFees = new FinesAndFees($db);
     $book = new Books($db);
 
-    if (!isAdmin()) {
-        exit('You are not authorized.');
-    }
+    // if (!isAdmin()) {
+    //     exit('You are not authorized.');
+    // }
 
     $query = "
         SELECT 
+            r.Book_ID,  
             r.reservation_id,
             b.Book_Title,
             r.user_id,
@@ -43,7 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($reservation) {
-        $book_id = $row['Book_ID'];
+        $notification->user_id = $row['user_id']; // fetch user id from resrvations
+        $book->Book_ID = $row['Book_ID']; // fetch book id
         $bookTitle = $row['Book_Title'];
         $userName = $row['username'];
         $expected_return_date = $row['expected_return_date'];
@@ -54,8 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $reservation->updateStatus($reservation_id, 'Approved');
             $notification->approvedBooking($userName, $bookTitle);
             $reservationLog->create($reservation_id, 'Approved', $_SESSION['id']);
-            // minus book by 1
-            $book->minusBookCopies($book_id);
+
+            $book->minusBookCopies();
             header('Location: borrowManagement.php');
 
         } else if ($status == 'Active') {
@@ -68,7 +70,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $reservation->updateStatus($reservation_id, 'Done');
             $notification->bookingReturnCompleted($userName, $bookTitle);
             $reservationLog->create($reservation_id, 'Done', $_SESSION['id']);
-            $book->addBookCopies($book_id);
+            //add book by 1
+            $book->addBookCopies();
             header('Location: borrowManagement.php');
 
         } else if ($status == 'Cancelled') {
@@ -79,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $cancellationDate = new DateTime();
             $expectedReturnDate = new DateTime($expected_return_date);
             $pickup_date = new DateTime($pickup_date);
-            //check if cancellation date is earlier than expe
+            //check if cancellation date is earlier than expected date
             if ($expectedReturnDate > $cancellationDate && $cancellationDate > $pickup_date ) {
                 $finesAndFees->reservation_id = $reservation_id;
                 $finesAndFees->paid = false;

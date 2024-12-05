@@ -44,6 +44,7 @@ $db = $database->getConnect();
     <table id="userTable" class="display">
         <thead>
             <tr>
+                <th>Timestamp</th>
                 <th>Message</th>
                 <th>Actions</th>
             </tr>
@@ -52,13 +53,14 @@ $db = $database->getConnect();
             <?php
 
             $notification = new Notifications($db);
-            $stmt = $notification->read($_SESSION['id']);
+            $stmt = $notification->getUserNotifications($_SESSION['id']);
             $num = $stmt->rowCount();
-
+            echo $_SESSION['id'];
             if ($num > 0) {
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     if (isset($row['notification_id'])) {
                         echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['message']) . "</td>";
                         echo "<td><a href='deleteNotification.php?notification_id=" . htmlspecialchars($row['notification_id']) . "' class='button'>Delete</a></td>";
                         echo "</tr>";

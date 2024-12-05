@@ -94,8 +94,11 @@ table tbody td {
     background-color: #d4b000;
 }
 #userTable th:nth-child(1), #userTable td:nth-child(1) {
-    width: 90%; /* Adjust the percentage to make the 'message' column wider */
+    width: 10%; /* Adjust the percentage to make the 'message' column wider */
 }
 #userTable th:nth-child(2), #userTable td:nth-child(2) {
-    width: 10%; /* Adjust the percentage for the 'actions' column */
+    width: 80%; /* Adjust the percentage for the 'actions' column */
+}
+#userTable th:nth-child(3), #userTable td:nth-child(3) {
+    width: 10%; /* Adjust the percentage to make the 'message' column wider */
 }

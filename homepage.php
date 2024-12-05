@@ -5,16 +5,17 @@ require_once './Database/crud.php';
 
 $database = new Database();
 $db = $database->getConnect();
-$book = new Books($db); // Assuming you have a 'Books' class
+$book = new Books($db);
 $stmt = $book->read();
 $num = $stmt->rowCount();
 
-// Check if there is a notification message
+$reservations = new Reservations($db);
+$topBorrowedBooks = $reservations->getTopBorrowedBooks();
+
 if (isset($_SESSION['notification_message'])) {
     $message = $_SESSION['notification_message'];
-    unset($_SESSION['notification_message']); // Clear the message after it has been shown
+    unset($_SESSION['notification_message']);
 
-    // Output JavaScript to display SweetAlert
     echo "
     <script>
         Swal.fire({
@@ -126,7 +127,7 @@ if (isset($_SESSION['notification_message'])) {
         </div>
         <div class="books-grid">
             <?php
-            $stmt = $book->read10Books(); // Fetch all books or use a condition for featured books
+            $stmt = $book->read10Books();
             if ($num > 0) {
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     extract($row);
@@ -153,18 +154,15 @@ if (isset($_SESSION['notification_message'])) {
     <section class="most-borrowed">
         <h2>Most Borrowed Books This Month</h2>
         <div class="stats-grid">
-            <div class="stat-card">
-                <h4>The Great Gatsby</h4>
-                <p>Borrowed 156 times</p>
-            </div>
-            <div class="stat-card">
-                <h4>1984</h4>
-                <p>Borrowed 142 times</p>
-            </div>
-            <div class="stat-card">
-                <h4>To Kill a Mockingbird</h4>
-                <p>Borrowed 138 times</p>
-            </div>
+            <?php
+            while ($row = $topBorrowedBooks->fetch(PDO::FETCH_ASSOC)) {
+                echo "
+            <div class='stat-card'>
+                <h4>{$row['Book_Title']}</h4>
+                <p>Borrowed {$row['borrow_count']} times</p>
+            </div>";
+            }
+            ?>
         </div>
     </section>
 

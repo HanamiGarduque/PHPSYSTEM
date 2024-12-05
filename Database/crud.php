@@ -563,6 +563,7 @@ class ReservationLog
         return $stmt;
     }
 }
+
 class FinesAndFees
 {
     private $conn;
@@ -598,7 +599,6 @@ class FinesAndFees
         $stmt->bindParam(':imposed_by', $imposed_by);
         $stmt->bindParam(':paid', $this->paid);
 
-        // Execute the query
         if ($stmt->execute()) {
             return true;
         }
@@ -638,4 +638,14 @@ class FinesAndFees
 
         return false;
     }
+
+    public function getUserFines($userId)
+    {
+        $query = "SELECT * FROM fines_and_fees WHERE reservation_id IN (SELECT reservation_id FROM reservation WHERE user_id = :user_id)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $userId);
+        $stmt->execute();
+        return $stmt;
+    }
+    
 }

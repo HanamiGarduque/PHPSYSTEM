@@ -8,7 +8,7 @@ $db = $database->getConnect();
 
 
 $user = new Users($db);
-$stmt = $user->getUserDetails($_SESSION['id']); 
+$stmt = $user->getUserDetails($_SESSION['id']);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$user) {
     echo "Error: User details not found.";
@@ -19,13 +19,15 @@ $reservation = new Reservations($db);
 $stmt = $reservation->getUserReservations($_SESSION['id']);
 $reservation = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-
+$fines_and_fees = new FinesAndFees($db);
+$stmt = $fines_and_fees->getUserFines($_SESSION['id']);
+$fines = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,6 +38,7 @@ $reservation = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 </head>
+
 <body>
     <header class="header">
         <div class="logo"></div>
@@ -79,48 +82,84 @@ $reservation = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </section>
     <section id="bookBorrow">
-    <div class="container">
-        <h2>Book Borrowing Details</h2>
-        <?php
-        if (empty($reservation)) {
-            echo "<p>You have not borrowed books yet. Borrow now and start reading!</p>";
-        } else {
-        ?>
-            <table id="reservationTable" class="display">
-                <thead>
-                    <tr>
-                        <th>Book</th>
-                        <th>Author</th>
-                        <th>Reservation Date</th>
-                        <th>Pickup Date</th>
-                        <th>Duration (Days)</th>
-                        <th>Expected Return Date</th>
-                        <th>Notes</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($reservation as $reservation) { ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($reservation['Book_Title']); ?></td>
-                        <td><?php echo htmlspecialchars($reservation['Book_Author']); ?></td>
-                        <td><?php echo htmlspecialchars($reservation['reservation_date']); ?></td>
-                        <td><?php echo htmlspecialchars($reservation['pickup_date']); ?></td>
-                        <td><?php echo htmlspecialchars($reservation['duration']); ?></td>
-                        <td><?php echo htmlspecialchars($reservation['expected_return_date']); ?></td>
-                        <td><?php echo htmlspecialchars($reservation['notes']); ?></td>
-                        <td><?php echo htmlspecialchars($reservation['status']); ?></td>
-                        <td><a href="cancelReservation.php?reservation_id=<?php echo $reservation['reservation_id']; ?>" class="button">Cancel</a></td>
-                    </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        <?php
-        }
-        ?>
-        <a href="logout.php" class="logout-btn">Log Out</a>
-    </div>
-</section>
+        <div class="container">
+            <h2>Book Borrowing Details</h2>
+            <?php
+            if (empty($reservation)) {
+                echo "<p>You have not borrowed books yet. Borrow now and start reading!</p>";
+            } else {
+            ?>
+                <table id="reservationTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Author</th>
+                            <th>Reservation Date</th>
+                            <th>Pickup Date</th>
+                            <th>Duration (Days)</th>
+                            <th>Expected Return Date</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($reservation as $reservation) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($reservation['Book_Title']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['Book_Author']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['reservation_date']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['pickup_date']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['duration']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['expected_return_date']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['notes']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['status']); ?></td>
+                                <td><a href="cancelReservation.php?reservation_id=<?php echo $reservation['reservation_id']; ?>" class="button">Cancel</a></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            <?php
+            }
+            ?>
+        </div>
+    </section>
+    <section id="finesAndFees">
+        <div class="container">
+            <h2>Fines and Fees</h2>
+            <?php
+            if (empty($fines)) {
+                echo "<p>You have no outstanding fines or fees. Keep it up!</p>";
+            } else {
+            ?>
+                <table id="finesTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Reason</th>
+                            <th>Amount</th>
+                            <th>Date Imposed</th>
+                            <th>Imposed By</th>
+                            <th>Paid Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($fines as $fine) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($fine['reason']); ?></td>
+                                <td><?php echo htmlspecialchars($fine['amount']); ?></td>
+                                <td><?php echo htmlspecialchars($fine['date_imposed']); ?></td>
+                                <td><?php echo htmlspecialchars($fine['imposed_by']); ?></td>
+                                <td><?php echo $fine['paid'] ? "Paid" : "Unpaid"; ?></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            <?php
+            }
+            ?>
+            <a href="logout.php" class="logout-btn">Log Out</a>
+        </div>
+    </section>
 </body>
+
 </html>

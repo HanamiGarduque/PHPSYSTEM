@@ -14,7 +14,7 @@ body {
     background-color: #fff;
     background-position: center;
     background-attachment: fixed;
-    background-image: url("../Images/der\ \(1\).png");
+    background-image: url("../Images/bg.png");
     background-position: bottom;
     background-size: 150%;
     background-repeat: no-repeat;
@@ -33,8 +33,10 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0);
-}
+    background-color: white;
+    border-bottom: 5px solid var(--yellow); 
+    margin-bottom: 30px;
+  }
 
 .logo {
     width: 50px;
@@ -43,6 +45,11 @@ h2 {
     background-size: cover;
     border-radius: 50%;
 }
+.head {
+    position: absolute;
+    left: 6rem;
+    color: var(--olive-green);
+  }
 
 .nav {
     display: flex;

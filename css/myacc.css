@@ -11,6 +11,12 @@
 
 body {
     background-color: #fff;
+  background-position: center;
+  background-image:  url("../Images/bg.png");
+  background-position: bottom;
+  background-size: 100%; /* Ensures the image covers the whole area */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+
 }
 
 .header {
@@ -18,9 +24,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0);
-}
-
+    background-color: white;
+    border-bottom: 5px solid var(--yellow); 
+    margin-bottom: 30px;
+  }
 .logo {
     width: 50px;
     height: 50px;
@@ -28,33 +35,48 @@ body {
     background-size: cover;
     border-radius: 50%;
 }
+.head {
+    position: absolute;
+    left: 6rem;
+    color: var(--olive-green);
+  }
 
-.nav {
+
+  .nav {
     display: flex;
-    gap: 2rem;
-}
+    gap: 4rem;
+  }
 
-.nav a {
+  .nav a {
     text-decoration: none;
-    color: #333;
-}
+    color: var(--olive-green);  
+  }
 
-#myAccount {
-    padding: 2rem 0;
 
-}
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    text-align: center;
+    text-align: left;
+}
+.account-details strong {
+    color: var(--olive-green);
 }
 
-h2 {
+#myAccount h2 {
     margin-bottom: 2rem;
-    font-size: 2rem;
-    color: #333;
+    color: var(--yellow);
+}
+
+#bookBorrow h2 {
+    margin-bottom: 2rem;
+    color: var(--yellow);
+}
+
+#finesAndFees h2 {
+    margin-bottom: 2rem;
+    color: var(--yellow);
 }
 
 .account-table {

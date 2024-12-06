@@ -48,11 +48,11 @@ foreach ($fines as $fine) {
             $('#finesTable').DataTable({
                 scrollX: true,
                 scrollY: '185px',
-                scrollCollapse: true, 
+                scrollCollapse: true,
                 paging: false,
                 autoWidth: false,
                 searching: false
-             });
+            });
 
             $('#reservationTable').DataTable({
                 scrollX: true,
@@ -85,6 +85,7 @@ foreach ($fines as $fine) {
 <body>
     <header class="header">
         <div class="logo"></div>
+        <div class="head">Blib: Library Management System</div>
         <nav class="nav">
             <a href="homepage.php">Home</a>
             <a href="search_catalog.php">Search a Book</a>
@@ -96,33 +97,16 @@ foreach ($fines as $fine) {
     <section id="myAccount">
         <div class="container">
             <h2>My Account Details</h2>
-            <table class="account-table">
-                <tr>
-                    <th>Username:</th>
-                    <td><?php echo htmlspecialchars($user['username']); ?></td>
-                </tr>
-                <tr>
-                    <th>First Name:</th>
-                    <td><?php echo htmlspecialchars($user['first_name']); ?></td>
-                </tr>
-                <tr>
-                    <th>Last Name:</th>
-                    <td><?php echo htmlspecialchars($user['last_name']); ?></td>
-                </tr>
-                <tr>
-                    <th>Email:</th>
-                    <td><?php echo htmlspecialchars($user['email']); ?></td>
-                </tr>
-                <tr>
-                    <th>Address:</th>
-                    <td><?php echo htmlspecialchars($user['address']); ?></td>
-                </tr>
-                <tr>
-                    <th>Phone Number:</th>
-                    <td><?php echo htmlspecialchars($user['phone_number']); ?></td>
-                </tr>
-            </table>
+            <div class="account-details">
+                <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
+                <p><strong>First Name:</strong> <?php echo htmlspecialchars($user['first_name']); ?></p>
+                <p><strong>Last Name:</strong> <?php echo htmlspecialchars($user['last_name']); ?></p>
+                <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
+                <p><strong>Address:</strong> <?php echo htmlspecialchars($user['address']); ?></p>
+                <p><strong>Phone Number:</strong> <?php echo htmlspecialchars($user['phone_number']); ?></p>
+            </div>
         </div>
+
     </section>
 
     <section id="bookBorrow">
@@ -178,45 +162,45 @@ foreach ($fines as $fine) {
         </div>
     </section>
 
-<section id="finesAndFees">
-    <div class="container">
-        <h2>Fines and Fees</h2>
-        <?php
-        if (empty($fines)) {
-            echo "<p>You have no outstanding fines or fees. Keep it up!</p>";
-        } else {
-        ?>
-            <table id="finesTable" class="display">
-                <thead>
-                    <tr>
-                        <th>Reason</th>
-                        <th>Amount</th>
-                        <th>Date Imposed</th>
-                        <th>Imposed By</th>
-                        <th>Paid Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($fines as $fine) { ?>
+    <section id="finesAndFees">
+        <div class="container">
+            <h2>Fines and Fees</h2>
+            <?php
+            if (empty($fines)) {
+                echo "<p>You have no outstanding fines or fees. Keep it up!</p>";
+            } else {
+            ?>
+                <table id="finesTable" class="display">
+                    <thead>
                         <tr>
-                            <td><?php echo htmlspecialchars($fine['reason']); ?></td>
-                            <td><?php echo htmlspecialchars($fine['amount']); ?></td>
-                            <td><?php echo htmlspecialchars($fine['date_imposed']); ?></td>
-                            <td><?php echo htmlspecialchars($fine['imposed_by']); ?></td>
-                            <td><?php echo $fine['paid'] ? "Paid" : "Unpaid"; ?></td>
+                            <th>Reason</th>
+                            <th>Amount</th>
+                            <th>Date Imposed</th>
+                            <th>Imposed By</th>
+                            <th>Paid Status</th>
                         </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-            <div id="totalUnpaidFees" style="margin-top: 10px;">
-                <strong>Total Unpaid Fees:</strong> $<?php echo number_format($totalUnpaidFees, 2); ?>
-            </div>
-        <?php
-        }
-        ?>
-        <a href="logout.php" class="logout-btn">Log Out</a>
-    </div>
-</section>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($fines as $fine) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($fine['reason']); ?></td>
+                                <td><?php echo htmlspecialchars($fine['amount']); ?></td>
+                                <td><?php echo htmlspecialchars($fine['date_imposed']); ?></td>
+                                <td><?php echo htmlspecialchars($fine['imposed_by']); ?></td>
+                                <td><?php echo $fine['paid'] ? "Paid" : "Unpaid"; ?></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+                <div id="totalUnpaidFees" style="margin-top: 10px;">
+                    <strong>Total Unpaid Fees:</strong> $<?php echo number_format($totalUnpaidFees, 2); ?>
+                </div>
+            <?php
+            }
+            ?>
+            <a href="logout.php" class="logout-btn">Log Out</a>
+        </div>
+    </section>
 </body>
 
 </html>

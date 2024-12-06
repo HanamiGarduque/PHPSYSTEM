@@ -34,6 +34,7 @@ $db = $database->getConnect();
 <body>
     <header class="header">
         <div class="logo"></div>
+        <div class="head">Blib: Library Management System</div>
         <nav class="nav">
             <a href="homepage.php">Home</a>
             <a href="search_catalog.php">Search a Book</a>

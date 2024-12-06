@@ -62,6 +62,8 @@ $username = $user['username'];
     $book->Book_Genre = $row['Book_Genre'];
     $book->Book_Publisher = $row['Book_Publisher'];
     $book->Available_Copies = $row['Available_Copies'];
+
+    echo $book->Book_Title;
     ?>
 
     <form method="POST" action="">
@@ -189,11 +191,11 @@ $username = $user['username'];
             $user_id = $_SESSION['id'];
 
             $Book_ID = isset($_POST['book_id']) ? $_POST['book_id'] : die('ERROR: Book ID not found.');
-            $book->Book_ID = $Book_ID;
+            $book->Book_ID = $Book_ID;  
 
             $stmt = $book->readID();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
+            $book_title = $row['Book_Title'];
             if (!$row) {
                 die('ERROR: No data found for the given Book ID.');
             }
@@ -212,10 +214,9 @@ $username = $user['username'];
             if ($reservation->create()) {
                 $notification->user_id = $user_id;
 
-                $notification->pendingBooking($username, $book->Book_Title); //created notification
-                $_SESSION['notification_message'] = "Dear " . $reservation->name . ", your booking for the book '" . $book->Book_Title . "' is pending approval.";
-                $title = "Pending Book Borrowing Request";
-                $message = htmlspecialchars($_SESSION['notification_message']);
+                $notification->pendingBooking($username, $book_title);
+                echo $book->Book_Title;
+
                 echo "<script>
                 const Toast = Swal.mixin({
                     toast: true,

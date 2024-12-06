@@ -360,7 +360,7 @@ class Reservations
                     r.reservation_id
                  FROM " . $this->tbl_name . " r 
                  INNER JOIN books b ON r.book_id = b.Book_ID
-                 WHERE r.user_id = :user_id ORDER BY reservation_id DESC";
+                 WHERE r.user_id = :user_id ORDER BY reservation_date DESC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -485,7 +485,7 @@ class Notifications
 
     public function getUserNotifications($user_id)
     {
-        $query = "SELECT * FROM notifications WHERE user_id = :user_id ORDER BY notification_id DESC";
+        $query = "SELECT * FROM notifications WHERE user_id = :user_id ORDER BY created_at asc";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
@@ -625,7 +625,7 @@ class FinesAndFees
 
     public function getUserFines($userId)
     {
-        $query = "SELECT * FROM " . $this->tbl_name . " WHERE user_id = :user_id ORDER BY paid DESC";
+        $query = "SELECT * FROM " . $this->tbl_name . " WHERE user_id = :user_id ORDER BY paid ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $userId);
         $stmt->execute();

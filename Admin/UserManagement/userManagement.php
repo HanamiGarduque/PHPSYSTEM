@@ -2,7 +2,7 @@
 require_once '../../check_session.php';
 require_once '../../Database/database.php';
 require_once '../../Database/crud.php';
-// ensureAdminAccess();
+ensureAdminAccess();
 
 $database = new Database();
 $db = $database->getConnect();
@@ -10,6 +10,7 @@ $db = $database->getConnect();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,11 +18,11 @@ $db = $database->getConnect();
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-    
+
     <!-- jQuery and DataTables JS -->
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-    
+
     <link rel="stylesheet" href="../../Admin/UserManagement/userManagement.css">
 
     <script>
@@ -30,6 +31,7 @@ $db = $database->getConnect();
         });
     </script>
 </head>
+
 <body>
     <h1>ADMIN DASHBOARD</h1>
     <div class="Container">
@@ -40,6 +42,7 @@ $db = $database->getConnect();
                     <li><a href="../../Admin/UserManagement/userManagement.php">User Management</a></li>
                     <li><a href="../../Admin/BorrowManagement/borrowManagement.php">Borrow Management</a></li>
                     <li><a href="../../Admin/FinesManagement/finesManagement.php">Fines Management</a></li>
+                    <li><a href="../../Admin/ReservationLog/reservationLog.php">Reservation Log</a></li>
                     <li><a href="../../Admin/AdminAccount/adminAccount.php">Admin Account</a></li>
                 </ul>
             </nav>
@@ -65,13 +68,13 @@ $db = $database->getConnect();
                     </thead>
                     <tbody>
                         <?php
-                        
+
                         $user = new Users($db);
                         $stmt = $user->read();
                         $num = $stmt->rowCount();
 
-                        if($num > 0) {
-                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                        if ($num > 0) {
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 echo "<tr>";
                                 echo "<td>" . htmlspecialchars($row['user_id']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['username']) . "</td>";
@@ -80,7 +83,7 @@ $db = $database->getConnect();
                                 echo "<td>" . htmlspecialchars($row['email']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['address']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['phone_number']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['roles']) . "</td>";                    
+                                echo "<td>" . htmlspecialchars($row['roles']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['status']) . "</td>";
                                 echo "<td><a href='updateUser.php?user_id=" . htmlspecialchars($row['user_id']) . "'>Edit</a></td>";
                                 echo "</tr>";
@@ -93,4 +96,5 @@ $db = $database->getConnect();
         </div>
     </div>
 </body>
+
 </html>

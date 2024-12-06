@@ -1,3 +1,13 @@
+<?php
+require_once '../../check_session.php';
+require_once '../../Database/database.php';
+require_once '../../Database/crud.php';
+ensureAdminAccess();
+
+$database = new Database();
+$db = $database->getConnect();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,19 +38,20 @@
 </head>
 
 <body>
-<h1>ADMIN DASHBOARD</h1>
+    <h1>ADMIN DASHBOARD</h1>
     <div class="Container">
-        
+
         <div class="side_dashboard">
-                <nav>
-                    <ul>
-                        <li><a href="../../Admin/BookManagement/bookManagement.php">Book Management</a></li>
-                        <li><a href="../../Admin/UserManagement/userManagement.php">User Management</a></li>
-                        <li><a href="../../Admin/BorrowManagement/borrowManagement.php">Borrow Management</a></li>
-                        <li><a href="../../Admin/FinesManagement/finesManagement.php">Fines Management</a></li>
-                        <li><a href="../../Admin/AdminAccount/adminAccount.php">Admin Account</a></li>
-                    </ul>
-                </nav>
+            <nav>
+                <ul>
+                    <li><a href="../../Admin/BookManagement/bookManagement.php">Book Management</a></li>
+                    <li><a href="../../Admin/UserManagement/userManagement.php">User Management</a></li>
+                    <li><a href="../../Admin/BorrowManagement/borrowManagement.php">Borrow Management</a></li>
+                    <li><a href="../../Admin/FinesManagement/finesManagement.php">Fines Management</a></li>
+                    <li><a href="../../Admin/ReservationLog/reservationLog.php">Reservation Log</a></li>
+                    <li><a href="../../Admin/AdminAccount/adminAccount.php">Admin Account</a></li>
+                </ul>
+            </nav>
         </div>
 
         <div class="second_container">
@@ -48,7 +59,7 @@
             <div class="main_content">
 
                 <h2>List of Books</h2>
-                <a  href="../../Admin/BookManagement/add_book.php">
+                <a href="../../Admin/BookManagement/add_book.php">
                     <button onclick="location.href='../../add_book.php'" class="add_btn">Add New Book</button>
                 </a>
 
@@ -69,12 +80,6 @@
                     <tbody>
 
                         <?php
-                        require_once '../../Database/database.php';
-                        require_once '../../Database/crud.php';
-
-                        $database = new Database();
-                        $db = $database->getConnect();
-
                         $book = new Books($db);
                         $stmt = $book->read();
                         $num = $stmt->rowCount();
@@ -95,7 +100,7 @@
                                             <input type='hidden' name='bookId' value='" . htmlspecialchars($row['Book_ID']) . "' />
                                             <button type='button' class='delete-btn'>Delete</button>
                                         </form>
-                                            <button class='edit-btn' data-id='" .htmlspecialchars($row['Book_ID']) ."' data-title='" .htmlspecialchars($row['Book_Title']) ."'>Edit</button>
+                                            <button class='edit-btn' data-id='" . htmlspecialchars($row['Book_ID']) . "' data-title='" . htmlspecialchars($row['Book_Title']) . "'>Edit</button>
                                       </td>";
                                 echo "</tr>";
                             }
@@ -106,7 +111,7 @@
                 </table>
 
                 <script>
-                    $(document).on('click', '.delete-btn', function (e) {
+                    $(document).on('click', '.delete-btn', function(e) {
                         e.preventDefault();
 
                         const form = $(this).closest('form');
@@ -130,7 +135,7 @@
                 </script>
 
                 <script>
-                    $(document).on('click', '.edit-btn', function (e) {
+                    $(document).on('click', '.edit-btn', function(e) {
                         e.preventDefault();
 
                         const bookId = $(this).data('id');
@@ -158,4 +163,5 @@
     </div>
 
 </body>
+
 </html>

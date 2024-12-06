@@ -2,7 +2,7 @@
 require_once '../../check_session.php';
 require_once '../../Database/database.php';
 require_once '../../Database/crud.php';
-
+ ensureAdminAccess();
 $database = new Database();
 $db = $database->getConnect();
 
@@ -44,6 +44,7 @@ if (!$admin) {
                     <li><a href="../../Admin/UserManagement/userManagement.php">User Management</a></li>
                     <li><a href="../../Admin/BorrowManagement/borrowManagement.php">Borrow Management</a></li>
                     <li><a href="../../Admin/FinesManagement/finesManagement.php">Fines Management</a></li>
+                    <li><a href="../../Admin/ReservationLog/reservationLog.php">Reservation Log</a></li>
                     <li><a href="../../Admin/AdminAccount/adminAccount.php">Admin Account</a></li>
                 </ul>
             </nav>

@@ -82,7 +82,7 @@ class Users
 
     public function read()
     {
-        $query = "SELECT * FROM " . $this->tbl_name;
+        $query = "SELECT * FROM " . $this->tbl_name . " ORDER BY user_id DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
@@ -340,7 +340,7 @@ class Reservations
 
     public function read()
     {
-        $query = "SELECT * FROM " . $this->tbl_name;
+        $query = "SELECT * FROM " . $this->tbl_name . " ORDER BY reservation_id DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
@@ -360,7 +360,7 @@ class Reservations
                     r.reservation_id
                  FROM " . $this->tbl_name . " r 
                  INNER JOIN books b ON r.book_id = b.Book_ID
-                 WHERE r.user_id = :user_id";
+                 WHERE r.user_id = :user_id ORDER BY reservation_id DESC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -462,7 +462,7 @@ class Notifications
     public function userCancelledBooking($userName, $bookTitle)
     {
         $message = "Dear $userName, you have CANCELLED your request to borrow the book '$bookTitle'. If you have any questions, please contact support.";
-                $this->saveNotification($message);
+        $this->saveNotification($message);
     }
 
     public function overdueBooking($userName, $bookTitle)
@@ -475,26 +475,22 @@ class Notifications
         $message = "Dear $userName, thank you for returning the book '$bookTitle' on time. Your return has been successfully processed. We appreciate your timely return and hope to serve you again soon!";
         $this->saveNotification($message);
     }
+    public function paymentCreated($userName, $amount)
+    {
+        $message = "Dear $userName, you have successfully paid an amount of '$amount' on time. Do adhere to the library policies to avoid additional fees. Thank you for your prompt payment.";
+        $this->saveNotification($message);
+    }
+    
 
 
     public function getUserNotifications($user_id)
     {
-        $query = "SELECT * FROM notifications WHERE user_id = :user_id";
+        $query = "SELECT * FROM notifications WHERE user_id = :user_id ORDER BY notification_id DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt;
     }
-
-    // public function read($user_id)
-    // {
-    //     $query = "SELECT * FROM " . $this->tbl_name . " WHERE user_id = :user_id";
-    //     $stmt = $this->conn->prepare($query);
-    //     $stmt->bindParam(':user_id', $user_id);
-    //     $stmt->execute();
-
-    //     return $stmt;
-    // }
 
     public function delete()
     {
@@ -547,7 +543,7 @@ class ReservationLog
 
     public function read()
     {
-        $query = "SELECT * FROM " . $this->tbl_name;
+        $query = "SELECT * FROM " . $this->tbl_name . " ORDER BY log_id DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
@@ -577,6 +573,7 @@ class FinesAndFees
     public $imposed_by;
     public $date_imposed;
     public $paid;
+    public $user_id;
 
     public function __construct($db)
     {
@@ -586,9 +583,9 @@ class FinesAndFees
     public function create($fine_or_fee, $amount, $reason, $imposed_by)
     {
         $query = "INSERT INTO " . $this->tbl_name . " 
-                    (reservation_id, fine_or_fee, amount, reason, imposed_by, paid) 
+                    (reservation_id, fine_or_fee, amount, reason, imposed_by, paid, user_id) 
                   VALUES 
-                    (:reservation_id, :fine_or_fee, :amount, :reason, :imposed_by, :paid)";
+                    (:reservation_id, :fine_or_fee, :amount, :reason, :imposed_by, :paid, :user_id)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -598,6 +595,7 @@ class FinesAndFees
         $stmt->bindParam(':reason', $reason);
         $stmt->bindParam(':imposed_by', $imposed_by);
         $stmt->bindParam(':paid', $this->paid);
+        $stmt->bindParam(':user_id', $this->user_id);
 
         if ($stmt->execute()) {
             return true;
@@ -608,7 +606,7 @@ class FinesAndFees
 
     public function read()
     {
-        $query = "SELECT * FROM " . $this->tbl_name;
+        $query = "SELECT * FROM " . $this->tbl_name . " ORDER BY fee_id DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
@@ -625,27 +623,36 @@ class FinesAndFees
         return $stmt;
     }
 
-    public function updatePaymentStatus($status)
+    public function updatePaymentStatus($user_id)
     {
-        $query = "UPDATE " . $this->tbl_name . " SET paid = :paid WHERE fee_id = :fee_id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':paid', $status);
-        $stmt->bindParam(':fee_id', $this->fee_id);
-
-        if ($stmt->execute()) {
-            return true;
-        }
+        $query = "SELECT username, SUM(amount) as total_amount 
+                      FROM fines_and_fees 
+                      JOIN users ON fines_and_fees.user_id = users.user_id 
+                      WHERE fines_and_fees.user_id = :user_id";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->execute();
 
         return false;
     }
 
     public function getUserFines($userId)
     {
-        $query = "SELECT * FROM fines_and_fees WHERE reservation_id IN (SELECT reservation_id FROM reservation WHERE user_id = :user_id)";
+        $query = "SELECT * FROM " . $this->tbl_name . " WHERE user_id = :user_id ORDER BY paid DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $userId);
         $stmt->execute();
         return $stmt;
     }
-    
+    public function updatePaid($userId)
+    {
+        $query = "UPDATE " . $this->tbl_name . " 
+        SET paid = 1
+        WHERE user_id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $userId);
+        $stmt->execute();
+        return $stmt;
+    }
 }

@@ -10,7 +10,7 @@ function isAdmin() {
 }
 
 if (!isLoggedIn()) {
-    header("Location: login.php");
+    header("Location:  /PHPSYSTEM/login.php");
     exit();
 }
 

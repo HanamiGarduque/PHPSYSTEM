@@ -14,24 +14,31 @@ $db = $database->getConnect();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fines Management</title>
 
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-
-    <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <link rel="stylesheet" href="../../Admin/FinesManagement/finesManagement.css">
 
     <script>
         $(document).ready(function() {
-            $('#finesTable').DataTable();
+            $('#finesTable').DataTable({
+                scrollX: true,
+                scrollY: '400px',
+                scrollCollapse: true, 
+                paging: true, 
+                autoWidth: false
+            })
+            $('#finesPerUser').DataTable({
+                scrollX: true, 
+                scrollY: '400px', 
+                scrollCollapse: true, 
+                paging: true,
+                autoWidth: false
+            });
         });
+
 
         function showConfirmation(feeId, formId) {
             Swal.fire({
@@ -69,17 +76,11 @@ $db = $database->getConnect();
         <div class="second_container">
             <div class="main_content">
                 <h2>Overdue Fines</h2>
-
-                <table id="finesTable" class="display">
+                <table id="finesPerUser" class="display">
                     <thead>
                         <tr>
-                            <th>Fee ID</th>
-                            <th>Reservation ID</th>
-                            <th>Fine or Fee</th>
-                            <th>Amount (PHP)</th>
-                            <th>Reason</th>
-                            <th>Imposed By</th>
-                            <th>Date Imposed</th>
+                            <th>User ID</th>
+                            <th>Total Amount</th>
                             <th>Paid</th>
                             <th>Set Status</th>
                         </tr>
@@ -87,20 +88,26 @@ $db = $database->getConnect();
                     <tbody>
                         <?php
                         $finesAndFees = new FinesAndFees($db);
-                        $stmt = $finesAndFees->read();
+                        $query = "
+                        SELECT f.fee_id, f.user_id, SUM(f.amount) as total_amount, u.username, f.paid 
+                        FROM fines_and_fees as f
+                        JOIN users as u on f.user_id = u.user_id
+                        WHERE f.paid = 0
+                        GROUP BY f.user_id";
+
+
+                        $stmt = $db->prepare($query);
+                        $stmt->execute();
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            echo "<tr>";
-                            echo "<td>" . htmlspecialchars($row['fee_id']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['reservation_id']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['fine_or_fee']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['amount']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['reason']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['imposed_by']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['date_imposed']) . "</td>";
+                            $userName = $row['username'];
+                            $total_amount = $row['total_amount'];
+                            echo "<td>" . htmlspecialchars($row['user_id']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['total_amount']) . "</td>";
                             echo "<td>" . ($row['paid'] ? 'Yes' : 'No') . "</td>";
                             echo "<td>";
                             echo "<form id='statusForm_" . htmlspecialchars($row['fee_id']) . "' method='POST' action=''>";
                             echo "<input type='hidden' name='fee_id' value='" . htmlspecialchars($row['fee_id']) . "'>";
+                            echo "<input type='hidden' name='user_id' value='" . htmlspecialchars($row['user_id']) . "'>";
                             echo "<input type='hidden' name='paid' id='paid_" . htmlspecialchars($row['fee_id']) . "' value='" . ($row['paid'] ? '1' : '0') . "'>";  // Hidden input for 'paid' status
                             echo "<button type='button' onclick='showConfirmation(" . htmlspecialchars($row['fee_id']) . ", \"statusForm_" . htmlspecialchars($row['fee_id']) . "\")'>Update Status</button>";
                             echo "</form>";
@@ -111,21 +118,61 @@ $db = $database->getConnect();
                     </tbody>
                 </table>
 
-
+                <table id="finesTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Fee ID</th>
+                            <th>Reservation ID</th>
+                            <th>Fine or Fee</th>
+                            <th>Amount (PHP)</th>
+                            <th>Reason</th>
+                            <th>Imposed By (Admin ID)</th>
+                            <th>Date Imposed</th>
+                            <th>User ID</th>
+                            <th>Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $stmt = $finesAndFees->read();
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row['fee_id']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['reservation_id']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['fine_or_fee']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['amount']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['reason']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['imposed_by']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['date_imposed']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['user_id']) . "</td>";
+                            echo "<td>" . ($row['paid'] ? 'Yes' : 'No') . "</td>";
+                            echo "<td>";
+                            echo "</tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <?php 
+    <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $fee_id = $_POST['fee_id'];
-        $paid = $_POST['paid'];  // This will be 'Yes' if the user confirmed
-    
-        // Assuming you have a method in your FinesAndFees class to update the 'paid' status
-        $finesAndFees = new FinesAndFees($db);
-        
-        // Call a method to update the 'paid' field for the fee_id
-        if ($finesAndFees->updatePaymentStatus($fee_id, $paid)) {
-            echo "Paid status updated successfully.";
+        $paid = $_POST['paid'];
+        $user_id = $_POST['user_id'];
+        var_dump($paid, $user_id); // Check if the correct data is submitted
+        $notifications = new Notifications($db);
+        $notifications->user_id = $user_id;
+        $finesAndFees->paid = $paid;
+        echo $paid;
+
+        if ($finesAndFees->updatePaymentStatus($user_id)) {
+            $finesAndFees->updatePaymentStatus($user_id);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $userName = $row['username'];
+            $total_amount = $row['total_amount'];
+
+            $notifications->paymentCreated($userName, $total_amount);
         } else {
             echo "Failed to update paid status.";
         }

@@ -105,7 +105,8 @@ $conn = null;
     </header>
 
     <div class="search-container">
-        <h1>Book Catalog</h1>
+        <h2>Search Catalog</h2>
+        <br>
         <form method="GET">
             <input type="text" name="query" placeholder="Search a book / Author / ISBN / Genre..." value="<?php echo htmlspecialchars($searchTerm); ?>" />
             <select name="filter">

@@ -24,7 +24,8 @@ $db = $database->getConnect();
         $(document).ready(function() {
             $('#userTable').DataTable({
                 paging: false,
-                searching: false
+                searching: false,
+                info: false
             });
         });
     </script>
@@ -55,7 +56,6 @@ $db = $database->getConnect();
             $notification = new Notifications($db);
             $stmt = $notification->getUserNotifications($_SESSION['id']);
             $num = $stmt->rowCount();
-            echo $_SESSION['id'];
             if ($num > 0) {
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     if (isset($row['notification_id'])) {

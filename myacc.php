@@ -44,6 +44,26 @@ foreach ($fines as $fine) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        $(document).ready(function() {
+            $('#finesTable').DataTable({
+                scrollX: true,
+                scrollY: '185px',
+                scrollCollapse: true, 
+                paging: false,
+                autoWidth: false,
+                searching: false
+             });
+
+            $('#reservationTable').DataTable({
+                scrollX: true,
+                scrollY: '185px',
+                scrollCollapse: true,
+                paging: false,
+                autoWidth: false,
+                searching: false
+            });
+        });
+
         function showConfirmation(reservationId, formId) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -139,64 +159,62 @@ foreach ($fines as $fine) {
                                 <td><?php echo htmlspecialchars($reservation['notes']); ?></td>
                                 <td><?php echo htmlspecialchars($reservation['status']); ?></td>
                                 <td>
-                                    <?php if ($reservation['status'] != 'Done' && $reservation['status'] != 'Cancelled') { ?>
+                                    <?php if ($reservation['status'] != 'Done' && $reservation['status'] != 'Cancelled' &&  $reservation['status'] != 'Overdue') { ?>
                                         <form method='POST' id='cancelForm_<?php echo $reservation['reservation_id']; ?>' action='cancelReservation.php'>
                                             <input type='hidden' name='reservation_id' value='<?php echo $reservation['reservation_id']; ?>'>
                                             <button type='button' onclick='showConfirmation(<?php echo $reservation["reservation_id"]; ?>, "cancelForm_<?php echo $reservation["reservation_id"]; ?>")'>Cancel</button>
                                         </form>
                                     <?php } else { ?>
-                                        <span>Cannot cancel</span>
+                                        <span> </span>
                                     <?php } ?>
                                 </td>
                             <?php } ?>
                     </tbody>
                 </table>
             <?php
-            
+
             }
             ?>
         </div>
     </section>
 
-<section id="finesAndFees">
-    <div class="container">
-        <h2>Fines and Fees</h2>
-        <?php
-        if (empty($fines)) {
-            echo "<p>You have no outstanding fines or fees. Keep it up!</p>";
-        } else {
-        ?>
-            <table id="finesTable" class="display">
-                <thead>
-                    <tr>
-                        <th>Reason</th>
-                        <th>Amount</th>
-                        <th>Date Imposed</th>
-                        <th>Imposed By</th>
-                        <th>Paid Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($fines as $fine) { ?>
+    <section id="finesAndFees">
+        <div class="container">
+            <h2>Fines and Fees</h2>
+            <?php
+            if (empty($fines)) {
+                echo "<p>You have no outstanding fines or fees. Keep it up!</p>";
+            } else {
+            ?>
+                <table id="finesTable" class="display">
+                    <thead>
                         <tr>
-                            <td><?php echo htmlspecialchars($fine['reason']); ?></td>
-                            <td><?php echo htmlspecialchars($fine['amount']); ?></td>
-                            <td><?php echo htmlspecialchars($fine['date_imposed']); ?></td>
-                            <td><?php echo htmlspecialchars($fine['imposed_by']); ?></td>
-                            <td><?php echo $fine['paid'] ? "Paid" : "Unpaid"; ?></td>
+                            <th>Reason</th>
+                            <th>Amount</th>
+                            <th>Date Imposed</th>
+                            <th>Paid Status</th>
                         </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-            <div id="totalUnpaidFees" style="margin-top: 10px;">
-                <strong>Total Unpaid Fees:</strong> $<?php echo number_format($totalUnpaidFees, 2); ?>
-            </div>
-        <?php
-        }
-        ?>
-        <a href="logout.php" class="logout-btn">Log Out</a>
-    </div>
-</section>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($fines as $fine) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($fine['reason']); ?></td>
+                                <td><?php echo htmlspecialchars($fine['amount']); ?></td>
+                                <td><?php echo htmlspecialchars($fine['date_imposed']); ?></td>
+                                <td><?php echo $fine['paid'] ? "Paid" : "Unpaid"; ?></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+                <div id="totalUnpaidFees" style="margin-top: 10px;">
+                    <strong>Total Unpaid Fees:</strong> Php. <?php echo number_format($totalUnpaidFees, 2); ?>
+                </div>
+            <?php
+            }
+            ?>
+            <a href="logout.php" class="logout-btn">Log Out</a>
+        </div>
+    </section>
 </body>
 
 </html>

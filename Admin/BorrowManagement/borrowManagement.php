@@ -1,6 +1,7 @@
 <?php
-// require_once '../../check_session.php';
+require_once '../../check_session.php';
 require_once '../../Database/database.php';
+require_once '../../Database/crud.php';
 
 $database = new Database();
 $db = $database->getConnect();
@@ -89,11 +90,8 @@ $db = $database->getConnect();
                     </thead>
                     <tbody>
                         <?php
-                        $query = "SELECT reservation_id, name, email, phone_number, reservation_date, expected_return_date, pickup_date, 
-                                  duration, notes, status, Book_ID 
-                                  FROM reservation";
-                        $stmt = $db->prepare($query);
-                        $stmt->execute();
+                        $reservation = new Reservations($db);
+                        $stmt = $reservation->read();
 
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             echo "<tr>";
@@ -107,18 +105,18 @@ $db = $database->getConnect();
                             echo "<td>" . htmlspecialchars($row['expected_return_date']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['notes']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['Book_ID']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['book_id']) . "</td>";
                             echo "<td>";
                             echo "<form method='POST' id='statusForm_" . $row['reservation_id'] . "' action='approveReservation.php'>";
                             echo "<input type='hidden' name='reservation_id' value='" . $row['reservation_id'] . "'>";
-                            echo "<select name='status' class='statusDropdown' " . ($row['status'] == 'Done' ? 'disabled' : '') . ($row['status'] == 'Cancelled' ? 'disabled' : '') . " data-current-status='" . htmlspecialchars($row['status']) . "'>";  // Pass the current status
+                            echo "<select name='status' class='statusDropdown' " . ($row['status'] == 'Done' ? 'disabled' : '') . ($row['status'] == 'Cancelled' ? 'disabled' : '') . ($row['status'] == 'Overdue' ? 'disabled' : '') . " data-current-status='" . htmlspecialchars($row['status']) . "'>";  // Pass the current status
                             echo "<option value='Approved' " . ($row['status'] == 'Approved' ? 'selected' : '') . ">Approved</option>
                                     <option value='Active' " . ($row['status'] == 'Active' ? 'selected' : '') . ">Active</option>
                                     <option value='Done' " . ($row['status'] == 'Done' ? 'selected' : '') . ">Done</option>
                                     <option value='Overdue' " . ($row['status'] == 'Overdue' ? 'selected' : '') . ">Overdue</option>
                                     <option value='Cancelled' " . ($row['status'] == 'Cancelled' ? 'selected' : '') . ">Cancelled</option>
                                 </select>";
-                            if ($row['status'] != 'Done' && $row['status'] != 'Cancelled') {
+                            if ($row['status'] != 'Done' && $row['status'] != 'Cancelled' && $row['status'] != 'Overdue') {
                                 echo "<button type='button' onclick='showConfirmation(" . $row['reservation_id'] . ", \"statusForm_" . $row['reservation_id'] . "\")'>Submit</button>";
                             }
                             echo "</form>";

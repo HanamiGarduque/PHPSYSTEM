@@ -452,7 +452,7 @@ class Notifications
         $message = "Dear $userName, your booking for the book '$bookTitle' is now ACTIVE. Enjoy reading the book, and remember to return it by the due date.";
         $this->saveNotification($message);
     }
-
+   
     public function adminCancelledBooking($userName, $bookTitle)
     {
         $message = "Dear $userName, we regret to inform you that your request to borrow the book '$bookTitle' has been CANCELLED. If you have any questions, please contact support.";

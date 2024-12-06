@@ -623,20 +623,6 @@ class FinesAndFees
         return $stmt;
     }
 
-    public function updatePaymentStatus($user_id)
-    {
-        $query = "SELECT username, SUM(amount) as total_amount 
-                      FROM fines_and_fees 
-                      JOIN users ON fines_and_fees.user_id = users.user_id 
-                      WHERE fines_and_fees.user_id = :user_id";
-            
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':user_id', $user_id);
-            $stmt->execute();
-
-        return false;
-    }
-
     public function getUserFines($userId)
     {
         $query = "SELECT * FROM " . $this->tbl_name . " WHERE user_id = :user_id ORDER BY paid DESC";
@@ -645,7 +631,7 @@ class FinesAndFees
         $stmt->execute();
         return $stmt;
     }
-    public function updatePaid($userId)
+    public function updatePaymentStatus($userId)
     {
         $query = "UPDATE " . $this->tbl_name . " 
         SET paid = 1

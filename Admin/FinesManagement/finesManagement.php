@@ -159,28 +159,45 @@ $db = $database->getConnect();
         </div>
     </div>
     <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $paid = $_POST['paid'];
-        $user_id = $_POST['user_id'];
-        var_dump($paid, $user_id); // Check if the correct data is submitted
-        $notifications = new Notifications($db);
-        $notifications->user_id = $user_id;
-        $finesAndFees->paid = $paid;
-        echo $paid;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $paid = $_POST['paid'];
+    $user_id = $_POST['user_id'];
+    var_dump($paid, $user_id); // Check if the correct data is submitted
 
-        if ($finesAndFees->updatePaymentStatus($user_id)) {
-            $finesAndFees->updatePaymentStatus($user_id);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $notifications = new Notifications($db);
+    $notifications->user_id = $user_id;
+    
+    // Initialize FinesAndFees class
+    $finesAndFees = new FinesAndFees($db);
+    $finesAndFees->paid = $paid;
 
-            $userName = $row['username'];
-            $total_amount = $row['total_amount'];
+    echo $paid;
 
+    // Get the user's total fine amount and username
+    $query = "SELECT username, SUM(amount) as total_amount 
+              FROM fines_and_fees 
+              JOIN users ON fines_and_fees.user_id = users.user_id 
+              WHERE fines_and_fees.user_id = :user_id AND paid = 0";
+    
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':user_id', $user_id);
+    $stmt->execute();
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($row) {
+        $userName = $row['username'];
+        $total_amount = $row['total_amount'];
+        if ($finesAndFees->updatePaymentStatus($user_id, $paid)) {
             $notifications->paymentCreated($userName, $total_amount);
         } else {
             echo "Failed to update paid status.";
         }
+    } else {
+        echo "User not found or invalid data.";
     }
-    ?>
+}
+?>
 
 </body>
 

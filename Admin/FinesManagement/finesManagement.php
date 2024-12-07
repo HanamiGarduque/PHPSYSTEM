@@ -162,18 +162,16 @@ $db = $database->getConnect();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $paid = $_POST['paid'];
     $user_id = $_POST['user_id'];
-    var_dump($paid, $user_id); // Check if the correct data is submitted
 
     $notifications = new Notifications($db);
     $notifications->user_id = $user_id;
-    
-    // Initialize FinesAndFees class
+
     $finesAndFees = new FinesAndFees($db);
     $finesAndFees->paid = $paid;
 
     echo $paid;
 
-    // Get the user's total fine amount and username
+    // get user's total fine amount and username
     $query = "SELECT username, SUM(amount) as total_amount 
               FROM fines_and_fees 
               JOIN users ON fines_and_fees.user_id = users.user_id 

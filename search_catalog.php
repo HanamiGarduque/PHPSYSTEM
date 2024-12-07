@@ -32,9 +32,22 @@ if ($filter !== "all") {
     $params[] = $filter;
 }
 
-$stmt = $conn->prepare($sql);
-$stmt->execute($params);
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Query Error: " . $e->getMessage(), 0);
+    echo "<script>
+        Swal.fire({
+            title: 'Error!',
+            text: 'An error occurred while fetching the data. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'Close'
+        });
+    </script>";
+    exit();
+}
 
 // Close database connection
 $conn = null;
@@ -49,7 +62,7 @@ $conn = $db->getConnect();
 
 // Initialize variables
 $filter = isset($_GET['filter']) ? $_GET['filter'] : "all";
-$searchTerm = isset($_GET['query']) ? $_GET['query'] : "";
+$searchTerm = isset($_GET['query']) ? htmlspecialchars($_GET['query']) : "";
 $results = [];
 
 // Build SQL query with dynamic filters and LEFT JOIN
@@ -82,6 +95,7 @@ $conn = null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,6 +107,7 @@ $conn = null;
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 </head>
+
 <body>
     <header class="header">
         <div class="logo"></div>
@@ -159,16 +174,19 @@ $conn = null;
             </tbody>
         </table>
     <?php else: ?>
-        <p style="text-align: center;">No results found.</p>
+        <p style="text-align: center;">
+            No results found. Please try broadening your search or checking the filter criteria.
+        </p>
     <?php endif; ?>
 
     <script>
         $(document).ready(function() {
             $('#booksTable').DataTable({
-                paging: false, 
-                searching: false 
+                paging: false,
+                searching: false
             });
         });
     </script>
 </body>
+
 </html>

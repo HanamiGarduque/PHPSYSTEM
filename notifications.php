@@ -5,8 +5,8 @@ require_once './Database/crud.php';
 
 $database = new Database();
 $db = $database->getConnect();
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,6 +18,7 @@ $db = $database->getConnect();
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="./css/notifications.css">
 
     <script>
@@ -28,6 +29,23 @@ $db = $database->getConnect();
                 info: false
             });
         });
+
+        function confirmDelete(notificationId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `deleteNotifications.php?notification_id=${notificationId}`;
+                }
+            });
+        }
     </script>
 </head>
 
@@ -63,18 +81,15 @@ $db = $database->getConnect();
                         echo "<tr>";
                         echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['message']) . "</td>";
-                        echo "<td><a href='deleteNotifications.php?notification_id=" . htmlspecialchars($row['notification_id']) . "' class='button'>Delete</a></td>";
+                        echo "<td><button onclick='confirmDelete(" . htmlspecialchars($row['notification_id']) . ")' class='button'>Delete</button></td>";
                         echo "</tr>";
                     } else {
-                        echo "<tr><td colspan='2'>Error: notification_id not found.</td></tr>";
+                        echo "<tr><td colspan='3'>Error: notification_id not found.</td></tr>";
                     }
-                }}
-                
+                }
+            }
             ?>
         </tbody>
     </table>
-
-
 </body>
-
 </html>

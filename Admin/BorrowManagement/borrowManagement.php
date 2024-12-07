@@ -157,7 +157,6 @@ $db = $database->getConnect();
                                     echo "Selected reservations have been deleted.";
 
                                 }
-                                // Assuming you have a delete function in your Reservations class.
                             }
                     
                         } else {

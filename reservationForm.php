@@ -62,8 +62,7 @@ $username = $user['username'];
     $book->Book_Genre = $row['Book_Genre'];
     $book->Book_Publisher = $row['Book_Publisher'];
     $book->Available_Copies = $row['Available_Copies'];
-
-    echo $book->Book_Title;
+    
     ?>
 
     <form method="POST" action="">

@@ -54,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($expectedReturnDate > $cancellationDate && $cancellationDate > $pickup_date) {
         $finesAndFees->reservation_id = $reservation_id;
         $finesAndFees->paid = false;
+        $book->addBookCopies();
 
         if ($finesAndFees->create('Fee', 50.00, 'Cancellation before expected return', $_SESSION['id'])) {
             header("Location: myacc.php");

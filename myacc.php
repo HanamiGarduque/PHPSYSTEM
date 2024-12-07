@@ -60,7 +60,8 @@ foreach ($fines as $fine) {
                 scrollCollapse: true,
                 paging: false,
                 autoWidth: false,
-                searching: false
+                searching: false,
+                ordering: true // Enable sorting (default is true)
             });
         });
 

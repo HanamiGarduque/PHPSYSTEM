@@ -360,7 +360,7 @@ class Reservations
                     r.reservation_id
                  FROM " . $this->tbl_name . " r 
                  INNER JOIN books b ON r.book_id = b.Book_ID
-                 WHERE r.user_id = :user_id ORDER BY reservation_date DESC";
+                 WHERE r.user_id = :user_id ORDER BY r.reservation_date DESC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -443,7 +443,7 @@ class Notifications
 
     public function approvedBooking($userName, $bookTitle)
     {
-        $message = "Dear $userName, your request to borrow the book '$bookTitle' has been APPROVED! Please proceed with collecting the book. Thank you for your patience.";
+        $message = "Dear $userName, your request to borrow the book '$bookTitle' has been APPROVED! Do not forget to pickup your book on your provided pick-up date. Failure to pick-up borrowed book on the given date will result to cancellation of your application . Thank you for your patience.";
         $this->saveNotification($message);
     }
 

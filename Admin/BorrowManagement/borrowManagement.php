@@ -38,19 +38,32 @@ $db = $database->getConnect();
         });
 
         function showConfirmation(reservationId, formId) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you want to update the status of this reservation?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, update it!',
-                cancelButtonText: 'No, cancel',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // If user confirms, submit the form
-                    document.getElementById(formId).submit();
-                }
-            });
+            const form = document.getElementById(formId);
+            const select = form.querySelector('.statusDropdown');
+            const currentStatus = select.getAttribute('data-current-status');
+            const selectedStatus = select.value; 
+
+            if (currentStatus == selectedStatus) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Changes Detected',
+                    text: 'The selected status is the same as the current status. No action is needed.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to update the status of this reservation?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, update it!',
+                    cancelButtonText: 'No, cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
         }
     </script>
 </head>

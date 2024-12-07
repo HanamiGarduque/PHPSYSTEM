@@ -3,6 +3,7 @@ require_once '../../check_session.php';
 require_once '../../Database/database.php';
 require_once '../../Database/crud.php';
  ensureAdminAccess();
+ 
 $database = new Database();
 $db = $database->getConnect();
 
@@ -12,10 +13,6 @@ $stmt->bindParam(':user_id', $_SESSION['id']);
 $stmt->execute();
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$admin) {
-    echo "<p>Admin data not found or you don't have the correct privileges.</p>";
-    exit();
-}
 ?>
 
 <!DOCTYPE html>

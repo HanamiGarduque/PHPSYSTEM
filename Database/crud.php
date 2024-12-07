@@ -346,6 +346,15 @@ class Reservations
 
         return $stmt;
     }
+    public function delete ($reservation_id) {
+        $query = "DELETE FROM " . $this->tbl_name . " WHERE reservation_id = :reservation_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':reservation_id', $reservation_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt;
+    
+    }
     public function getUserReservations($user_id)
     {
         $query = "SELECT 
@@ -557,6 +566,15 @@ class ReservationLog
         $stmt->execute();
 
         return $stmt;
+    }
+    public function delete ($log_id) {
+        $query = "DELETE FROM " . $this->tbl_name . " WHERE log_id = :log_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':log_id', $log_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt;
+    
     }
 }
 

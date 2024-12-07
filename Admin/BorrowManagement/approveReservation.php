@@ -2,6 +2,7 @@
 require_once '../../check_session.php';
 require_once '../../Database/database.php';
 require_once '../../Database/crud.php';
+ensureAdminAccess();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $reservation_id = isset($_POST['reservation_id']) ? $_POST['reservation_id'] : die('Reservation ID not found.');
@@ -16,9 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $finesAndFees = new FinesAndFees($db);
     $book = new Books($db);
 
-    if (!isAdmin()) {
-        exit('You are not authorized.');
-    }
 
     $query = "
         SELECT 

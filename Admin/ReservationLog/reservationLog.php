@@ -54,37 +54,64 @@ $db = $database->getConnect();
         <div class="second_container">
             <div class="main_content">
                 <h2>Reservation Actions History</h2>
+                <form id="deleteForm" action="" method="POST">
+                    <button type="submit">Delete Selected</button>
+                    <br><br>
+                    <table id="borrowTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Log ID</th>
+                                <th>Reservation ID</th>
+                                <th>Action</th>
+                                <th>Performed By</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $reservationLog = new ReservationLog($db);
+                            $stmt = $reservationLog->read();
 
-                <table id="borrowTable" class="display">
-                    <thead>
-                        <tr>
-                            <th>Log ID</th>
-                            <th>Reservation ID</th>
-                            <th>Action</th>
-                            <th>Performed By</th>
-                            <th>Timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $reservationLog = new ReservationLog($db);
-                        $stmt = $reservationLog->read();
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo "<tr>";
+                                echo "<td><input type='checkbox' name='log_ids[]' value='" . htmlspecialchars($row['log_id']) . "'></td>";
+                                echo "<td>" . htmlspecialchars($row['log_id']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['reservation_id']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['action']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['performed_by']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['timestamp']) . "</td>";
+                                echo "</tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <?php
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        if (isset($_POST['log_ids'])) {
+                            $log_ids = $_POST['log_ids'];
 
-                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            echo "<tr>";
-                            echo "<td>" . htmlspecialchars($row['log_id']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['reservation_id']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['action']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['performed_by']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['timestamp']) . "</td>";
-                            echo "</tr>";
+                            if (!empty($log_ids)) {
+                                $database = new Database();
+                                $db = $database->getConnect();
+                                $reservationLog = new ReservationLog($db);
+
+                                foreach ($log_ids as $log_id) {
+                                    if($reservationLog->delete($log_id)) {
+                                        echo "Selected log/s deleted.";
+                                    }
+                                }
+                            }
+                        } else {
+                            echo "There is no selected message/s to be deleted.";
                         }
-                        ?>
-                    </tbody>
-                </table>
+                    }
+                    ?>
+                </form>
             </div>
         </div>
     </div>
+
 
 </body>
 

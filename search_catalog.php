@@ -120,6 +120,8 @@ $conn = null;
                 <option value="Historical Fiction" <?php echo $filter === "Historical Fiction" ? "selected" : ""; ?>>Historical Fiction</option>
                 <option value="Gothic Fiction" <?php echo $filter === "Gothic Fiction" ? "selected" : ""; ?>>Gothic Fiction</option>
                 <option value="Fantasy" <?php echo $filter === "Fantasy" ? "selected" : ""; ?>>Fantasy</option>
+                <option value="Educational" <?php echo $filter === "Educational" ? "selected" : ""; ?>>Educational</option>
+
             </select>
             <button type="submit">Search</button>
         </form>

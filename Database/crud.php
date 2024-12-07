@@ -191,7 +191,7 @@ class Books
 
     public function read10Books()
     {
-        $query = "SELECT * FROM " . $this->tbl_name . " LIMIT 10";
+        $query = "SELECT * FROM " . $this->tbl_name . " WHERE Book_Cover is not null order by Book_Genre LIMIT 10";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 

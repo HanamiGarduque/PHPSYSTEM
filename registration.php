@@ -61,6 +61,7 @@ session_start();
                 <input type="text" name="last_name" placeholder="Last Name" required>
                 <input type="email" name="email" placeholder="Email Address" required>
                 <input type="text" name="address" placeholder="Address" required>
+                <input type="text" name="phone_number" placeholder="Phone Number" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <input type="password" name="confirm_password" placeholder="Confirm Password" required>
                 <button type="submit">Sign Up</button>

@@ -355,7 +355,7 @@ class Reservations
         return $stmt;
     
     }
-    public function getUserReservations($user_id)
+    public function getUserPendingActiveApprovedReservations($user_id)
     {
         $query = "SELECT 
                     b.Book_Title, 
@@ -369,7 +369,28 @@ class Reservations
                     r.reservation_id
                  FROM " . $this->tbl_name . " r 
                  INNER JOIN books b ON r.book_id = b.Book_ID
-                 WHERE r.user_id = :user_id ORDER BY r.reservation_date DESC";
+                 WHERE r.user_id = :user_id AND status = 'Active' OR status = 'Approved' OR status = 'Pending Approval' ORDER BY r.reservation_date DESC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt;
+    }
+    public function getUserCancelledDoneReservations($user_id)
+    {
+        $query = "SELECT 
+                    b.Book_Title, 
+                    b.Book_Author, 
+                    r.reservation_date,
+                    r.pickup_date,
+                    r.duration,
+                    r.expected_return_date,
+                    r.notes,
+                    r.status,
+                    r.reservation_id
+                 FROM " . $this->tbl_name . " r 
+                 INNER JOIN books b ON r.book_id = b.Book_ID
+                 WHERE r.user_id = :user_id AND status = 'Cancelled' OR status = 'Done' ORDER BY r.reservation_date DESC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -501,12 +522,12 @@ class Notifications
         return $stmt;
     }
 
-    public function delete()
+    public function delete($notification_id)
     {
         $query = "DELETE FROM " . $this->tbl_name . " WHERE notification_id = :notification_id";
         $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(':notification_id', $this->notification_id);
+        $stmt->bindParam(':notification_id', $notification_id);
 
         if ($stmt->execute()) {
             return true;

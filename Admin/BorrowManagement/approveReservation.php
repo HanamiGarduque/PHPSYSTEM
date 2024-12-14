@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $finesAndFees->paid = false;
             $finesAndFees->user_id = $user_id;
 
-            $finesAndFees->create('Fee', 200.00, 'Book not returned at expected return date', $_SESSION['id'], );
+            $finesAndFees->create('Fee', 200.00, 'Book not returned at expected return date', $_SESSION['id']);
             header('Location: borrowManagement.php');
             exit();
         }

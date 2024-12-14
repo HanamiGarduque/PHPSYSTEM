@@ -14,9 +14,13 @@ if (!$user) {
     exit;
 }
 
-$reservation = new Reservations($db);
-$stmt = $reservation->getUserReservations($_SESSION['id']);
-$reservation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$activeApprovedReservation = new Reservations($db);
+$stmt = $activeApprovedReservation->getUserPendingActiveApprovedReservations($_SESSION['id']);
+$activeApprovedReservation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$cancelledDoneReservation = new Reservations($db);
+$stmt = $cancelledDoneReservation->getUserCancelledDoneReservations($_SESSION['id']);
+$cancelledDoneReservation = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $fines_and_fees = new FinesAndFees($db);
 $stmt = $fines_and_fees->getUserFines($_SESSION['id']);
@@ -54,14 +58,23 @@ foreach ($fines as $fine) {
                 searching: false
             });
 
-            $('#reservationTable').DataTable({
+            $('#reservationTable1').DataTable({
                 scrollX: true,
                 scrollY: '185px',
                 scrollCollapse: true,
                 paging: false,
                 autoWidth: false,
                 searching: false,
-                ordering: true // Enable sorting (default is true)
+                ordering: true 
+            });
+            $('#reservationTable2').DataTable({
+                scrollX: true,
+                scrollY: '185px',
+                scrollCollapse: true,
+                paging: false,
+                autoWidth: false,
+                searching: false,
+                ordering: true 
             });
         });
 
@@ -113,12 +126,13 @@ foreach ($fines as $fine) {
     <section id="bookBorrow">
         <div class="container">
             <h2>Book Borrowing Details</h2>
+            <h4>Pending, Approved, and Active Reservations</h4>
             <?php
-            if (empty($reservation)) {
+            if (empty($activeApprovedReservation)) {
                 echo "<p>You have not borrowed books yet. Borrow now and start reading!</p>";
             } else {
             ?>
-                <table id="reservationTable" class="display">
+                <table id="reservationTable1" class="display">
                     <thead>
                         <tr>
                             <th>Book</th>
@@ -133,7 +147,7 @@ foreach ($fines as $fine) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($reservation as $reservation) { ?>
+                        <?php foreach ($activeApprovedReservation as $reservation) { ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($reservation['Book_Title']); ?></td>
                                 <td><?php echo htmlspecialchars($reservation['Book_Author']); ?></td>
@@ -153,6 +167,48 @@ foreach ($fines as $fine) {
                                         <span> </span>
                                     <?php } ?>
                                 </td>
+                            <?php } ?>
+                    </tbody>
+                </table>
+            <?php
+
+            }
+            ?>
+        </div>
+    </section>
+    <section id="bookBorrow">
+        <div class="container">
+            <h4>Cancelled and Finished Reservations</h4>
+            <?php
+            if (empty($cancelledDoneReservation)) {
+                echo "<p>You have not borrowed books yet. Borrow now and start reading!</p>";
+            } else {
+            ?>
+                <table id="reservationTable2" class="display">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Author</th>
+                            <th>Reservation Date</th>
+                            <th>Pickup Date</th>
+                            <th>Duration (Days)</th>
+                            <th>Expected Return Date</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($cancelledDoneReservation as $reservation) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($reservation['Book_Title']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['Book_Author']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['reservation_date']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['pickup_date']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['duration']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['expected_return_date']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['notes']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['status']); ?></td>
+                                
                             <?php } ?>
                     </tbody>
                 </table>

@@ -30,22 +30,6 @@ $db = $database->getConnect();
             });
         });
 
-        function confirmDelete(notificationId) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This action cannot be undone!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = `deleteNotifications.php?notification_id=${notificationId}`;
-                }
-            });
-        }
     </script>
 </head>
 
@@ -61,35 +45,61 @@ $db = $database->getConnect();
         </nav>
     </header>
     <h2>Notifications</h2>
-    <table id="userTable" class="display">
-        <thead>
-            <tr>
-                <th>Timestamp</th>
-                <th>Message</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
+    <form id="deleteForm" action="" method="POST">
+        <button type="submit">Delete</button>
+        <table id="userTable" class="display">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Message</th>
+                    <th>X</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
 
-            $notification = new Notifications($db);
-            $stmt = $notification->getUserNotifications($_SESSION['id']);
-            $num = $stmt->rowCount();
-            if ($num > 0) {
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    if (isset($row['notification_id'])) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['message']) . "</td>";
-                        echo "<td><button onclick='confirmDelete(" . htmlspecialchars($row['notification_id']) . ")' class='button'>Delete</button></td>";
-                        echo "</tr>";
-                    } else {
-                        echo "<tr><td colspan='3'>Error: notification_id not found.</td></tr>";
+                $notification = new Notifications($db);
+                $stmt = $notification->getUserNotifications($_SESSION['id']);
+                $num = $stmt->rowCount();
+                if ($num > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        if (isset($row['notification_id'])) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['message']) . "</td>";
+                            echo "<td><input type='checkbox' name='notif_ids[]' value='" . htmlspecialchars($row['notification_id']) . "'></td>";
+                            echo "</tr>";
+                        } else {
+                            echo "<tr><td colspan='3'>Error: notification_id not found.</td></tr>";
+                        }
                     }
                 }
+                ?>
+            </tbody>
+        </table>
+        <?php
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['notif_ids'])) {
+                $notif_ids = $_POST['notif_ids'];
+
+                if (!empty($notif_ids)) {
+                    $database = new Database();
+                    $db = $database->getConnect();
+                    $notification = new Notifications($db);
+
+                    foreach ($notif_ids as $notif_id) {
+                        if ($notification->delete($notif_id)) {
+                            echo "Selected log/s deleted.";
+                        }
+                    }
+                }
+            } else {
+                echo "There is no selected message/s to be deleted.";
             }
-            ?>
-        </tbody>
-    </table>
+        }
+        ?>
+    </form>
 </body>
+
 </html>

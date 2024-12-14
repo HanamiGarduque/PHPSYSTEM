@@ -1,111 +1,138 @@
 :root {
-    --olive-green: #727D3D;
-    --yellow: #F7E135;
+  --olive-green: #727d3d;
+  --yellow: #f7e135;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter';
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter";
 }
 
 body {
-    background-color: #fff;
-    background-position: center;
-    background-attachment: fixed;
-    background-image: url("../Images/bg.png");
-    background-position: bottom;
-    background-size: 150%;
-    background-repeat: no-repeat;
+  background-color: #fff;
+  background-position: center;
+  background-attachment: fixed;
+  background-image: url("../Images/bg.png");
+  background-position: bottom;
+  background-size: 150%;
+  background-repeat: no-repeat;
 }
 h2 {
-    width: 100%;
-    text-align: center;
-    color: #FFD700;
-    margin-bottom: 2rem;
-    font-size: 24px;
-    font-weight: 600;
+  width: 100%;
+  text-align: center;
+  color: #ffd700;
+  margin-bottom: 2rem;
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .header {
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    border-bottom: 5px solid var(--yellow); 
-    margin-bottom: 30px;
-  }
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-bottom: 5px solid var(--yellow);
+  margin-bottom: 30px;
+}
 
 .logo {
-    width: 50px;
-    height: 50px;   
-    background-image: url("../Images/BLib\ \(5\).png");
-    background-size: cover;
-    border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-image: url("../Images/BLib\ \(5\).png");
+  background-size: cover;
+  border-radius: 50%;
 }
 .head {
-    position: absolute;
-    left: 6rem;
-    color: var(--olive-green);
-  }
+  position: absolute;
+  left: 6rem;
+  color: var(--olive-green);
+}
 
 .nav {
-    display: flex;
-    gap: 4rem;
+  display: flex;
+  gap: 4rem;
 }
 
 .nav a {
-    text-decoration: none;
-    color: var(--olive-green);  
+  text-decoration: none;
+  color: var(--olive-green);
 }
 
 .search-container {
-    margin: 50px auto;
-    text-align: center;
+  margin: 50px auto;
+  text-align: center;
 }
 
 .search-container input[type="text"],
 .search-container select {
-    padding: 10px;
-    border-radius: 5px;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 table {
-    margin: 20px auto;
-    width: 80%;
-    border-collapse: collapse;
-    padding: 2rem;
-}   
+  margin: 20px auto;
+  width: 80%;
+  border-collapse: collapse;
+  padding: 2rem;
+}
 
 table thead th,
 table tbody td {
-    padding: 10px;
-    border: 1px solid var(--olive-green);
-    text-align: left;
+  padding: 10px;
+  border: 1px solid var(--olive-green);
+  text-align: left;
 }
 
-.button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: var(--olive-green);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    text-align: center;
+button {
+  padding: 0.5rem 1rem;
+  background-color: var(--olive-green);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  border: #fff;
+  right: 0px;
+  position: absolute;   /* Positioning the button absolutely */
+  right: 45px; 
+  top: 10rem;
 }
 
-.button:hover {
-    background-color: #d4b000;
+button:hover {
+  background-color: #d4b000;
 }
-#userTable th:nth-child(1), #userTable td:nth-child(1) {
-    width: 10%; /* Adjust the percentage to make the 'message' column wider */
+#userTable th:nth-child(1),
+#userTable td:nth-child(1) {
+  width: 10%; /* Adjust the percentage to make the 'message' column wider */
 }
-#userTable th:nth-child(2), #userTable td:nth-child(2) {
-    width: 80%; /* Adjust the percentage for the 'actions' column */
+#userTable th:nth-child(2),
+#userTable td:nth-child(2) {
+  width: 95%; /* Adjust the percentage for the 'actions' column */
 }
-#userTable th:nth-child(3), #userTable td:nth-child(3) {
-    width: 10%; /* Adjust the percentage to make the 'message' column wider */
+#userTable th:nth-child(3),
+#userTable td:nth-child(3) {
+  width: 5%; /* Adjust the percentage to make the 'message' column wider */
 }
+/* Hide the default checkbox */
+input[type="checkbox"] {
+  appearance: none; /* Removes default appearance */
+  -webkit-appearance: none; /* For Safari and older browsers */
+  -moz-appearance: none; /* For Firefox */
+  width: 20px; /* Width of custom checkbox */
+  height: 20px; /* Height of custom checkbox */
+  border: 2px solid #555; /* Border color and width */
+  border-radius: 4px; /* Optional: makes corners rounded */
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Styling for the checked state */
+input[type="checkbox"]:checked {
+  background-color: #4caf50; /* Background color when checked */
+  border-color: #4caf50; /* Border color when checked */
+  position: relative;
+}
+
+/* Create a checkmark symbol when checked */

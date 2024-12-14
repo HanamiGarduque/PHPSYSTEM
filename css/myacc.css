@@ -73,7 +73,10 @@ body {
     margin-bottom: 2rem;
     color: var(--yellow);
 }
-
+#bookBorrow h4 {
+    color: var(--olive-green);
+    margin-bottom: 10px;
+}
 #finesAndFees h2 {
     margin-bottom: 2rem;
     color: var(--yellow);

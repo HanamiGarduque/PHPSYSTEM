@@ -2,6 +2,7 @@
 require_once '../../check_session.php';
 require_once '../../Database/database.php';
 require_once '../../Database/crud.php';
+
  ensureAdminAccess();
  
 $database = new Database();
